@@ -12,6 +12,7 @@ import orderRoutes from "./routes/order.js";
 import adminRoutes from "./routes/admin.js";
 import cartRoutes from "./routes/cart.js";
 import paymentRoutes from "./routes/payment.js";
+
 // Load environment variables
 dotenv.config();
 
@@ -20,20 +21,36 @@ connectDB();
 
 const app = express();
 
-// Middleware
+// ---------------- Middleware ----------------
+
+// Allow requests from both localhost and deployed frontend
+const allowedOrigins = [
+  "http://localhost:3000", // Local development
+  "https://mern-ecommerce-project-bqcr.vercel.app" // Deployed frontend
+];
+
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: function(origin, callback) {
+    // allow requests with no origin (like Postman or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `CORS policy: The origin ${origin} is not allowed.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
+
 app.use(express.json()); // parse JSON bodies
 
-// Basic test route
+// ---------------- Basic Test Route ----------------
 app.get("/", (req, res) => {
   res.send("API is running...");
-}); 
+});
 
 // ----------------- Routes -----------------
-app.use("/api/auth", authRoutes);       //login/register
+app.use("/api/auth", authRoutes);       // Login/Register
 app.use("/api/categories", categoryRoutes);   // Categories CRUD
 app.use("/api/products", productRoutes);      // Products CRUD
 app.use("/api/orders", orderRoutes);          // Orders CRUD + status

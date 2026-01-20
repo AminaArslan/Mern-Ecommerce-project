@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  images: {
+    domains: ['res.cloudinary.com'], // add your Cloudinary domain here
+  },
 };
 
 export default nextConfig;

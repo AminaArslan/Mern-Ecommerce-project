@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios.js';
 import { useSearchParams, useRouter } from 'next/navigation';
-import ProductCard from '@/componenets/productCard';
+// import ProductCard from '@/componenets/productCard';
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -108,7 +108,7 @@ export default function ProductsPage() {
 
               {/* Subcategories */}
               {parent.children.length > 0 && activeParent === parent._id && (
-                <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-[150px] z-10">
+                <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-37.5 z-10">
                   {parent.children.map((child) => (
                     <button
                       key={child._id}

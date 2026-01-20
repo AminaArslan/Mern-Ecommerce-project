@@ -1,32 +1,29 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios.js';
-import { useSearchParams, useRouter } from 'next/navigation';
-// import ProductCard from '@/componenets/productCard';
 
 export default function ProductsPage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
+  // ---------------- States ----------------
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [activeParent, setActiveParent] = useState(null);
 
-  // Pagination & search
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  // Filters & pagination
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [search, setSearch] = useState(searchParams.get('search') || '');
 
-  // ---------------- Build nested category tree ----------------
+  // ---------------- Helpers ----------------
   const buildCategoryTree = (cats) => {
     const map = {};
     const roots = [];
 
-    cats.forEach(c => map[c._id] = { ...c, children: [] });
+    cats.forEach((c) => (map[c._id] = { ...c, children: [] }));
 
-    cats.forEach(c => {
+    cats.forEach((c) => {
       if (c.parentId) {
         const parent = map[c.parentId];
         if (parent) parent.children.push(map[c._id]);
@@ -39,7 +36,7 @@ export default function ProductsPage() {
     return roots;
   };
 
-  // ---------------- Fetch categories & products ----------------
+  // ---------------- Fetch Categories ----------------
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -50,6 +47,11 @@ export default function ProductsPage() {
       }
     };
 
+    fetchCategories();
+  }, []);
+
+  // ---------------- Fetch Products ----------------
+  useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
@@ -57,7 +59,7 @@ export default function ProductsPage() {
           params: {
             page,
             limit: 12,
-            search,
+            search: search || undefined,
             category: selectedCategory || undefined,
           },
         });
@@ -70,13 +72,13 @@ export default function ProductsPage() {
       }
     };
 
-    fetchCategories();
     fetchProducts();
-  }, [page, search, selectedCategory]);
+  }, [search, selectedCategory, page]);
 
   // ---------------- Render ----------------
   return (
     <div className="space-y-6 p-4 md:p-6">
+
       {/* Search & Categories */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <input
@@ -87,7 +89,6 @@ export default function ProductsPage() {
           className="border p-2 rounded flex-1"
         />
 
-        {/* Categories Menu */}
         <div className="flex space-x-4 relative">
           {categories.map((parent) => (
             <div
@@ -96,9 +97,8 @@ export default function ProductsPage() {
               onMouseEnter={() => setActiveParent(parent._id)}
               onMouseLeave={() => setActiveParent(null)}
             >
-              {/* Parent Button */}
               <button
-                onClick={() => setSelectedCategory(parent._id)}
+                onClick={() => { setSelectedCategory(parent._id); setPage(1); }}
                 className={`px-4 py-2 rounded hover:bg-gray-100 font-semibold ${
                   selectedCategory === parent._id ? 'bg-blue-100' : ''
                 }`}
@@ -106,13 +106,12 @@ export default function ProductsPage() {
                 {parent.name}
               </button>
 
-              {/* Subcategories */}
               {parent.children.length > 0 && activeParent === parent._id && (
-                <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-37.5 z-10">
+                <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-[150px] z-10">
                   {parent.children.map((child) => (
                     <button
                       key={child._id}
-                      onClick={() => setSelectedCategory(child._id)}
+                      onClick={() => { setSelectedCategory(child._id); setPage(1); }}
                       className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
                         selectedCategory === child._id ? 'bg-blue-100' : ''
                       }`}
@@ -139,7 +138,6 @@ export default function ProductsPage() {
               key={product._id}
               className="border rounded-lg shadow hover:shadow-md transition overflow-hidden"
             >
-              {/* Images */}
               {product.images?.length > 0 ? (
                 <div className="grid grid-cols-2 gap-1 p-1">
                   {product.images.slice(0, 4).map((img, idx) => (
@@ -158,7 +156,6 @@ export default function ProductsPage() {
                 </div>
               )}
 
-              {/* Product Info */}
               <div className="p-3">
                 <h3 className="font-semibold text-md">{product.name}</h3>
                 <p className="text-gray-600">${product.price?.toFixed(2) || 'N/A'}</p>

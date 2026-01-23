@@ -16,19 +16,20 @@
       return config;
     });
     // ================= AUTH =================
-    export const registerUser = async ({ name, email, password }) => {
-      const { data } = await API.post("/auth/register", { name, email, password });
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      return data.user;
-    };
+export const loginUser = async ({ email, password }) => {
+  const { data } = await API.post("/auth/login", { email, password });
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+  return data; // ✅ return full object { token, user }
+};
 
-    export const loginUser = async ({ email, password }) => {
-      const { data } = await API.post("/auth/login", { email, password });
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      return data.user;
-    };
+export const registerUser = async ({ name, email, password }) => {
+  const { data } = await API.post("/auth/register", { name, email, password });
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+  return data; // ✅ return full object { token, user }
+};
+
 
     export const logoutUser = () => {
       localStorage.removeItem("token");
@@ -243,7 +244,16 @@
       }
     };
 
-
+//
+export const getProductsByParentCategoryFrontend = async (slug) => {
+  try {
+    const { data } = await API.get(`/products/frontend/${slug}`);
+    return data;
+  } catch (err) {
+    console.error("Fetch products by parent category error:", err.response?.data || err.message);
+    throw err.response?.data || { message: "Failed to fetch products by parent category" };
+  }
+};
 
 
     // Admin: Toggle product active/inactive
@@ -367,60 +377,77 @@
   };
 
     // =================== CART ===================
+const getGuestId = () => {
+  if (typeof window === "undefined") return null;
+  let guestId = localStorage.getItem("guestId");
+  if (!guestId) {
+    guestId = crypto.randomUUID(); // create new guestId
+    localStorage.setItem("guestId", guestId);
+  }
+  return guestId;
+};
 
-    // Get logged-in user's cart
-    export const fetchCart = async () => {
-      try {
-        const res = await API.get("/cart");
-        return res.data;
-      } catch (err) {
-        console.error("Error fetching cart:", err.response?.data || err.message);
-        return { items: [] }; // fallback empty cart
-      }
-    };
+// ------------------ Fetch Cart ------------------
+export const fetchCart = async () => {
+  try {
+    const guestId = getGuestId();
+    const res = await API.get("/cart", {
+      params: { guestId },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching cart:", err.response?.data || err.message);
+    return { items: [] };
+  }
+};
 
-    // Sync entire frontend cart (create/update)
-    export const syncCart = async (cart) => {
-      try {
-        const res = await API.post("/cart/sync", { cart });
-        return res.data;
-      } catch (err) {
-        console.error("Error syncing cart:", err.response?.data || err.message);
-        return null;
-      }
-    };
+// ------------------ Sync Entire Cart ------------------
+export const syncCart = async (cart) => {
+  try {
+    if (!Array.isArray(cart)) cart = [];
+    const guestId = getGuestId();
 
-    // Update quantity of single product
-    export const updateCartItem = async (productId, quantity) => {
-      try {
-        const res = await API.patch(`/cart/item/${productId}`, { quantity });
-        return res.data;
-      } catch (err) {
-        console.error("Error updating cart item:", err.response?.data || err.message);
-        return null;
-      }
-    };
+    const res = await API.post("/cart/sync", { cart, guestId });
+    return res.data;
+  } catch (err) {
+    console.error("Error syncing cart:", err.response?.data || err.message);
+    return null;
+  }
+};
 
-    // Remove single product from cart
-    export const removeCartItem = async (productId) => {
-      try {
-        const res = await API.delete(`/cart/item/${productId}`);
-        return res.data;
-      } catch (err) {
-        console.error("Error removing cart item:", err.response?.data || err.message);
-        return null;
-      }
-    };
+// ------------------ Update Single Cart Item ------------------
+export const updateCartItem = async (productId, quantity) => {
+  try {
+    const guestId = getGuestId();
+    const res = await API.patch(`/cart/item/${productId}`, { quantity, guestId });
+    return res.data;
+  } catch (err) {
+    console.error("Error updating cart item:", err.response?.data || err.message);
+    return null;
+  }
+};
 
-    // Clear entire cart
-    export const clearCartApi = async () => {
-      try {
-        const res = await API.delete("/cart");
-        return res.data;
-      } catch (err) {
-        console.error("Error clearing cart:", err.response?.data || err.message);
-        return null;
-      }
-    };
+// ------------------ Remove Single Cart Item ------------------
+export const removeCartItem = async (productId) => {
+  try {
+    const guestId = getGuestId();
+    const res = await API.delete(`/cart/item/${productId}`, { data: { guestId } });
+    return res.data;
+  } catch (err) {
+    console.error("Error removing cart item:", err.response?.data || err.message);
+    return null;
+  }
+};
 
+// ------------------ Clear Entire Cart ------------------
+export const clearCartApi = async () => {
+  try {
+    const guestId = getGuestId();
+    const res = await API.delete("/cart", { data: { guestId } });
+    return res.data;
+  } catch (err) {
+    console.error("Error clearing cart:", err.response?.data || err.message);
+    return null;
+  }
+};
     export default API;

@@ -1,5 +1,4 @@
 import express from "express";
-import { protect } from "../middleware/authmiddleware.js"; // Auth middleware
 import {
   getCart,
   syncCart,
@@ -10,13 +9,9 @@ import {
 
 const router = express.Router();
 
-// ---------------- Public ----------------
-// Cart is user-specific, so all routes require auth
+// ---------------- Cart Routes ----------------
 
-// ---------------- Protected (login users only) ----------------
-router.use(protect);
-
-// Get logged-in user's cart
+// Get cart (guest or logged-in)
 router.get("/", getCart);
 
 // Sync entire frontend cart (create/update)

@@ -12,6 +12,7 @@ export default function AdminProductsPage() {
   const [parentCategories, setParentCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState(null);
+  
 
   // ---------------- Fetch categories ----------------
   const fetchCategories = async () => {
@@ -126,8 +127,8 @@ export default function AdminProductsPage() {
                 {/* Product Name with wrap & tooltip */}
                 <td className="px-4 py-2 max-w-50 whitespace-normal wrap-break-word relative group">
                   <span className="line-clamp-2">{p.name}</span>
-                  <span className="absolute top-1 right-1 text-gray-400 text-sm cursor-pointer group-hover:visible hidden">&#9662;</span>
-                  <div className="absolute z-10 bg-white p-2 border rounded shadow-lg w-max max-w-xs invisible group-hover:visible">
+                  <span className="absolute top-1 right-1 text-black text-sm cursor-pointer group-hover:visible hidden">&#9662;</span>
+                  <div className="absolute z-10 text-black bg-white p-2 border rounded shadow-lg w-max max-w-xs invisible group-hover:visible">
                     {p.name}
                   </div>
                 </td>

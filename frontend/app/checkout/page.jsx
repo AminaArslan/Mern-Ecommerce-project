@@ -5,7 +5,7 @@ import { useAuth } from '@/context/authContext';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { createOrder, createCheckoutSession } from '@/lib/axios';
-import CartSummary from '@/componenets/CartSummary';
+import CartSummary from '@/componenets/user/cart/CartSummary';
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();

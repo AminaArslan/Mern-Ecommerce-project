@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Cart from "../models/Cart.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -10,12 +11,10 @@ export const registerUser = async (req, res) => {
     if (!name || !email || !password)
       return res.status(400).json({ message: "All fields are required" });
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email))
       return res.status(400).json({ message: "Invalid email format" });
 
-    // Strong password validation
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password))
@@ -24,15 +23,12 @@ export const registerUser = async (req, res) => {
           "Password must be min 8 chars, include uppercase, lowercase, number, and special character",
       });
 
-    // Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "Email already registered" });
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user (always customer)
     const user = await User.create({
       name,
       email,
@@ -40,7 +36,6 @@ export const registerUser = async (req, res) => {
       role: "customer",
     });
 
-    // Generate token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -65,26 +60,48 @@ export const registerUser = async (req, res) => {
 // ------------------ Unified Login (Admin or Customer) ------------------
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, guestId } = req.body; // accept guestId from frontend
 
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password required" });
     }
 
-    // Find user by email
     const user = await User.findOne({ email });
-
     if (!user || !user.isActive) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Generate JWT token
+    // ------------------ Merge Guest Cart ------------------
+    if (guestId) {
+      const guestCart = await Cart.findOne({ guestId });
+      if (guestCart) {
+        let userCart = await Cart.findOne({ user: user._id });
+        if (!userCart) {
+          userCart = new Cart({ user: user._id, items: [] });
+        }
+
+        // Merge guest items into user cart
+        guestCart.items.forEach(guestItem => {
+          const existing = userCart.items.find(
+            item => item.product.toString() === guestItem.product.toString()
+          );
+          if (existing) {
+            existing.quantity += guestItem.quantity;
+          } else {
+            userCart.items.push(guestItem);
+          }
+        });
+
+        await userCart.save();
+        await guestCart.deleteOne(); // remove guest cart after merge
+      }
+    }
+
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -109,12 +126,7 @@ export const login = async (req, res) => {
 // ------------------ Get All Users (Admin Table) ------------------
 export const getAllUsers = async (req, res) => {
   try {
-    // Fetch all active users
-    const users = await User.find()
-      .select("-password")
-      .sort({ createdAt: -1 });
-
-    // Return as array
+    const users = await User.find().select("-password").sort({ createdAt: -1 });
     res.json(users);
   } catch (err) {
     console.error(err);
@@ -126,11 +138,9 @@ export const getAllUsers = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Prevent admin deletion
     if (user.role === "admin") {
       return res.status(403).json({ message: "Cannot delete admin" });
     }

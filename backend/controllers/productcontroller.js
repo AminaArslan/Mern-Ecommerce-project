@@ -2,6 +2,7 @@ import Product from "../models/Product.js";
 import slugify from "slugify";
 import cloudinary from "../config/cloudinary.js";
 import Order from "../models/Order.js";
+import Category from "../models/Category.js"
 /* ================= CREATE PRODUCT (ADMIN) ================= */
 export const createProduct = async (req, res) => {
   try {
@@ -48,24 +49,50 @@ export const createProduct = async (req, res) => {
   }
 };
 /* ================= GET ALL ACTIVE PRODUCTS (PUBLIC) ================= */
+/* ================= GET ALL ACTIVE PRODUCTS (PUBLIC) ================= */
 export const getProducts = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 12;
-  const skip = (page - 1) * limit;
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
 
-  const total = await Product.countDocuments({ isActive: true });
-  const products = await Product.find({ isActive: true })
-    .populate("category", "name slug")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
+    const { search, category } = req.query;
 
-  res.json({
-    products,
-    totalPages: Math.ceil(total / limit),
-    currentPage: page
-  });
+    // 🔎 Build dynamic query
+    const query = { isActive: true };
+
+    // ✅ Search by PRODUCT NAME
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+
+    // ✅ Filter by CATEGORY (child or parent handled separately)
+    if (category) {
+      query.category = category;
+    }
+
+    const [products, total] = await Promise.all([
+      Product.find(query)
+        .populate("category", "name slug")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+
+      Product.countDocuments(query),
+    ]);
+
+    res.status(200).json({
+      products,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total,
+    });
+  } catch (error) {
+    console.error("Get products error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
+
 
 /* ================= GET SINGLE PRODUCT ================= */
 export const getSingleProduct = async (req, res) => {
@@ -262,4 +289,22 @@ export const getProductsByParentCategory = async (req, res) => {
     console.error("Products by parent category error:", err);
     res.status(500).json({ message: "Server error" });
   }
+};
+
+/* ================= GET PRODUCTS BY PARENT CATEGORY ================= */
+export const getProductsByParentCategoryFrontend = async (req, res) => {
+  const { slug } = req.params;
+
+  const parentCategory = await Category.findOne({ slug, isActive: true });
+  if (!parentCategory) return res.status(404).json({ message: "Category not found" });
+
+  const subCategories = await Category.find({ parentId: parentCategory._id, isActive: true });
+  const categoryIds = subCategories.map(cat => cat._id);
+  categoryIds.push(parentCategory._id);
+
+  const products = await Product.find({ category: { $in: categoryIds }, isActive: true })
+    .populate("category", "name slug")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json(products);
 };

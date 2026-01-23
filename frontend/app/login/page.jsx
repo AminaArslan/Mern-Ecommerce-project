@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
 import Link from 'next/link';
@@ -12,13 +12,23 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // ✅ already logged-in user redirect
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      router.replace('/admin/dashboard');
+    } else if (user) {
+      router.replace('/products');
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      // Login returns user
       const loggedInUser = await login({ email, password });
 
       if (loggedInUser?.role === 'admin') {
@@ -27,7 +37,11 @@ export default function LoginPage() {
         router.push('/products');
       }
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(
+        err?.response?.data?.message || 'Invalid email or password'
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,9 +51,15 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="bg-light p-8 rounded-2xl shadow-xl w-96 space-y-6"
       >
-        <h1 className="text-3xl font-bold text-dark text-center">Login</h1>
+        <h1 className="text-3xl font-bold text-dark text-center">
+          Login
+        </h1>
 
-        {error && <p className="text-deep font-medium text-center">{error}</p>}
+        {error && (
+          <p className="text-deep font-medium text-center">
+            {error}
+          </p>
+        )}
 
         <div className="space-y-1">
           <label className="font-medium text-dark">Email</label>
@@ -67,14 +87,19 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-accent text-light p-3 rounded-lg font-semibold hover:bg-dark transition hover:scale-105"
+          disabled={loading}
+          className="w-full bg-accent text-light p-3 rounded-lg font-semibold transition
+                     hover:bg-dark hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Login
+          {loading ? 'Logging in...' : 'Login'}
         </button>
 
         <p className="text-center text-dark text-sm">
           Don't have an account?{' '}
-          <Link href="/register" className="text-accent font-medium hover:underline">
+          <Link
+            href="/register"
+            className="text-accent font-medium hover:underline"
+          >
             Register here
           </Link>
         </p>

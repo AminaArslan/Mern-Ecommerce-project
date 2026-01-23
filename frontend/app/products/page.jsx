@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios.js';
+import ProductCard from '@/componenets/user/products/productCard';
+import Link from 'next/link';
 
 export default function ProductsPage() {
   // ---------------- States ----------------
@@ -77,54 +79,59 @@ export default function ProductsPage() {
 
   // ---------------- Render ----------------
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="container mx-auto space-y-6 p-4">
 
-      {/* Search & Categories */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          className="border p-2 rounded flex-1"
-        />
+{/* Search & Categories */}
+<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+  {/* Search by Product Name */}
+  <input
+    type="text"
+    placeholder="Search product name..."
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      setPage(1);
+    }}
+    className="border p-2 rounded flex-1"
+  />
 
-        <div className="flex space-x-4 relative">
-          {categories.map((parent) => (
-            <div
-              key={parent._id}
-              className="relative"
-              onMouseEnter={() => setActiveParent(parent._id)}
-              onMouseLeave={() => setActiveParent(null)}
-            >
-              <button
-                onClick={() => { setSelectedCategory(parent._id); setPage(1); }}
-                className={`px-4 py-2 rounded hover:bg-gray-100 font-semibold ${
-                  selectedCategory === parent._id ? 'bg-blue-100' : ''
-                }`}
-              >
-                {parent.name}
-              </button>
+  {/* Category Buttons */}
+  <div className="flex space-x-4 relative">
+    {categories.map((parent) => (
+      <div
+        key={parent._id}
+        className="relative"
+        onMouseEnter={() => setActiveParent(parent._id)}
+        onMouseLeave={() => setActiveParent(null)}
+      >
+        {/* Parent category button navigates to category page by slug */}
+        <Link href={`/category/${parent.slug}`}>
+          <button
+            className="px-4 py-2 rounded hover:bg-gray-100 font-semibold cursor-pointer"
+          >
+            {parent.name}
+          </button>
+        </Link>
 
-              {parent.children.length > 0 && activeParent === parent._id && (
-                <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-[150px] z-10">
-                  {parent.children.map((child) => (
-                    <button
-                      key={child._id}
-                      onClick={() => { setSelectedCategory(child._id); setPage(1); }}
-                      className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
-                        selectedCategory === child._id ? 'bg-blue-100' : ''
-                      }`}
-                    >
-                      {child.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        {/* Child categories dropdown (optional) */}
+        {parent.children.length > 0 && activeParent === parent._id && (
+          <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-[150px] z-10">
+            {parent.children.map((child) => (
+              <Link key={child._id} href={`/category/${child.slug}`}>
+                <button
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                >
+                  {child.name}
+                </button>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
+    ))}
+  </div>
+</div>
+
 
       {/* Products Grid */}
       {loading ? (
@@ -132,37 +139,12 @@ export default function ProductsPage() {
       ) : products.length === 0 ? (
         <p className="text-center mt-6 text-gray-500">No products found.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-4">
-          {products.map((product) => (
-            <div
-              key={product._id}
-              className="border rounded-lg shadow hover:shadow-md transition overflow-hidden"
-            >
-              {product.images?.length > 0 ? (
-                <div className="grid grid-cols-2 gap-1 p-1">
-                  {product.images.slice(0, 4).map((img, idx) => (
-                    <div key={idx} className="w-full h-24 overflow-hidden rounded">
-                      <img
-                        src={img.url}
-                        alt={`${product.name} ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="h-24 flex items-center justify-center bg-gray-100 text-gray-400">
-                  No image
-                </div>
-              )}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 mt-4">
+  {products.map((product) => (
+    <ProductCard key={product._id} product={product} />
+  ))}
+</div>
 
-              <div className="p-3">
-                <h3 className="font-semibold text-md">{product.name}</h3>
-                <p className="text-gray-600">${product.price?.toFixed(2) || 'N/A'}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       )}
 
       {/* Pagination */}

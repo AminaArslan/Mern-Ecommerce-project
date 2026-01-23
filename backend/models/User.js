@@ -31,13 +31,20 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String, // optional profile picture URL
     },
+    cart: [
+      {
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        quantity: { type: Number, default: 1 },
+        addedAt: { type: Date, default: Date.now }, // optional for tracking
+      },
+    ],
   },
   {
     timestamps: true, // adds createdAt and updatedAt automatically
   }
 );
 
-// Optional: helper method to check role
+// Optional: helper methods to check role
 userSchema.methods.isAdmin = function () {
   return this.role === "admin";
 };
@@ -46,4 +53,10 @@ userSchema.methods.isCustomer = function () {
   return this.role === "customer";
 };
 
-export default mongoose.model("User", userSchema);
+// Optional: method to clear cart
+userSchema.methods.clearCart = function () {
+  this.cart = [];
+  return this.save();
+};
+
+export default mongoose.models.User || mongoose.model("User", userSchema);

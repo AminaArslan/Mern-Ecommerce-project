@@ -2,36 +2,39 @@
 
 /* 🎨 Custom Theme Colors */
 :root {
-  /* Light Mode */
-  --color-primary:#d67878;
-  --color-secondary:#cb6262;
-  --color-accent:#a74848;
-  --color-dark:#802323;
-  --color-deep:#570606;
+  /* 🌞 Light Mode */
+  --color-primary: #EDEDCE;   /* Page background */
+  --color-secondary: #629FAD; /* Cards / dropdown */
+  --color-accent: #296374;   /* Buttons / highlights */
+  --color-dark: #0C2C55;     /* Navbar / footer */
+  --color-deep: #083059;     /* Borders / hover */
 
-  --text-light:#ffffff;
-  --text-dark:#111111;
+  --text-light: #ffffff;
+  --text-dark: #0C2C55;
 }
 
 .dark {
-  --color-primary:#111111;
-  --color-secondary:#222222;
-  --color-accent:#a74848;
-  --color-dark:#802323;
-  --color-deep:#570606;
+  /* 🌙 Dark Mode */
+  --color-primary: #081e38;
+  --color-secondary: #0f2a4d;
+  --color-accent: #629FAD;
+  --color-dark: #0C2C55;
+  --color-deep: #296374;
 
-  --text-light:#ffffff;
-  --text-dark:#f1f1f1;
+  --text-light: #EDEDCE;
+  --text-dark: #EDEDCE;
 }
 
 body {
   background-color: var(--color-primary);
-  font-family: 'Inter', sans-serif;
+   font-family: 'Roboto', sans-serif;
   color: var(--text-dark);
   margin: 0;
 }
 
-/* Utility classes */
+/* =========================
+   🔹 Utility Classes
+   ========================= */
 .bg-primary   { background-color: var(--color-primary); }
 .bg-secondary { background-color: var(--color-secondary); }
 .bg-accent    { background-color: var(--color-accent); }
@@ -42,6 +45,9 @@ body {
 .text-light   { color: var(--text-light); }
 .text-dark    { color: var(--text-dark); }
 
+/* =========================
+   🔘 Buttons
+   ========================= */
 .btn-primary {
   background: var(--color-accent);
   color: var(--text-light);
@@ -55,25 +61,30 @@ body {
   background: var(--color-dark);
 }
 
-/* Dropdown styling */
+/* =========================
+   📂 Dropdown
+   ========================= */
 .dropdown {
-  background-color: var(--color-primary);
+  background-color: var(--color-secondary);
   color: var(--text-dark);
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
   overflow: hidden;
 }
 .dropdown .header {
   font-weight: bold;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--color-deep);
+  padding: 0.6rem 1rem;
+  background: var(--color-dark);
+  color: var(--text-light);
 }
 .dropdown .body {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
   font-size: 0.9rem;
 }
 
-/* Badge */
+/* =========================
+   🔔 Badge
+   ========================= */
 .badge {
   background-color: var(--color-accent);
   color: var(--text-light);
@@ -88,7 +99,9 @@ body {
   position: absolute;
 }
 
-/* Avatar */
+/* =========================
+   👤 Avatar
+   ========================= */
 .avatar {
   width: 40px;
   height: 40px;
@@ -100,9 +113,84 @@ body {
   align-items: center;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
   transition: box-shadow 0.2s ease-in-out;
 }
 .avatar:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
+
+
+/* Applies to all scrollable elements */
+::-webkit-scrollbar {
+  width: 12px; /* width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0; /* track color */
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #296374; /* scrollbar thumb color */
+  border-radius: 6px;
+  border: 3px solid #f0f0f0; /* gives padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #0c2c55; /* on hover */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin; /* "auto" or "thin" */
+  scrollbar-color: #296374 #f0f0f0; /* thumb and track */
+}
+
+
+/* =========================
+   🎯 Hero Content Pagination
+   ========================= */
+
+.hero-pagination {
+  display: flex;
+  gap: 6px;
+}
+
+.hero-pagination .swiper-pagination-bullet {
+  width: 7px;
+  height: 7px;
+  background: var(--color-secondary);
+  opacity: 0.5;
+  transition: 0.3s ease;
+}
+
+.hero-pagination .swiper-pagination-bullet-active {
+  background: var(--color-accent);
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* =========================
+   ⬅➡ Hero Navigation Buttons
+   ========================= */
+
+.nav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: var(--color-dark);
+}
+
+

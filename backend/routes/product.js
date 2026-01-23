@@ -9,6 +9,7 @@
     toggleProductStatus,
     getTopProducts,
     getProductsByParentCategory,
+    getProductsByParentCategoryFrontend,
   } from "../controllers/productcontroller.js";
 
   import { protect } from "../middleware/authmiddleware.js";
@@ -21,6 +22,8 @@
   router.get("/", getProducts);
   router.get("/admin/all", protect, isAdmin, getAllProductsAdmin); // admin route must be before :slug
   router.get("/:slug", getSingleProduct);
+  // Fetch products by parent category for frontend
+router.get("/frontend/:slug", getProductsByParentCategoryFrontend);
 
   /* ===== ADMIN ===== */
 router.post(

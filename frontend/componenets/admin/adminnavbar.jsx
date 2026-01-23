@@ -3,6 +3,8 @@
 import { useAuth } from '@/context/authContext';
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
+import { FiSun, FiMoon } from 'react-icons/fi';
+import { IoIosNotificationsOutline } from "react-icons/io";
 
 export default function AdminNavbar() {
   const { user, logout } = useAuth();
@@ -59,7 +61,7 @@ export default function AdminNavbar() {
           onClick={toggleTheme}
           className="px-3 py-2 rounded-lg bg-accent text-light hover:bg-dark transition-shadow shadow-sm hover:shadow-md"
         >
-          {darkMode ? '☀️' : '🌙'}
+          {darkMode ? <FiSun /> : <FiMoon />}
         </button>
 
         {/* Bell */}
@@ -69,15 +71,23 @@ export default function AdminNavbar() {
               setBellDropdown(!bellDropdown);
               setAvatarDropdown(false);
             }}
-            className="text-2xl relative flex items-center justify-center p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition"
+            className="
+      text-2xl relative flex items-center justify-center p-2
+      rounded-full cursor-pointer transition
+      bg-secondary  
+      hover:bg-accent
+      text-light
+    "
           >
-            🔔
+            <IoIosNotificationsOutline />
+
             {pendingOrders > 0 && (
-              <span className="absolute -top-1 -right-1 bg-accent text-light rounded-full w-5 h-5 text-xs flex items-center justify-center font-semibold animate-pulse">
+              <span className="badge -top-1 -right-1 animate-pulse">
                 {pendingOrders}
               </span>
             )}
           </button>
+
 
           {bellDropdown && (
             <div className="absolute right-0 mt-3 w-56 bg-light dark:bg-deep text-dark dark:text-light rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">

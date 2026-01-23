@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
-import { useCart } from '@/context/cartContext';
 
 export default function RegisterPage() {
   const { register } = useAuth();
-  const { syncCart } = useCart(); // to merge guest cart after register
   const router = useRouter();
 
   const [name, setName] = useState('');
@@ -16,50 +14,53 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Generate guestId if none exists
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !localStorage.getItem('guestId')) {
-      const newGuestId = crypto.randomUUID();
-      localStorage.setItem('guestId', newGuestId);
-      console.log('Generated guestId:', newGuestId);
-    }
-  }, []);
+  // ---------------- Validation Helpers ----------------
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    // min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // ---------------- Frontend Validation ----------------
+    if (!name || !email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError('Invalid email format');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError(
+        'Password must be at least 8 characters, include uppercase, lowercase, number, and special character'
+      );
+      return;
+    }
+
     setLoading(true);
 
-    console.log('Register form submitted:', { name, email, password });
-
     try {
-      const guestId = localStorage.getItem('guestId');
-      console.log('Current guestId:', guestId);
+      await register({ name, email, password });
 
-      // Always register as customer
-      const userData = await register({ name, email, password, guestId });
-      console.log('User registered successfully:', userData);
-
-      // Merge guest cart with backend
-      if (typeof window !== 'undefined') {
-        const localCartKey = `cart_${guestId}`;
-        const localCart = JSON.parse(localStorage.getItem(localCartKey) || '[]');
-        console.log('Local cart before sync:', localCart);
-
-        if (localCart.length > 0) {
-          const syncedCart = await syncCart(localCart);
-          console.log('Cart synced successfully:', syncedCart);
-          localStorage.removeItem(localCartKey);
-        }
-      }
-
-      // Redirect to products page
-      router.push('/products');
+      router.push('/products'); // always customer, no role needed
     } catch (err) {
-      const msg =
-        err.response?.data?.message || err.message || 'Registration failed';
-      console.error('Registration error:', msg, err);
-      setError(msg);
+      setError(
+        err?.response?.data?.message ||
+          err.message ||
+          'Registration failed'
+      );
+      console.error('Registration error:', err);
     } finally {
       setLoading(false);
     }
@@ -73,7 +74,9 @@ export default function RegisterPage() {
       >
         <h1 className="text-3xl font-bold text-dark text-center">Register</h1>
 
-        {error && <p className="text-deep font-medium text-center">{error}</p>}
+        {error && (
+          <p className="text-red-600 font-medium text-center">{error}</p>
+        )}
 
         <div className="space-y-1">
           <label className="font-medium text-dark">Name</label>

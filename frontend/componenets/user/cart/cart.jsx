@@ -63,7 +63,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                 className="flex items-center justify-between bg-secondary rounded p-3 shadow-sm"
               >
                 <img
-                  src={item.image || '/placeholder.png'}
+                  src={product.images[0].url}
                   alt={item.name}
                   className="w-16 h-16 object-cover rounded"
                 />

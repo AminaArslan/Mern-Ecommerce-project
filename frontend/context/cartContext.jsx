@@ -1,13 +1,7 @@
-"use client";
+'use client';
 
 import { createContext, useContext, useState, useEffect, useMemo } from "react";
-import {
-  fetchCart,
-  syncCart,
-  updateCartItem,
-  removeCartItem,
-  clearCartApi,
-} from "@/lib/axios";
+import { fetchCart, syncCart, updateCartItem, removeCartItem, clearCartApi } from "@/lib/axios";
 import { useAuth } from "./authContext";
 
 const CartContext = createContext();
@@ -21,7 +15,7 @@ export const CartProvider = ({ children }) => {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
-  // Helper to get or generate guestId
+  // ---------------- Helper: guestId ----------------
   const getGuestId = () => {
     if (typeof window === "undefined") return null;
     let guestId = localStorage.getItem("guestId");
@@ -32,38 +26,33 @@ export const CartProvider = ({ children }) => {
     return guestId;
   };
 
-  // ------------------ Load Cart ------------------
+  // ---------------- Load Cart ----------------
   useEffect(() => {
-    if (typeof window === "undefined") return; // SSR-safe
+    if (typeof window === "undefined") return;
 
     const loadCart = async () => {
       try {
-        const guestId = getGuestId();
+        let localCart = JSON.parse(localStorage.getItem("localCart") || "[]");
+        let backendItems = [];
 
-        // Fetch backend cart (guest or logged-in)
-        const backend = await fetchCart();
-        const backendItems = backend?.items || [];
+        if (user) {
+          // Fetch backend cart for logged-in user
+          const backend = await fetchCart();
+          backendItems = backend?.items?.map(b => ({
+            _id: b.product._id,
+            name: b.product.name,
+            price: b.product.price,
+            image: b.product.image?.url || b.product.image || "/placeholder.png",
+            quantity: b.quantity,
+          })) || [];
+        }
 
-        // Load local cart (pre-login or guest)
-        let localCart = [];
-        const saved = localStorage.getItem("localCart");
-        if (saved) localCart = JSON.parse(saved);
-
-        // Merge backend + local cart
+        // Merge localCart + backendItems
         const merged = [...localCart];
         backendItems.forEach(b => {
-          const existing = merged.find(i => i._id === b.product._id);
-          if (existing) {
-            existing.quantity = Math.max(existing.quantity, b.quantity);
-          } else {
-            merged.push({
-              _id: b.product._id,
-              name: b.product.name,
-              price: b.product.price,
-              image: b.product.image?.url || b.product.image || "/placeholder.png",
-              quantity: b.quantity,
-            });
-          }
+          const existing = merged.find(i => i._id === b._id);
+          if (existing) existing.quantity = Math.max(existing.quantity, b.quantity);
+          else merged.push(b);
         });
 
         setCart(merged);
@@ -77,37 +66,30 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [user]);
 
-  // ------------------ Sync Cart ------------------
+  // ---------------- Sync Cart ----------------
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const guestId = getGuestId();
-
     try {
-      // Save to localStorage
+      // Save local copy
       localStorage.setItem(user ? `cart_${user._id}` : "localCart", JSON.stringify(cart));
 
-      // Sync to backend
-      const syncServer = async () => {
-        if (!Array.isArray(cart)) return;
-        await syncCart(cart); // guestId handled inside fetchCart/syncCart
-      };
-
-      syncServer();
+      // Sync with backend only if logged-in
+      if (user && cart.length > 0) {
+        syncCart(cart); // backend handles merging
+      }
     } catch (err) {
       console.error("Error syncing cart:", err);
     }
   }, [cart, user]);
 
-  // ------------------ Cart Actions ------------------
+  // ---------------- Cart Actions ----------------
   const addToCart = (product) => {
     setCart(prev => {
       const exists = prev.find(i => i._id === product._id);
       if (exists) {
         return prev.map(i =>
-          i._id === product._id
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
+          i._id === product._id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
       return [...prev, { ...product, quantity: 1 }];
@@ -117,20 +99,20 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (id) => {
     setCart(prev => prev.filter(i => i._id !== id));
-    await removeCartItem(id);
+    if (user) await removeCartItem(id);
   };
 
   const updateQuantity = async (id, quantity) => {
     setCart(prev => prev.map(i => i._id === id ? { ...i, quantity } : i));
-    await updateCartItem(id, quantity);
+    if (user) await updateCartItem(id, quantity);
   };
 
   const clearCart = async () => {
     setCart([]);
-    await clearCartApi();
+    if (user) await clearCartApi();
   };
 
-  // ------------------ Cart Totals ------------------
+  // ---------------- Cart Totals ----------------
   const { totalItems, totalPrice } = useMemo(() => {
     const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
     const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);

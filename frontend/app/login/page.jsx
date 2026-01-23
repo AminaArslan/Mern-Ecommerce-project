@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
+import { useCart } from '@/context/cartContext';
 import Link from 'next/link';
 
 export default function LoginPage() {
   const { login, user } = useAuth();
+  const { syncCart } = useCart();
   const router = useRouter();
 
   const [email, setEmail] = useState('');
@@ -14,11 +16,13 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // ✅ already logged-in user redirect
+  // ✅ Redirect if already logged in
   useEffect(() => {
     if (user?.role === 'admin') {
+      console.log('Already logged in as admin, redirecting...');
       router.replace('/admin/dashboard');
     } else if (user) {
+      console.log('Already logged in, redirecting...');
       router.replace('/products');
     }
   }, [user, router]);
@@ -28,8 +32,27 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
+    console.log('Login attempt:', { email, password });
+
     try {
-      const loggedInUser = await login({ email, password });
+      const guestId = localStorage.getItem('guestId');
+      console.log('GuestId (for cart merge):', guestId);
+
+      const loggedInUser = await login({ email, password, guestId });
+      console.log('Login successful:', loggedInUser);
+
+      // Merge guest cart if exists
+      if (guestId && typeof window !== 'undefined') {
+        const localCartKey = `cart_${guestId}`;
+        const localCart = JSON.parse(localStorage.getItem(localCartKey) || '[]');
+        console.log('Local cart before sync:', localCart);
+
+        if (localCart.length > 0) {
+          const syncedCart = await syncCart(localCart);
+          console.log('Cart synced successfully:', syncedCart);
+          localStorage.removeItem(localCartKey);
+        }
+      }
 
       if (loggedInUser?.role === 'admin') {
         router.push('/admin/dashboard');
@@ -37,9 +60,9 @@ export default function LoginPage() {
         router.push('/products');
       }
     } catch (err) {
-      setError(
-        err?.response?.data?.message || 'Invalid email or password'
-      );
+      const msg = err?.response?.data?.message || err.message || 'Invalid email or password';
+      console.error('Login error:', msg, err);
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -56,9 +79,7 @@ export default function LoginPage() {
         </h1>
 
         {error && (
-          <p className="text-deep font-medium text-center">
-            {error}
-          </p>
+          <p className="text-deep font-medium text-center">{error}</p>
         )}
 
         <div className="space-y-1">

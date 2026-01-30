@@ -1,7 +1,8 @@
 import Category from "../models/Category.js";
+import Product from "../models/Product.js";
 import slugify from "slugify";
 
-// ---------------- Create Category (Admin) ----------------
+// ---------------- Create  Category (Admin) ----------------
 export const createCategory = async (req, res) => {
   try {
     const { name, parentId, isActive, metaTitle, metaDescription, canonicalUrl, image } = req.body;
@@ -39,6 +40,7 @@ export const createCategory = async (req, res) => {
 };
 
 // ---------------- Get All Categories (Admin) ----------------
+// 1️⃣ Existing function
 export const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 });
@@ -49,6 +51,62 @@ export const getAllCategories = async (req, res) => {
   }
 };
 
+// 2️⃣ New function – latest subcategories grouped by parent with products
+export const getNewSubcategoriesByParent = async (req, res) => {
+  try {
+    const parents = await Category.find({ parentId: null, isActive: true });
+
+    const data = await Promise.all(
+      parents.map(async (parent) => {
+        const subcategories = await Category.aggregate([
+          { $match: { parentId: parent._id, isActive: true } },
+          {
+            $lookup: {
+              from: "products",         // collection name
+              localField: "_id",        // Category _id
+              foreignField: "category", // Product.category field
+              as: "products",
+            },
+          },
+          { $match: { "products.0": { $exists: true } } }, // only subcategories with products
+          { $sort: { createdAt: -1 } },                    // latest subcategories
+          { $limit: 4 },
+          {
+            $project: {
+              name: 1,
+              slug: 1,
+              image: 1,
+              products: {
+                $map: {
+                  input: "$products",
+                  as: "p",
+                  in: {
+                    _id: "$$p._id",
+                    name: "$$p.name",
+                    slug: "$$p.slug",
+                    images: "$$p.images",
+                    price: "$$p.price",
+                  },
+                },
+              },
+            },
+          },
+        ]);
+
+        return {
+          parentName: parent.name,
+          parentSlug: parent.slug,
+          subcategories,
+        };
+      })
+    );
+
+    res.json(data);
+  } catch (err) {
+    console.error("getNewSubcategoriesByParent error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 // ---------------- Update Category ----------------
 export const updateCategory = async (req, res) => {
   try {

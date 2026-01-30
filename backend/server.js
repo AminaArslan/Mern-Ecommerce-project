@@ -42,6 +42,13 @@ app.use(cors({
   credentials: true,
 }));
 
+// ---------------- Stripe Webhook (RAW BODY!) ----------------
+app.use(
+  "/api/payments/webhook",
+  express.raw({ type: "application/json" })
+);
+
+
 app.use(express.json()); // parse JSON bodies
 
 // ---------------- Basic Test Route ----------------
@@ -50,13 +57,14 @@ app.get("/", (req, res) => {
 });
 
 // ----------------- Routes -----------------
+app.use("/api/payments", paymentRoutes);   // <-- add /api prefix
 app.use("/api/auth", authRoutes);       // Login/Register
 app.use("/api/categories", categoryRoutes);   // Categories CRUD
 app.use("/api/products", productRoutes);      // Products CRUD
 app.use("/api/orders", orderRoutes);          // Orders CRUD + status
 app.use("/api/admin", adminRoutes);
 app.use("/api/cart", cartRoutes);
-app.use("/payments", paymentRoutes);
+
 
 // ---------------- Global Error Handler ----------------
 app.use((err, req, res, next) => {

@@ -13,7 +13,7 @@ export default function AddProductPage() {
   const [subCategories, setSubCategories] = useState([]); // filtered subcategories
   const [images, setImages] = useState([null, null, null, null]);
   const [loading, setLoading] = useState(true);
-
+  const [submitting, setSubmitting] = useState(false); // form submission loader
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -61,43 +61,72 @@ export default function AddProductPage() {
   }, [formData.parentCategory, categories]);
 
   // ---------------- Image change handler ----------------
-  const handleImageChange = (e, index) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const updatedImages = [...images];
-    updatedImages[index] = file;
-    setImages(updatedImages);
-  };
+// ---------------- Image change handler ----------------
+const handleImageChange = (e, index) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-  // ---------------- Submit handler ----------------
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  setImages(prevImages => {
+    const newImages = [...prevImages];
 
-    if (!formData.name.trim()) return toast.error('Product name is required');
-    if (!formData.parentCategory) return toast.error('Select parent category');
-    if (!formData.subCategory) return toast.error('Select subcategory');
-
-    const fd = new FormData();
-    fd.append('name', formData.name);
-    fd.append('description', formData.description);
-    fd.append('price', formData.price);
-    fd.append('quantity', formData.quantity);
-    fd.append('category', formData.subCategory); // backend expects subcategory ID
-    fd.append('isActive', formData.isActive);
-
-    images.forEach(img => {
-      if (img) fd.append('images', img);
-    });
-
-    try {
-      await API.post('/products/admin/create', fd);
-      toast.success('Product added successfully!');
-      router.push('/admin/products');
-    } catch (err) {
-      console.error(err);
-      toast.error(err?.response?.data?.message || 'Failed to add product');
+    // If the index is within current slots, just replace
+    if (index < 4) {
+      newImages[index] = file;
+    } else {
+      // If more than 4 images somehow, remove the first one and add the new at end
+      newImages.shift(); // remove first
+      newImages.push(file); // add new
     }
-  };
+
+    return newImages;
+  });
+};
+
+
+// ---------------- Submit handler ----------------
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setSubmitting(true); // loader start
+
+  if (!formData.name.trim()) {
+    toast.error('Product name is required');
+    setSubmitting(false);
+    return;
+  }
+  if (!formData.parentCategory) {
+    toast.error('Select parent category');
+    setSubmitting(false);
+    return;
+  }
+  if (!formData.subCategory) {
+    toast.error('Select subcategory');
+    setSubmitting(false);
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append('name', formData.name);
+  fd.append('description', formData.description);
+  fd.append('price', formData.price);
+  fd.append('quantity', formData.quantity);
+  fd.append('category', formData.subCategory);
+  fd.append('isActive', formData.isActive);
+
+  images.forEach(img => {
+    if (img) fd.append('images', img);
+  });
+
+  try {
+    await API.post('/products/admin/create', fd);
+    toast.success('Product added successfully!');
+    router.push('/admin/products');
+  } catch (err) {
+    console.error(err);
+    toast.error(err?.response?.data?.message || 'Failed to add product');
+  } finally {
+    setSubmitting(false); // loader stop
+  }
+};
 
   if (loading) return <p className="text-dark text-center mt-10">Loading...</p>;
 
@@ -127,14 +156,21 @@ export default function AddProductPage() {
 
         {/* Price & Quantity */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="number"
-            placeholder="Price"
-            value={formData.price}
-            onChange={e => setFormData({ ...formData, price: e.target.value })}
-            required
-            className="w-full border border-dark rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-          />
+     <input
+  type="text" // number se text me change
+  placeholder="Price"
+  value={formData.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+  onChange={e => {
+    // Remove commas from input before saving to state
+    const value = e.target.value.replace(/,/g, '');
+    // Optional: allow only numbers
+    if (!isNaN(value)) {
+      setFormData({ ...formData, price: value });
+    }
+  }}
+  required
+  className="w-full border border-dark rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+/>
           <input
             type="number"
             placeholder="Quantity"
@@ -219,12 +255,22 @@ export default function AddProductPage() {
             Cancel
           </button>
 
-          <button
-            type="submit"
-            className="px-5 py-2 rounded bg-accent text-light hover:bg-dark transition cursor-pointer"
-          >
-            Add Product
-          </button>
+<button
+  type="submit"
+  className={`px-5 py-2 rounded bg-accent text-light hover:bg-dark transition flex items-center justify-center gap-2 ${
+    submitting ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+  }`}
+  disabled={submitting}
+>
+  {submitting ? (
+    <>
+      <span className="w-5 h-5 border-2 border-t-white border-white border-solid rounded-full animate-spin"></span>
+      Adding...
+    </>
+  ) : (
+    'Add Product'
+  )}
+</button>
         </div>
       </form>
     </div>

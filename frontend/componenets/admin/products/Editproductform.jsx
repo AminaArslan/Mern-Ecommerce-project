@@ -17,6 +17,7 @@ export default function EditProductModal({ product, categories, parentCategories
 
   const [subCategories, setSubCategories] = useState([]);
   const [images, setImages] = useState([null, null, null, null]);
+  const [removedImages, setRemovedImages] = useState([]);
 
   // ---------------- Initialize form ----------------
   useEffect(() => {
@@ -72,13 +73,22 @@ export default function EditProductModal({ product, categories, parentCategories
   }, [formData.parentCategoryId, categories]);
 
   // ---------------- Image change ----------------
-  const handleImageChange = (e, idx) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const updatedImages = [...images];
-    updatedImages[idx] = file;
-    setImages(updatedImages);
-  };
+ const handleImageChange = (e, idx) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setImages(prevImages => {
+    const newImages = [...prevImages];
+
+    // If replacing an old image, mark it as removed
+    if (newImages[idx] && newImages[idx].url) {
+      setRemovedImages(prev => [...prev, newImages[idx]._id]); // send ID to backend for deletion
+    }
+
+    newImages[idx] = file;
+    return newImages;
+  });
+};
 
   // ---------------- Submit ----------------
   const handleSubmit = async e => {
@@ -88,17 +98,20 @@ export default function EditProductModal({ product, categories, parentCategories
       return toast.error('Please select parent and subcategory');
     }
 
-    const fd = new FormData();
-    fd.append('name', formData.name);
-    fd.append('description', formData.description);
-    fd.append('price', formData.price);
-    fd.append('category', formData.subCategoryId); // backend expects subcategory id
-    fd.append('isActive', formData.isActive);
+const fd = new FormData();
+fd.append('name', formData.name);
+fd.append('description', formData.description);
+fd.append('price', formData.price);
+fd.append('category', formData.subCategoryId);
+fd.append('isActive', formData.isActive);
 
-    images.forEach(img => {
-      if (img instanceof File) fd.append('images', img);
-    });
+// Append new files
+images.forEach(img => {
+  if (img instanceof File) fd.append('images', img);
+});
 
+// Tell backend which old images to remove
+fd.append('removedImages', JSON.stringify(removedImages));
     try {
       await axios.put(`/products/admin/update/${product._id}`, fd);
       toast.success('Product updated successfully');

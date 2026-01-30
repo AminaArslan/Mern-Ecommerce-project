@@ -42,7 +42,13 @@ export const syncCart = async (req, res) => {
       .map(item => ({
         product: item._id,
         name: item.name,
-        image: typeof item.image === 'string' ? item.image : item.image?.url || '',
+
+        // 🔥 FIX: always store a STRING image URL
+        image:
+          item.images?.[0]?.url ||   // from product object
+          item.image ||              // already saved snapshot
+          "/placeholder.png",        // fallback
+
         quantity: item.quantity || 1,
         price: item.price,
       }));
@@ -58,7 +64,8 @@ export const syncCart = async (req, res) => {
       { new: true, upsert: true }
     );
 
-    await updatedCart.populate("items.product", "name price image slug");
+    // 🔥 FIX: product model uses IMAGES not IMAGE
+    await updatedCart.populate("items.product", "name price images slug");
 
     res.json(updatedCart);
   } catch (err) {
@@ -66,6 +73,7 @@ export const syncCart = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 // ================= UPDATE CART ITEM =================
 export const updateCartItem = async (req, res) => {
@@ -102,23 +110,35 @@ export const removeCartItem = async (req, res) => {
     const { productId } = req.params;
     const { guestId } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(productId))
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId))
       return res.status(400).json({ error: "Invalid product ID" });
 
+    // Fetch cart (user or guest)
     let cart;
-    if (req.user && req.user._id) cart = await Cart.findOne({ user: req.user._id });
-    else if (guestId) cart = await Cart.findOne({ guestId });
-    else return res.status(400).json({ error: "No user or guestId provided" });
+    if (req.user && req.user._id) {
+      cart = await Cart.findOne({ user: req.user._id });
+    } else if (guestId) {
+      cart = await Cart.findOne({ guestId });
+    } else {
+      return res.status(400).json({ error: "No user or guestId provided" });
+    }
 
-    if (!cart) return res.status(404).json({ error: "Cart not found" });
+    if (!cart || !Array.isArray(cart.items)) {
+      return res.status(404).json({ error: "Cart not found or empty" });
+    }
 
     const index = cart.items.findIndex(i => i.product.toString() === productId);
     if (index === -1) return res.status(404).json({ error: "Item not in cart" });
 
     cart.items.splice(index, 1);
+
     await cart.save();
 
-    const populated = await cart.populate("items.product", "name price image slug");
+    // populate only if items exist
+    const populated = cart.items.length
+      ? await cart.populate("items.product", "name price image slug")
+      : cart;
+
     res.json(populated);
   } catch (err) {
     console.error("Remove cart item error:", err);
@@ -129,19 +149,23 @@ export const removeCartItem = async (req, res) => {
 // ================= CLEAR CART =================
 export const clearCart = async (req, res) => {
   try {
-    const { guestId } = req.body;
+   const { guestId } = req.body;
 
-    let cart;
-    if (req.user && req.user._id) cart = await Cart.findOne({ user: req.user._id });
-    else if (guestId) cart = await Cart.findOne({ guestId });
-    else return res.status(400).json({ error: "No user or guestId provided" });
+let cart;
+if (req.user && req.user._id) 
+    cart = await Cart.findOne({ user: req.user._id });
+else if (guestId) 
+    cart = await Cart.findOne({ guestId });
+else 
+    return res.status(400).json({ error: "No user or guestId provided" });
 
-    if (!cart) return res.status(404).json({ error: "Cart not found" });
+if (!cart) 
+    return res.status(404).json({ error: "Cart not found" });
 
-    cart.items = [];
-    await cart.save();
+cart.items = [];
+await cart.save();
 
-    res.json({ message: "Cart cleared" });
+res.json({ message: "Cart cleared" });
   } catch (err) {
     console.error("Clear cart error:", err);
     res.status(500).json({ error: "Server error" });

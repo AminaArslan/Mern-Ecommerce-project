@@ -7,36 +7,59 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     orderItems: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-        name: String,
-        quantity: Number,
-        price: Number,
-        image: String,
+        name: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true },
+        image: { type: String },
       },
     ],
+
     shippingAddress: {
-      address: String,
-      city: String,
-      postalCode: String,
-      country: String,
+      firstName: { type: String },
+      lastName: { type: String },
+      email: { type: String },
+      phone: { type: String },
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true },
     },
-    paymentMethod: { type: String, default: "Stripe" },
+
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "Stripe"],
+      default: "Stripe",
+    },
+
+    // 🔹 Stripe payment details (optional)
     paymentResult: {
       id: String,
       status: String,
       email_address: String,
     },
+
     taxPrice: { type: Number, default: 0.0 },
     shippingPrice: { type: Number, default: 0.0 },
     totalPrice: { type: Number, required: true, default: 0.0 },
-    status: {
+
+    // ✅ DELIVERY STATUS
+    orderStatus: {
       type: String,
-      enum: ["pending", "paid", "shipped", "delivered", "canceled"],
+      enum: ["pending", "shipped", "delivered", "cancelled"],
       default: "pending",
     },
-    isPaid: { type: Boolean, default: false },
+
+    // ✅ PAYMENT STATUS
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
+
     paidAt: Date,
     deliveredAt: Date,
   },

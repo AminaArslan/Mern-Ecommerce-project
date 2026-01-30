@@ -17,16 +17,17 @@ export default function ProductCard({ product }) {
       {/* Product Image */}
       <Link href={`/products/${product.slug}`}>
         <div className="relative h-90 w-full overflow-hidden">
-          <Image
-            // src={hovered && product.images[1] ? product.images[1].url : product.images[0].url}
-             src={product.images[0].url}
-            alt={product.name || 'Product Image'}
-            fill
-            style={{ objectFit: 'cover' }}
-            className="transition-transform duration-500 group-hover:scale-105"
-            placeholder="blur"
-            blurDataURL="/placeholder.png"
-          />
+ <Image
+  src={hovered && product.images[1] ? product.images[1].url : product.images[0].url}
+  alt={product.name || 'Product Image'}
+  fill
+  sizes="(max-width: 768px) 100vw, 300px" // important!
+  style={{ objectFit: 'cover' }}
+  className="transition-transform duration-500 group-hover:scale-105"
+  placeholder="blur"
+  blurDataURL="/placeholder.png"
+/>
+
 
           {/* Hover White Overlay */}
           <div className={`absolute inset-0 bg-white bg-opacity-40 transition-opacity duration-300 ${hovered ? 'opacity-40' : 'opacity-0'}`}></div>
@@ -50,7 +51,7 @@ export default function ProductCard({ product }) {
       {/* Name & Price */}
       <div className="mt-2 px-2 pb-2 flex flex-col gap-1">
         <h3 className="text-dark font-semibold text-base">{product.name}</h3>
-        <p className="text-dark "><span className=''>R.s</span> {product.price}</p>
+        <p className="text-dark ">Rs. {Number(product.price).toLocaleString("en-IN")}</p>
       </div>
     </div>
   );

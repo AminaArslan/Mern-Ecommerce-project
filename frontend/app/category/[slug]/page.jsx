@@ -76,7 +76,7 @@ export default function CategoryPage() {
                 onClick={() => router.push(`/category/${sub.slug}`)}
                 className="px-4 py-2 bg-accent text-white rounded-full font-medium hover:bg-accent/90 transition cursor-pointer"
               >
-                {sub.name}
+                {sub.name}/
               </button>
             ))}
           </div>

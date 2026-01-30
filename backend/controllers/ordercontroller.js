@@ -1,51 +1,36 @@
   import Order from "../models/Order.js";
-
-  /* ========== Create New Order ========== */
-  export const createOrder = async (req, res) => {
-    try {
-      const {
-        orderItems,
-        shippingAddress,
-        paymentMethod,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
-      } = req.body;
-
-      if (!orderItems || orderItems.length === 0) {
-        return res.status(400).json({ message: "No order items" });
-      }
-
-      // Use the name directly from the cart item
-      const itemsForOrder = orderItems.map(item => ({
-        product: item.product,  // ObjectId
-        name: item.name,        // already in cart
-        quantity: item.quantity,
-        price: item.price,
-        image: item.image,
-      }));
-
-      const order = new Order({
-        user: req.user._id,
-        orderItems: itemsForOrder,
-        shippingAddress,
-        paymentMethod,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
-      });
-
-      const createdOrder = await order.save();
-      res.status(201).json(createdOrder);
-    } catch (err) {
-      console.error("Create order error:", err);
-      res.status(500).json({ message: "Server Error", error: err.message });
-    }
-  };
-
-
-  /* ========== Get Single Order (Customer / Admin) ========== */
   import mongoose from "mongoose";
+  /* ========== Create New Order ========== */
+export const createOrder = async (req, res) => {
+  try {
+    const { orderItems, shippingAddress, paymentMethod, totalPrice } = req.body;
+
+    if (!orderItems || orderItems.length === 0) {
+      return res.status(400).json({ message: "No order items" });
+    }
+
+    const order = new Order({
+      user: req.user._id,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      totalPrice,
+
+      // New system
+      orderStatus: "pending",
+      paymentStatus: "pending",
+    });
+
+    const createdOrder = await order.save();
+    res.status(201).json(createdOrder);
+
+  } catch (err) {
+    console.error("Create order error:", err);
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+};
+  /* ========== Get Single Order (Customer / Admin) ========== */
+
 
   export const getOrderById = async (req, res) => {
     const { id } = req.params;
@@ -91,27 +76,39 @@
   };
 
   /* ========== Update Order Status (Admin) ========== */
-  export const updateOrderStatus = async (req, res) => {
-    const { status } = req.body;
-
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderStatus } = req.body; // pending, shipped, delivered, canceled
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    order.status = status;
-
-    if (status === "paid") {
-      order.isPaid = true;
-      order.paidAt = Date.now();
+    // Prevent changing delivered orders back
+    if (order.orderStatus === "delivered" && orderStatus !== "delivered") {
+      return res.status(400).json({ message: "Delivered orders cannot be undone" });
     }
 
-    if (status === "delivered") {
-      order.deliveredAt = Date.now();
+    order.orderStatus = orderStatus;
+
+    // Handle COD payment on delivery
+    if (orderStatus === "delivered" && order.paymentMethod === "COD") {
+      order.paymentStatus = "paid";
+      order.paidAt = new Date();
     }
 
-    const updatedOrder = await order.save();
-    res.json(updatedOrder);
-  };
+    // Optional: handle canceled orders
+    if (orderStatus === "canceled") {
+      if (order.paymentStatus === "paid" && order.paymentMethod === "Stripe") {
+        // TODO: trigger Stripe refund here
+        order.paymentStatus = "refunded"; // frontend knows
+      }
+    }
 
+    await order.save();
+    res.json({ message: "Order updated successfully", order });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
   /* ===== Get Orders Weekly Stats (Admin) ===== */
   export const getOrdersWeeklyStats = async (req, res) => {
     try {
@@ -141,7 +138,7 @@
   /* ========== Get Pending Orders (Admin) ========== */
 export const getPendingOrdersAdmin = async (req, res) => {
   try {
-    const orders = await Order.find({ status: "pending" })
+    const orders = await Order.find({ orderStatus: "pending" })
       .populate("user", "id name email")
       .sort({ createdAt: -1 });
 
@@ -151,11 +148,10 @@ export const getPendingOrdersAdmin = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 /* ========== Get Pending Orders Count (Admin) ====== */
 export const getPendingOrdersCountAdmin = async (req, res) => {
   try {
-    const count = await Order.countDocuments({ status: "pending" });
+    const count = await Order.countDocuments({ orderStatus: "pending" });
     res.json({ count });
   } catch (err) {
     console.error("Error fetching pending orders count:", err);

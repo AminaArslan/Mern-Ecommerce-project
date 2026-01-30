@@ -93,10 +93,12 @@ export default function MegaMenu() {
       </button>
 
       {/* Dropdown */}
-      <div
-        className={`border-dark border-2 absolute top-full mt-7  xl:-translate-x-[47%]   -translate-x-[46.5%] w-[90vw] max-w-7xl h-[60vh] md:h-[55vh] 
-        bg-primary/95 backdrop-blur-md border-t border-deep shadow-2xl rounded-b-xl z-50 transition-all duration-300 ${open ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-      >
+     <div
+  className={`border-2 border-[var(--color-deep)] absolute top-full mt-7 xl:-translate-x-[47%] -translate-x-[46.5%] w-[90vw] max-w-7xl h-[60vh] md:h-[55vh] 
+  bg-[var(--color-primary)] border-t border-[var(--color-deep)] shadow-2xl rounded-b-xl z-50 transition-all duration-300 
+  ${open ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+>
+
         <div className="h-full grid grid-cols-12 gap-8 px-6 py-8">
           {/* LEFT: Parent Categories */}
           <div className="col-span-4">

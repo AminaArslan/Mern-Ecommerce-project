@@ -103,6 +103,23 @@ export const registerUser = async ({ name, email, password }) => {
       throw err.response?.data || { message: "Failed to fetch all categories" };
     }
   };
+// -------------- \\
+  export const getNewSubcategoriesByParent = async () => {
+try {
+const { data } = await API.get("/categories/new-grouped"); // public endpoint
+
+
+// Format is already grouped by parent in backend
+// { parentName, parentSlug, subcategories: [...] }
+return data;
+} catch (err) {
+console.error(
+"Error fetching new subcategories:",
+err.response?.data || err.message
+);
+throw err.response?.data || { message: "Failed to fetch new subcategories" };
+}
+};
 
   // ---------------- Admin: Create Subcategory ----------------
   export const createCategory = async ({ name, parentId, isActive = true }) => {
@@ -293,15 +310,16 @@ export const getProductsByParentCategoryFrontend = async (slug) => {
     };
 
     // Get orders for logged-in customer
-    export const getMyOrders = async () => {
-      try {
-        const { data } = await API.get("/orders/my");
-        return data;
-      } catch (err) {
-        console.error("Error fetching user orders:", err.response?.data || err.message);
-        throw err.response?.data || { message: "Failed to fetch user orders" };
-      }
-    };
+export const getMyOrders = async () => {
+  try {
+    const { data } = await API.get('/orders/myorders'); // API has baseURL '/api'
+    return data;
+  } catch (err) {
+    console.error('Error fetching user orders:', err.response?.data || err.message);
+    throw err.response?.data || { message: 'Failed to fetch orders' };
+  }
+};
+
 
     // Get all orders (Admin)
     export const getAllOrdersAdmin = async () => {
@@ -315,15 +333,15 @@ export const getProductsByParentCategoryFrontend = async (slug) => {
     };
 
     // Update order status (Admin)
-    export const updateOrderStatus = async (orderId, status) => {
-      try {
-        const { data } = await API.put(`/orders/${orderId}/status`, { status });
-        return data;
-      } catch (err) {
-        console.error("Error updating order status:", err.response?.data || err.message);
-        throw err.response?.data || { message: "Failed to update order status" };
-      }
-    };
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const { data } = await API.put(`/orders/${orderId}/status`, { orderStatus: status });
+    return data;
+  } catch (err) {
+    console.error("Error updating order status:", err.response?.data || err.message);
+    throw err.response?.data || { message: "Failed to update order status" };
+  }
+};
 
     // Get weekly orders stats (Admin) 🔥
   export const getOrdersWeeklyStats = async () => {
@@ -362,22 +380,19 @@ export const getProductsByParentCategoryFrontend = async (slug) => {
     // =================== STRIPE ===================
 
     // Create Stripe Checkout Session
-  export const createCheckoutSession = async (orderId) => {
-    try {
-      // ✅ Use the correct backend route
-      const { data } = await API.post("/payments/create-session", { orderId });
-      return data.url; // Stripe Checkout URL
-    } catch (err) {
-      console.error(
-        "Error creating Stripe checkout session:",
-        err.response?.data || err.message
-      );
-      throw err.response?.data || { message: "Failed to create Stripe session" };
-    }
-  };
+export const createCheckoutSession = async (orderId) => {
+  try {
+    const { data } = await API.post("/payments/create-session", { orderId });
+    return data.url;  
+  } catch (err) {
+    console.error("Error creating Stripe checkout session:", err.response?.data || err.message);
+    throw err.response?.data || { message: "Failed to create Stripe session" };
+  }
+};
 
     // =================== CART ===================
-const getGuestId = () => {
+// Generate or retrieve guestId
+export const getGuestId = () => {
   if (typeof window === "undefined") return null;
   let guestId = localStorage.getItem("guestId");
   if (!guestId) {
@@ -391,10 +406,8 @@ const getGuestId = () => {
 export const fetchCart = async () => {
   try {
     const guestId = getGuestId();
-    const res = await API.get("/cart", {
-      params: { guestId },
-    });
-    return res.data;
+    const res = await API.get("/cart", { params: { guestId } });
+    return res.data || { items: [] };
   } catch (err) {
     console.error("Error fetching cart:", err.response?.data || err.message);
     return { items: [] };
@@ -406,7 +419,6 @@ export const syncCart = async (cart) => {
   try {
     if (!Array.isArray(cart)) cart = [];
     const guestId = getGuestId();
-
     const res = await API.post("/cart/sync", { cart, guestId });
     return res.data;
   } catch (err) {
@@ -450,4 +462,5 @@ export const clearCartApi = async () => {
     return null;
   }
 };
+
     export default API;

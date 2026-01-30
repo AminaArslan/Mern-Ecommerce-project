@@ -26,11 +26,11 @@ cartSchema.index(
 );
 
 // Pre-save hook to auto-set expiresAt for guest carts
-cartSchema.pre("save", function (next) {
+cartSchema.pre("save", function () {
   if (this.guestId) {
     this.expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000); // 3 days from now
   }
-  next();
+  
 });
 
 export default mongoose.models.Cart || mongoose.model("Cart", cartSchema);

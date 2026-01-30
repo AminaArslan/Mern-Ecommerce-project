@@ -7,11 +7,13 @@ import {
   updateCategory,
   deleteCategory,
   getCategoriesForUsers,
+  getNewSubcategoriesByParent,
 } from "../controllers/categorycontroller.js";
 
 const router = express.Router();
 
 router.get("/", getCategoriesForUsers);
+router.get("/new-grouped", getNewSubcategoriesByParent);
 // ---------------- Admin Routes ----------------
 router.use(protect);
 router.use(isAdmin);

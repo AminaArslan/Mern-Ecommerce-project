@@ -1,103 +1,122 @@
-@import "tailwindcss";
+  @import "tailwindcss";
 
-/* 🎨 Custom Theme Colors */
-:root {
-  /* 🌞 Light Mode */
-  --color-primary: #EDEDCE;   /* Page background */
-  --color-secondary: #629FAD; /* Cards / dropdown */
-  --color-accent: #296374;   /* Buttons / highlights */
-  --color-dark: #0C2C55;     /* Navbar / footer */
-  --color-deep: #083059;     /* Borders / hover */
+  /* 🎨 Custom Theme Colors */
+  :root {
+    /* 🌞 Light Mode */
+    --color-primary: #EDEDCE;   /* Page background */
+    --color-secondary: #629FAD; /* Cards / dropdown */
+    --color-accent: #296374;   /* Buttons / highlights */
+    --color-dark: #0C2C55;     /* Navbar / footer */
+    --color-deep: #083059;     /* Borders / hover */
 
-  --text-light: #ffffff;
-  --text-dark: #0C2C55;
+    --text-light: #ffffff;
+    --text-dark: #0C2C55;
+  }
+
+  .dark {
+    /* 🌙 Dark Mode */
+    --color-primary: #081e38;
+    --color-secondary: #0f2a4d;
+    --color-accent: #629FAD;
+    --color-dark: #0C2C55;
+    --color-deep: #296374;
+
+    --text-light: #EDEDCE;
+    --text-dark: #EDEDCE;
+  }
+
+  body {
+    background-color: var(--color-primary);
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-dark);
+    margin: 0;
+  }
+ 
+  /* Elegant headings */
+h1, h2, h3, .section-title {
+font-family: 'Libre Caslon Text', serif;
+/* letter-spacing: 1px; */
 }
 
-.dark {
-  /* 🌙 Dark Mode */
-  --color-primary: #081e38;
-  --color-secondary: #0f2a4d;
-  --color-accent: #629FAD;
-  --color-dark: #0C2C55;
-  --color-deep: #296374;
 
-  --text-light: #EDEDCE;
-  --text-dark: #EDEDCE;
+/* Tagline / fashion quotes */
+.tagline {
+font-family: 'Libre Caslon Text', serif;
+font-style: italic;
 }
 
-body {
-  background-color: var(--color-primary);
-   font-family: 'Roboto', sans-serif;
-  color: var(--text-dark);
-  margin: 0;
-}
 
-/* =========================
-   🔹 Utility Classes
-   ========================= */
-.bg-primary   { background-color: var(--color-primary); }
-.bg-secondary { background-color: var(--color-secondary); }
-.bg-accent    { background-color: var(--color-accent); }
-.bg-dark      { background-color: var(--color-dark); }
-.bg-deep      { background-color: var(--color-deep); }
+/* Buttons stay modern */
+button, .btn {
+font-family: 'Roboto', sans-serif;
+font-weight: 500;
+}
+  /* =========================
+    🔹 Utility Classes
+    ========================= */
+  .bg-primary   { background-color: var(--color-primary); }
+  .bg-secondary { background-color: var(--color-secondary); }
+  .bg-accent    { background-color: var(--color-accent); }
+  .bg-dark      { background-color: var(--color-dark); }
+  .bg-deep      { background-color: var(--color-deep); }
 
-.text-accent  { color: var(--color-accent); }
-.text-light   { color: var(--text-light); }
-.text-dark    { color: var(--text-dark); }
+  .text-accent  { color: var(--color-accent); }
+  .text-light   { color: var(--text-light); }
+  .text-dark    { color: var(--text-dark); }
 
-/* =========================
-   🔘 Buttons
-   ========================= */
-.btn-primary {
-  background: var(--color-accent);
-  color: var(--text-light);
-  border-radius: 6px;
-  padding: .6rem 1rem;
-  border: none;
-  cursor: pointer;
-  transition: 0.2s ease-in;
-}
-.btn-primary:hover {
-  background: var(--color-dark);
-}
+  /* =========================
+    🔘 Buttons
+    ========================= */
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--text-light);
+    border-radius: 6px;
+    padding: .6rem 1rem;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease-in;
+  }
+  .btn-primary:hover {
+    background: var(--color-dark);
+  }
 
-/* =========================
-   📂 Dropdown
-   ========================= */
-.dropdown {
-  background-color: var(--color-secondary);
-  color: var(--text-dark);
-  border-radius: 8px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-  overflow: hidden;
-}
-.dropdown .header {
-  font-weight: bold;
-  padding: 0.6rem 1rem;
-  background: var(--color-dark);
-  color: var(--text-light);
-}
-.dropdown .body {
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-}
+  /* =========================
+    📂 Dropdown
+    ========================= */
+  .dropdown {
+    background-color: var(--color-secondary);
+    color: var(--text-dark);
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+  .dropdown .header {
+    font-weight: bold;
+    padding: 0.6rem 1rem;
+    background: var(--color-dark);
+    color: var(--text-light);
+  }
+  .dropdown .body {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
 
-/* =========================
-   🔔 Badge
-   ========================= */
-.badge {
-  background-color: var(--color-accent);
-  color: var(--text-light);
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-}
+  /* =========================
+    🔔 Badge
+    ========================= */
+  .badge {
+    background-color: var(--color-accent);
+    color: var(--text-light);
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+  }
 
 /* =========================
    👤 Avatar

@@ -9,27 +9,40 @@ export const createCheckoutSession = async (req, res) => {
 
   if (!order) return res.status(404).json({ message: "Order not found" });
 
+  // Stop duplicate payments
+  if (order.paymentStatus === "paid") {
+    return res.status(400).json({ message: "Order already paid" });
+  }
+
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: order.orderItems.map(item => ({
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: item.name,
+      line_items: order.orderItems.map(item => {
+        const imageUrl = item.product?.image || item.image || "";
+
+        return {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: item.name,
+              images: imageUrl ? [imageUrl] : [],
+            },
+            unit_amount: Math.round(item.price * 100), // Stripe needs cents
           },
-          unit_amount: item.price * 100, // cents
-        },
-        quantity: item.quantity,
-      })),
+          quantity: item.quantity,
+        };
+      }),
       mode: "payment",
+      metadata: {
+        orderId: order._id.toString(), // ✅ Keep orderId in metadata
+      },
       success_url: `${process.env.CLIENT_URL}/payment-success?orderId=${order._id}`,
       cancel_url: `${process.env.CLIENT_URL}/payment-fail?orderId=${order._id}`,
     });
 
     res.json({ url: session.url });
   } catch (error) {
-    console.error(error);
+    console.error("Stripe session creation error:", error);
     res.status(500).json({ message: "Stripe session creation failed" });
   }
 };
@@ -41,28 +54,33 @@ export const stripeWebhook = async (req, res) => {
 
   try {
     event = stripe.webhooks.constructEvent(
-      req.rawBody,
+      req.body, // Make sure you are using express.raw() in your route
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
 
+    console.log("Webhook event received:", event.type);
+    console.log("Event data:", event.data.object);
+
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
-
-      // Find order by ID from success_url query
-      const orderId = new URL(session.success_url).searchParams.get("orderId");
+      const orderId = session.metadata.orderId;
       const order = await Order.findById(orderId);
-      if (order) {
-        order.status = "paid";
+
+      if (order && order.paymentStatus !== "paid") {
+        order.paymentStatus = "paid";
         order.isPaid = true;
-        order.paidAt = Date.now();
+        order.paidAt = new Date();
+        order.status = "paid";
+
         await order.save();
+        console.log(`Order ${orderId} marked as paid via Stripe.`);
       }
     }
 
-    res.json({ received: true });
+    res.status(200).json({ received: true });
   } catch (err) {
-    console.log(err);
+    console.error("Stripe webhook error:", err);
     res.status(400).send(`Webhook error: ${err.message}`);
   }
 };

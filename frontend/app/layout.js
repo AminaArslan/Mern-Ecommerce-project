@@ -7,12 +7,19 @@ import { AuthProvider } from "@/context/authContext";
 import { CartProvider } from "@/context/cartContext";
 import { Toaster } from "react-hot-toast";
 import { usePathname } from "next/navigation";
-import { Roboto } from "next/font/google";
+import { Libre_Caslon_Text, Roboto } from "next/font/google";
 
 /* 🔤 Roboto Font */
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
+});
+
+
+const caslon = Libre_Caslon_Text({
+subsets: ["latin"],
+weight: ["400", "700"],
+variable: "--font-caslon",
 });
 
 export default function RootLayout({ children }) {

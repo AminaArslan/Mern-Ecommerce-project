@@ -9,14 +9,16 @@ export default function CategoryBoxes() {
   ];
 
   return (
-    <section className="w-full py-16 md:py-24 bg-gray-50">
+    <section className="w-full py-12 lg:py-26">
       <div className="container mx-auto px-4">
-        <div className='text-center md:text-left'>
-          <h2 className="text-3xl md:text-4xl font-bold mb-16 text-gray-900 relative group inline-block cursor-pointer">
-            Shop by Category
-            <span className="absolute left-0 -bottom-2 h-1 w-0 bg-gray-900 transition-all duration-500 group-hover:w-full"></span>
-          </h2>
-        </div>
+        <div className='mb-14 flex flex-col justify-center items-center'> 
+        <span className=" font-medium text-base mb-6 text-gray-600 relative group inline-block cursor-pointer uppercase underline underline-offset-4">
+          Shop by categories
+        </span>
+        <h1 className=' font-normal text-center lg:text-4xl md:text-3xl sm:text-2xl text-xl'>
+   Elevated essentials and statement<br className='hidden sm:flex'/> styles for modern living.
+        </h1>
+         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {categories.map((cat) => (

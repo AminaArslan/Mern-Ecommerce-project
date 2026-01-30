@@ -40,8 +40,8 @@ useEffect(() => {
 // ✅ Now handleStatusChange can also call it
 const handleStatusChange = async (orderId, status) => {
   try {
-    await axios.patch(`/orders/admin/status/${orderId}`, { status });
-    fetchOrders(); // ✅ works fine now
+    await axios.put(`/orders/${orderId}/status`, { orderStatus: status });
+    fetchOrders(); // refresh after update
   } catch (err) {
     console.error('Error updating status:', err);
   }
@@ -120,7 +120,8 @@ const handleStatusChange = async (orderId, status) => {
 
                 {/* Amount */}
                 <td className="py-3 px-4 border-b border-dark text-dark font-medium">
-                  ${order.totalPrice.toFixed(2)}
+                                   Rs.{Number(order.totalPrice).toLocaleString('en-IN')}
+
                 </td>
 
                 {/* Payment Method */}
@@ -136,20 +137,30 @@ const handleStatusChange = async (orderId, status) => {
                   </span>
                 </td>
 
-                {/* Status Dropdown */}
-                <td className="py-3 px-4 border-b border-dark ">
-                  <select
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                    className={`border px-2 py-1 rounded ${statusColor[order.status]} text-sm cursor-pointer`}
-                  >
-                    {statusOptions.map((status) => (
-                      <option key={status} value={status}>
-                        {status.toUpperCase()}
-                      </option>
-                    ))}
-                  </select>
-                </td>
+{/* Status Dropdown */}
+<td className="py-3 px-4 border-b border-dark ">
+  <select
+    value={
+      order.paymentMethod === 'Stripe' && order.paymentStatus === 'paid'
+        ? 'paid'
+        : order.orderStatus  
+    }
+    onChange={(e) => handleStatusChange(order._id, e.target.value)}
+    className={`border px-2 py-1 rounded ${
+      statusColor[
+        order.paymentMethod === 'Stripe' && order.paymentStatus === 'paid'
+          ? 'paid'
+          : order.status
+      ]
+    } text-sm cursor-pointer`}
+  >
+    {statusOptions.map((status) => (
+      <option key={status} value={status}>
+        {status.toUpperCase()}
+      </option>
+    ))}
+  </select>
+</td>
 
                 {/* Actions */}
                 <td className="py-3 px-4 border-b border-dark">

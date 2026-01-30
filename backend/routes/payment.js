@@ -4,14 +4,14 @@ import { createCheckoutSession, stripeWebhook } from "../controllers/paymentCont
 
 const router = express.Router();
 
-/* Checkout Session */
-router.post("/create-session", protect, createCheckoutSession);
-
 /* Stripe Webhook */
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
+
+/* Checkout Session */  
+router.post("/create-session", protect, createCheckoutSession);
 
 export default router;

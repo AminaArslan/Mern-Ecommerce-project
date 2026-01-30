@@ -134,7 +134,9 @@ export default function AdminProductsPage() {
                 </td>
 
                 {/* Price */}
-                <td className="px-4 py-2">${p.price}</td>
+                <td className="px-4 py-2">
+  Rs. {Number(p.price).toLocaleString("en-IN")}
+</td>
 
                 {/* Parent Category */}
                 <td className="px-4 py-2 max-w-30 truncate" title={p.parentName}>{p.parentName}</td>

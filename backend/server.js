@@ -25,7 +25,7 @@ const app = express();
 
 // Allow requests from both localhost and deployed frontend
 const allowedOrigins = [
-  "http://localhost:3000", // Local development
+  // "http://localhost:3000", // Local development
   "https://mern-ecommerce-project-bqcr.vercel.app" // Deployed frontend
 ];
 

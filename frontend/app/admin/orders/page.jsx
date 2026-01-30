@@ -131,14 +131,21 @@ const handleStatusChange = async (orderId, status) => {
                       </div>
                     )}
                   </td>
-  {/* Payment Status */}
-  <td className="py-3 px-4 border-b border-dark text-dark font-medium">
-    {order.paymentMethod === 'Stripe' ? (
-      <span className="text-green-600 font-semibold">Paid</span>
-    ) : (
-      <span className="text-yellow-600 font-semibold">Unpaid</span>
-    )}
-  </td>
+ {/* Payment Status */}
+<td className="py-3 px-4 border-b border-dark text-dark font-medium">
+  {order.paymentStatus === 'paid' ? (
+    <span className="text-green-600 font-semibold">
+      {order.paymentMethod === 'COD' ? 'Paid (COD)' : 'Paid'}
+    </span>
+  ) : order.paymentStatus === 'refunded' ? (
+    <span className="text-red-600 font-semibold">Refunded</span>
+  ) : (
+    <span className="text-yellow-600 font-semibold">
+      {order.paymentMethod === 'COD' ? 'Payment pending (COD)' : 'Unpaid'}
+    </span>
+  )}
+</td>
+
 
                   {/* Amount */}
                   <td className="py-3 px-4 border-b border-dark text-dark font-medium">

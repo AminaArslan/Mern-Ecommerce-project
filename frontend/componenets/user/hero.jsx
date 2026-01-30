@@ -128,13 +128,15 @@ export default function HeroPage() {
                 {slides.map((slide, i) => (
                   <SwiperSlide key={i}>
                     <div className="relative w-full h-full ">
-                      <Image
-                        src={slide.src}
-                        alt={slide.title}
-                        fill
-                        priority={i === 0}
-                        className="object-cover"
-                      />
+                    <Image
+  src={slide.src}
+  alt={slide.title}
+  fill
+  priority={i === 0}
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+  className="object-cover"
+/>
+
                       <div className="absolute inset-0 bg-black/2 0" />
                     </div>
                   </SwiperSlide>

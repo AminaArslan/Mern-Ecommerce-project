@@ -128,10 +128,18 @@ useEffect(() => {
     if (user) await updateCartItem(id, quantity);
   };
 
-  const clearCart = async () => {
-    setCart([]);
-    if (user) await clearCartApi();
-  };
+const clearCart = async () => {
+  setCart([]);
+  if (user) {
+    try {
+      await clearCartApi();
+    } catch (err) {
+      console.error('Failed to clear cart on backend:', err);
+    }
+  }
+  return [];
+};
+
 
   // ---------------- Cart Totals ----------------
   const { totalItems, totalPrice } = useMemo(() => {

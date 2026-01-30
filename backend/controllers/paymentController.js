@@ -18,14 +18,14 @@ export const createCheckoutSession = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: order.orderItems.map(item => {
-        const imageUrl = item.product?.image || item.image || "";
+        // const imageUrl = item.product?.image || item.image || "";
 
         return {
           price_data: {
             currency: "usd",
             product_data: {
               name: item.name,
-              images: imageUrl ? [imageUrl] : [],
+              // images: imageUrl ? [imageUrl] : [],
             },
             unit_amount: Math.round(item.price * 100), // Stripe needs cents
           },
@@ -42,9 +42,13 @@ export const createCheckoutSession = async (req, res) => {
 
     res.json({ url: session.url });
   } catch (error) {
-    console.error("Stripe session creation error:", error);
-    res.status(500).json({ message: "Stripe session creation failed" });
-  }
+  console.error("❌ FULL STRIPE ERROR:", error);
+  res.status(500).json({ 
+    message: "Stripe session creation failed",
+    error: error.message 
+  });
+}
+
 };
 
 // ---------------- Webhook to mark order as paid ----------------

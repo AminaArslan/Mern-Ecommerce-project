@@ -15,17 +15,26 @@ export const createCheckoutSession = async (req, res) => {
   }
 
   try {
+     const baseServerUrl = process.env.SERVER_URL;
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: order.orderItems.map(item => {
-        // const imageUrl = item.product?.image || item.image || "";
+         let imageUrl = item.product?.image || item.image || "";
+
+        // 👉 If image is stored like "/uploads/abc.jpg", make it full URL
+        if (imageUrl && !imageUrl.startsWith("http")) {
+          imageUrl = `${baseServerUrl}${imageUrl}`;
+        }
+
+        // 👉 Stripe only accepts valid https URLs
+        const imagesArray = imageUrl.startsWith("http") ? [imageUrl] : [];
 
         return {
           price_data: {
             currency: "usd",
             product_data: {
               name: item.name,
-              // images: imageUrl ? [imageUrl] : [],
+                 images: imagesArray, // ✅ Safe images
             },
             unit_amount: Math.round(item.price * 100), // Stripe needs cents
           },

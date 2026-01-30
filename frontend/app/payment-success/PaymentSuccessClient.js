@@ -46,7 +46,7 @@ export default function PaymentSuccessClient() {
   if (!order) return <p className="text-center mt-12">Order not found!</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-xl mx-auto p-6">
       <h1 className="text-3xl font-bold text-green-600 mb-4">Payment Successful!</h1>
       <p className="mb-2">
         Thank you, <span className="font-medium">{order.shippingAddress.firstName}</span>.
@@ -66,11 +66,11 @@ export default function PaymentSuccessClient() {
         <ul className="space-y-3">
           {order.orderItems.map((item) => (
             <li key={item.product} className="flex items-center gap-4 border p-3 rounded">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-20 h-20 object-cover rounded"
-              />
+                {/* <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-20 h-20 object-cover rounded"
+                /> */}
               <div>
                 <p className="font-medium">{item.name}</p>
                 <p>Quantity: {item.quantity}</p>
@@ -83,7 +83,7 @@ export default function PaymentSuccessClient() {
 
       <button
         onClick={() => router.push('/orders')}
-        className="bg-accent text-light py-2 px-4 rounded hover:bg-dark"
+        className="bg-accent text-light py-2 px-4 rounded hover:bg-dark cursor-pointer"
       >
         View My Orders
       </button>

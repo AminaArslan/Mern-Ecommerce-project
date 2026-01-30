@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
-import { getMyOrders } from '@/lib/axios';
+import { getMyOrders, updateOrderStatus } from '@/lib/axios'; // add updateOrderStatus for PATCH
+import { toast } from 'react-hot-toast';
 
 export default function OrdersPage() {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ export default function OrdersPage() {
         setOrders(data);
       } catch (err) {
         console.error('Error fetching orders:', err);
+        toast.error('Failed to load orders');
       } finally {
         setLoading(false);
       }
@@ -38,6 +40,25 @@ export default function OrdersPage() {
 
     fetchOrders();
   }, [user, router]);
+
+ const handleStatusChange = async (orderId, status) => {
+  try {
+    const updatedOrder = await updateOrderStatus(orderId, status);
+
+    // Update local state
+    setOrders(prevOrders =>
+      prevOrders.map(order =>
+        order._id === orderId ? { ...order, orderStatus: updatedOrder.orderStatus, paymentStatus: updatedOrder.paymentStatus } : order
+      )
+    );
+
+    toast.success('Order status updated');
+  } catch (err) {
+    console.error('Error updating order status:', err.message || err);
+    toast.error('Failed to update order status');
+  }
+};
+
 
   if (loading)
     return (
@@ -67,14 +88,32 @@ export default function OrdersPage() {
             <span className="font-semibold text-gray-800 dark:text-gray-200">
               Order ID: {order._id}
             </span>
-            <span
-              className={`px-3 py-1 rounded-full text-white text-sm font-medium ${
-                statusColor[order.status || 'pending']
-              }`}
-            >
-              {(order.status || 'pending').toUpperCase()}
-            </span>
+
+            {/* Status badge */}
+           <span
+  className={`px-3 py-1 rounded-full text-white text-sm font-medium ${
+    statusColor[order.orderStatus || 'pending']
+  }`}
+>
+  {(order.orderStatus || 'pending').toUpperCase()}
+</span>
+
           </div>
+
+          {/* Optional: Status dropdown (only for specific actions like Cancel) */}
+          {order.status === 'pending' && order.paymentMethod === 'Cash on Delivery' && (
+            <div className="mt-2">
+             <select
+  value={order.orderStatus} 
+  onChange={(e) => handleStatusChange(order._id, e.target.value)}
+  className="border px-2 py-1 rounded text-sm"
+>
+  <option value="pending">PENDING</option>
+  <option value="canceled">CANCEL</option>
+</select>
+
+            </div>
+          )}
 
           {/* Payment Method */}
           <p className="mt-1 text-gray-700 dark:text-gray-300">
@@ -84,7 +123,7 @@ export default function OrdersPage() {
           {/* Order Items */}
           <div className="space-y-2 mt-2 border-t border-gray-200 dark:border-gray-700 pt-2">
             {order.orderItems?.length ? (
-              order.orderItems.map((item) => (
+              order.orderItems.map((item, index) => (
                 <div key={item._id} className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     {item.image && (
@@ -95,6 +134,7 @@ export default function OrdersPage() {
                       />
                     )}
                     <span className="text-gray-800 dark:text-gray-200">
+                      <span className="font-bold mr-1">{index + 1}.</span>
                       {item.name} x {item.quantity}
                     </span>
                   </div>
@@ -115,21 +155,22 @@ export default function OrdersPage() {
           </div>
 
           {/* Payment Status */}
-          <p
-            className={`font-medium mt-1 ${
-              order.paymentMethod === 'Cash on Delivery' && !order.isPaid
-                ? 'text-yellow-600'
-                : order.paymentMethod === 'Stripe' && order.isPaid
-                ? 'text-blue-600'
-                : 'text-gray-500'
-            }`}
-          >
-            {order.paymentMethod === 'Cash on Delivery' && !order.isPaid
-              ? 'Payment pending (COD)'
-              : order.paymentMethod === 'Stripe' && order.isPaid
-              ? 'Paid via Stripe'
-              : 'Payment status unknown'}
-          </p>
+<p
+  className={`font-medium mt-1 ${
+    order.paymentMethod === 'Cash on Delivery' && order.paymentStatus !== 'paid'
+      ? 'text-yellow-600'
+      : order.paymentMethod === 'Stripe' && order.paymentStatus === 'paid'
+      ? 'text-blue-600'
+      : 'text-gray-500'
+  }`}
+>
+  {order.paymentMethod === 'Cash on Delivery' && order.paymentStatus !== 'paid'
+    ? 'Payment pending (COD)'
+    : order.paymentMethod === 'Stripe' && order.paymentStatus === 'paid'
+    ? 'Paid via Stripe'
+    : 'Payment pending via Stripe'}
+</p>
+
         </div>
       ))}
     </div>

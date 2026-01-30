@@ -14,6 +14,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [notification, setNotification] = useState({ message: '', type: '' }); // ✅ notification state
   const [shipping, setShipping] = useState({
     firstName: '',
     lastName: '',
@@ -145,11 +146,11 @@ const handleCheckout = async () => {
         <div className="mt-4">
           <h2 className="text-xl font-semibold text-dark dark:text-light">Payment Method</h2>
           <div className="flex gap-4 mt-2">
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input type="radio" value="Stripe" checked={paymentMethod==='Stripe'} onChange={(e)=>setPaymentMethod(e.target.value)} />
               Stripe
             </label>
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input type="radio" value="COD" checked={paymentMethod==='COD'} onChange={(e)=>setPaymentMethod(e.target.value)} />
               Cash on Delivery
             </label>
@@ -161,7 +162,7 @@ const handleCheckout = async () => {
         <button
           onClick={handleCheckout}
           disabled={loading}
-          className="w-full bg-accent text-light py-3 px-4 rounded hover:bg-dark disabled:opacity-50"
+          className="w-full bg-accent text-light py-3 px-4 rounded hover:bg-dark disabled:opacity-50 cursor-pointer"
         >
           {loading ? 'Processing...' : paymentMethod === 'Stripe' ? 'Pay with Stripe' : 'Place Order (COD)'}
         </button>

@@ -335,13 +335,16 @@ export const getMyOrders = async () => {
     // Update order status (Admin)
 export const updateOrderStatus = async (orderId, status) => {
   try {
-    const { data } = await API.put(`/orders/${orderId}/status`, { orderStatus: status });
-    return data;
+    console.log("Updating order:", orderId, "to status:", status);
+    const { data } = await API.patch(`/orders/admin/status/${orderId}`, { orderStatus: status });
+    console.log("Patch response:", data);
+    return data.order; // updated order
   } catch (err) {
     console.error("Error updating order status:", err.response?.data || err.message);
     throw err.response?.data || { message: "Failed to update order status" };
   }
 };
+
 
     // Get weekly orders stats (Admin) 🔥
   export const getOrdersWeeklyStats = async () => {

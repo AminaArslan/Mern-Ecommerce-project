@@ -9,7 +9,7 @@
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const statusOptions = ['pending', 'paid', 'shipped', 'delivered', 'canceled'];
+    const statusOptions = ['pending', 'shipped', 'delivered', 'canceled'];
 
     const statusColor = {
       pending: 'bg-accent/20 text-accent',

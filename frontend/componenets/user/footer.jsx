@@ -142,13 +142,7 @@ export default function Footer() {
       </div>
 
       {/* Back To Top */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="absolute bottom-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg"
-        style={{ backgroundColor: "var(--color-accent)" }}
-      >
-        ↑
-      </button>
+
     </footer>
     </section>
   );

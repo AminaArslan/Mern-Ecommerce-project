@@ -117,7 +117,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-3 rounded-lg font-semibold text-light ${
+          className={`w-full p-3 rounded-lg font-semibold text-light cursor-pointer ${
             loading
               ? 'bg-dark/50 cursor-not-allowed'
               : 'bg-accent hover:bg-dark transition hover:scale-105'

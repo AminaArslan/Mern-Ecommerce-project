@@ -166,7 +166,9 @@ font-weight: 500;
   scrollbar-color: #296374 #f0f0f0; /* thumb and track */
 }
 
-
+html {
+  scroll-behavior: smooth;
+}
 /* =========================
    🎯 Hero Content Pagination
    ========================= */
@@ -213,3 +215,72 @@ font-weight: 500;
 }
 
 
+
+/* animition........................................................... */
+
+/* Ringing Animation Effect */
+.ring-btn::before,
+.ring-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 8px solid var(--color-accent); /* theme color */
+  animation: ring-wave 2s infinite;
+  transform: scale(1);
+  opacity: 0;
+}
+
+.ring-btn::after {
+  animation-delay: 1s;
+}
+
+@keyframes ring-wave {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+
+@keyframes border-dash {
+  0% {
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+  }
+  100% {
+    background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
+  }
+}
+
+.dashed-animate {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
+              linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
+              linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y,
+              linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y;
+  background-size: 6px 2px, 6px 2px, 2px 6px, 2px 6px;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  animation: border-dash 2s linear infinite;
+  transition: background 0.3s ease;
+  color: var(--color-dark); /* button text */
+  font-weight: 600;
+  /* border-radius: 9999px; pill shape */
+  padding: 0.75rem 1.5rem;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Hover effect — pause animation + theme hover background */
+.dashed-animate:hover {
+  animation-play-state: paused;
+  
+}

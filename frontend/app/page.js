@@ -45,7 +45,7 @@ export default function HomePage() {
       {showButton && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg ring-btn"
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg ring-btn cursor-pointer"
           style={{ backgroundColor: "var(--color-accent)" }}
         >
           ↑

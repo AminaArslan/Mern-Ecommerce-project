@@ -166,9 +166,8 @@ font-weight: 500;
   scrollbar-color: #296374 #f0f0f0; /* thumb and track */
 }
 
-html {
-  scroll-behavior: smooth;
-}
+
+
 /* =========================
    🎯 Hero Content Pagination
    ========================= */

@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
-import { getMyOrders, cancelOrder } from '@/lib/axios'; // <- use cancelOrder for customer
+import { getMyOrders, cancelOrder } from '@/lib/axios';
 import { toast } from 'react-hot-toast';
+import { FaCircle } from 'react-icons/fa';
 
 export default function OrdersPage() {
   const { user } = useAuth();
@@ -12,13 +13,13 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const statusColor = {
-    pending: 'bg-yellow-500',
-    paid: 'bg-blue-500',
-    shipped: 'bg-indigo-900',
-    delivered: 'bg-green-800',
-    canceled: 'bg-rose-700',
-    cancelled: 'bg-red-500', // handle both spellings
+  const statusStyles = {
+    pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400',
+    paid: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
+    shipped: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400',
+    delivered: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
+    canceled: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400',
+    cancelled: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
   };
 
   useEffect(() => {
@@ -43,14 +44,13 @@ export default function OrdersPage() {
   }, [user, router]);
 
   const handleCancelOrder = async (orderId) => {
-    if (!confirm("Are you sure you want to cancel this order?")) return;
+    if (!confirm('Are you sure you want to cancel this order?')) return;
 
     try {
-      const updatedOrder = await cancelOrder(orderId); // <- call customer cancel route
+      const updatedOrder = await cancelOrder(orderId);
 
-      // Update local state
-      setOrders(prevOrders =>
-        prevOrders.map(order =>
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
           order._id === orderId
             ? { ...order, orderStatus: updatedOrder.orderStatus, paymentStatus: updatedOrder.paymentStatus }
             : order
@@ -80,35 +80,33 @@ export default function OrdersPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 p-4">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Orders</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">My Orders</h1>
 
       {orders.map((order) => (
         <div
           key={order._id}
-          className="bg-white dark:bg-dark p-4 rounded-lg shadow space-y-3 border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-dark p-5 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300"
         >
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-            <span className="font-semibold text-gray-800 dark:text-gray-200 ">
-              Order ID: {order._id}
+            <span className="font-semibold text-gray-800 dark:text-gray-200">
+              Order ID: {order._id.slice(-8)}
             </span>
 
-            {/* Status badge */}
             <span
-              className={`px-3 py-1 text-center rounded-full text-white text-sm font-medium ${
-                statusColor[order.orderStatus || 'pending']
-              }`}
+              className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold ${statusStyles[order.orderStatus || 'pending']}`}
             >
+              <FaCircle className="text-[10px]" />
               {(order.orderStatus || 'pending').toUpperCase()}
             </span>
           </div>
 
-          {/* Cancel Button (only for pending COD orders) */}
+          {/* Cancel Button */}
           {order.orderStatus === 'pending' && order.paymentMethod === 'COD' && (
-            <div className="mt-2">
+            <div className="mt-3">
               <button
                 onClick={() => handleCancelOrder(order._id)}
-                className="bg-rose-700 text-white px-3 py-1 rounded-full hover:bg-rose-900 text-sm cursor-pointer "
+                className="bg-rose-700 text-white px-4 py-1 rounded-full hover:bg-rose-900 font-medium transition-colors duration-200"
               >
                 Cancel Your Order
               </button>
@@ -116,25 +114,25 @@ export default function OrdersPage() {
           )}
 
           {/* Payment Method */}
-          <p className="mt-1 text-gray-700 dark:text-gray-300">
+          <p className="mt-2 text-gray-700 dark:text-gray-300">
             Payment Method: <span className="font-medium">{order.paymentMethod}</span>
           </p>
 
           {/* Order Items */}
-          <div className="space-y-2 mt-2 border-t border-gray-200 dark:border-gray-700 pt-2">
+          <div className="space-y-3 mt-4 border-t border-gray-200 dark:border-gray-700 pt-3">
             {order.orderItems?.length ? (
-              order.orderItems.map((item, index) => (
-                <div key={item._id} className="flex justify-between items-center">
+              order.orderItems.map((item, idx) => (
+                <div key={item._id || idx} className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     {item.image && (
                       <img
-                        src={item.image || '/placeholder.png'}
+                        src={item.image}
                         alt={item.name || 'product'}
-                        className="w-12 h-12 object-cover rounded"
+                        className="w-14 h-14 object-cover rounded-xl"
                       />
                     )}
                     <span className="text-gray-800 dark:text-gray-200">
-                      <span className="font-bold mr-1">{index + 1}.</span>
+                      <span className="font-bold mr-1">{idx + 1}.</span>
                       {item.name} x {item.quantity}
                     </span>
                   </div>
@@ -148,8 +146,8 @@ export default function OrdersPage() {
             )}
           </div>
 
-          {/* Totals */}
-          <div className="flex justify-between font-bold mt-3 text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700 pt-2">
+          {/* Total */}
+          <div className="flex justify-between font-bold mt-4 text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700 pt-2 text-lg">
             <span>Total:</span>
             <span>Rs.{Number(order.totalPrice).toLocaleString('en-IN')}</span>
           </div>

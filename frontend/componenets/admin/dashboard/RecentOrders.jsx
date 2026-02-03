@@ -1,47 +1,3 @@
-// 'use client';
-// import { useEffect, useState } from 'react';
-// import axios from '@/lib/axios';
-
-// export default function RecentOrders() {
-//   const [orders, setOrders] = useState([]);
-
-//   useEffect(() => {
-//     const fetchRecentOrders = async () => {
-//       try {
-//         const { data } = await axios.get('/orders/admin/all');
-//         setOrders(data.slice(0, 5)); // top 5 recent orders
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     };
-//     fetchRecentOrders();
-//   }, []);
-
-//   return (
-//     <div className="bg-white p-6 rounded-lg shadow-md mt-4">
-//       <h2 className="font-bold text-lg mb-3">Recent Orders</h2>
-//       <table className="w-full text-left border-collapse">
-//         <thead>
-//           <tr className="border-b">
-//             <th>Order ID</th>
-//             <th>Total</th>
-//             <th>Status</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {orders.map(order => (
-//             <tr key={order._id} className="border-b">
-//               <td>{order._id.slice(-6)}</td>
-//               <td>${order.totalPrice}</td>
-//               <td>{order.status}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// }
-
 
 
 
@@ -109,18 +65,23 @@ export default function RecentOrdersCard() {
                 ${order.totalPrice}
               </p>
 
-              <span
-                className={`mt-1 inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
-                  order.status === 'delivered'
-                    ? 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400'
-                    : order.status === 'pending'
-                    ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-400'
-                    : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-                }`}
-              >
-                <FaCircle className="text-[8px]" />
-                {order.status}
-              </span>
+            <span
+  className={`mt-1 inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
+    order.orderStatus === 'delivered'
+      ? 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400'
+      : order.orderStatus === 'pending'
+      ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-400'
+      : order.orderStatus === 'shipped'
+      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400'
+      : order.orderStatus === 'cancelled' || order.orderStatus === 'canceled'
+      ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'
+      : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+  }`}
+>
+  <FaCircle className="text-[8px]" />
+  {order.orderStatus}
+</span>
+
             </div>
           </div>
         ))}

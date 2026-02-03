@@ -76,7 +76,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 p-4">
+    <div className="max-w-6xl mx-auto space-y-6 p-2 sm:p-4 overflow-x-hidden">
       <h1 className="text-3xl font-bold text-dark">Admin Dashboard</h1>
 
       {/* Stats Cards */}

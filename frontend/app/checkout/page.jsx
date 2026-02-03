@@ -136,7 +136,7 @@ const handleCheckout = async () => {
                 placeholder={field.placeholder}
                 value={shipping[field.name]}
                 onChange={handleInputChange}
-                className={`border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent dark:bg-secondary dark:text-light ${field.full ? 'col-span-2' : ''}`}
+                className={`border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent dark:bg-secondary dark:text-light ${field.full ? 'col-span-1' : ''}`}
               />
             ))}
           </div>
@@ -144,7 +144,7 @@ const handleCheckout = async () => {
 
         {/* Payment Method */}
         <div className="mt-4">
-          <h2 className="text-xl font-semibold text-dark dark:text-light">Payment Method</h2>
+          <h2 className="sm:text-xl font-semibold text-dark dark:text-light">Payment Method</h2>
           <div className="flex gap-4 mt-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="radio" value="Stripe" checked={paymentMethod==='Stripe'} onChange={(e)=>setPaymentMethod(e.target.value)} />

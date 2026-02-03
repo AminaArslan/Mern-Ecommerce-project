@@ -2,11 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { getAllUsers, deleteUser } from '@/lib/axios';
+import toast from 'react-hot-toast';
 
 export default function CustomersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+const [selectedUserId, setSelectedUserId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -26,16 +30,27 @@ export default function CustomersPage() {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this customer?')) return;
-    try {
-      await deleteUser(id);
-      setUsers((prev) => prev.filter((u) => u._id !== id));
-    } catch (err) {
-      console.error('Error deleting user:', err);
-      alert(err.message || 'Failed to delete user');
-    }
-  };
+const handleDelete = async () => {
+  if (!selectedUserId) return;
+
+  console.log("Deleting user with ID:", selectedUserId); // 👈 ADD THIS
+
+  try {
+    setDeleting(true);
+    await deleteUser(selectedUserId);
+    toast.success('User deleted successfully');
+    setUsers((prev) => prev.filter((u) => u._id !== selectedUserId));
+    setShowModal(false);
+    setSelectedUserId(null);
+  } catch (err) {
+    console.error('Error deleting user:', err.response?.data || err.message);
+    alert(err.response?.data?.message || 'Failed to delete user');
+  } finally {
+    setDeleting(false);
+  }
+};
+
+
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
@@ -80,7 +95,10 @@ export default function CustomersPage() {
                   <td className="py-3 px-4 border-b border-dark flex space-x-2">
                     {user.role !== 'admin' ? (
                       <button
-                        onClick={() => handleDelete(user._id)}
+                        onClick={() => {
+  setSelectedUserId(user._id);
+  setShowModal(true);
+}}
                         className="px-3 py-1 rounded bg-dark text-light hover:bg-deep transition hover:scale-105 cursor-pointer"
                       >
                         Delete
@@ -97,6 +115,35 @@ export default function CustomersPage() {
           </table>
         </div>
       )}
+
+      {showModal && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+    <div className="bg-white rounded-xl shadow-2xl w-[90%] max-w-md p-6 animate-scaleIn">
+      <h2 className="text-xl font-bold text-dark mb-3">Confirm Deletion</h2>
+      <p className="text-dark/80 mb-6">
+        Are you sure you want to delete this customer? This action cannot be undone.
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setShowModal(false)}
+          className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleDelete}
+          disabled={deleting}
+          className="px-4 py-2 rounded bg-accent text-white  transition disabled:opacity-50 cursor-pointer"
+        >
+          {deleting ? 'Deleting...' : 'Yes, Delete'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

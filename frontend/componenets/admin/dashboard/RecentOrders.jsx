@@ -48,7 +48,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
-import Image from 'next/image';
+import { FiShoppingBag } from 'react-icons/fi';
+import { FaCircle } from 'react-icons/fa';
 
 export default function RecentOrdersCard() {
   const [orders, setOrders] = useState([]);
@@ -57,7 +58,7 @@ export default function RecentOrdersCard() {
     const fetchRecentOrders = async () => {
       try {
         const { data } = await axios.get('/orders/admin/all');
-        setOrders(data.slice(0, 5)); // top 5 recent orders
+        setOrders(data.slice(0, 5));
       } catch (err) {
         console.error(err);
       }
@@ -66,52 +67,72 @@ export default function RecentOrdersCard() {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-dark p-4 rounded-xl shadow-lg mt-6 max-w-md">
-      <h2 className="font-bold text-lg mb-4 text-gray-800 dark:text-light">
-        Recent Orders
-      </h2>
+    <div className="bg-white dark:bg-dark rounded-2xl shadow-xl p-6 w-full">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-lg font-bold text-gray-800 dark:text-light flex items-center gap-2">
+          <FiShoppingBag className="text-accent" />
+          Recent Orders
+        </h2>
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          Last 5 orders
+        </span>
+      </div>
 
-      <div className="space-y-3">
+      {/* Orders List */}
+      <div className="space-y-4">
         {orders.map((order) => (
           <div
             key={order._id}
-            className="flex items-center justify-between bg-primary/10 dark:bg-light/10 p-2 rounded-lg hover:shadow-md transition-shadow"
+            className="flex items-center justify-between bg-gray-50 dark:bg-white/5 p-4 rounded-xl hover:shadow-md hover:scale-[1.02] transition-all duration-300"
           >
-            {/* Order ID circle */}
-            <div className="w-10 h-10 rounded-full bg-accent text-light flex items-center justify-center font-mono text-sm">
-              #{order._id.slice(-4)}
+            {/* Left Side */}
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center font-bold text-sm">
+                #{order._id.slice(-4)}
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-gray-800 dark:text-light">
+                  {order.orderItems?.[0]?.name || 'Product'}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {order.orderItems?.[0]?.quantity || 1} item(s)
+                </p>
+              </div>
             </div>
 
-            {/* Order Info */}
-            <div className="flex-1 ml-3">
-              <p className="text-sm font-semibold text-gray-800 dark:text-light">
-                {order.orderItems?.[0]?.name || 'Product'}
+            {/* Right Side */}
+            <div className="text-right">
+              <p className="text-sm font-bold text-gray-800 dark:text-light">
+                ${order.totalPrice}
               </p>
-              <p className="text-xs text-gray-600 dark:text-gray-300">
-                {order.orderItems?.[0]?.quantity || 1} item(s)
-              </p>
+
+              <span
+                className={`mt-1 inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
+                  order.status === 'delivered'
+                    ? 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400'
+                    : order.status === 'pending'
+                    ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-400'
+                    : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                }`}
+              >
+                <FaCircle className="text-[8px]" />
+                {order.status}
+              </span>
             </div>
-
-            {/* Total Price */}
-            <p className="text-sm font-bold text-gray-800 dark:text-light">
-              ${order.totalPrice}
-            </p>
-
-            {/* Status Badge */}
-            <span
-              className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                order.status === 'delivered'
-                  ? 'bg-green-500 text-light'
-                  : order.status === 'pending'
-                  ? 'bg-yellow-500 text-light'
-                  : 'bg-gray-400 text-light'
-              }`}
-            >
-              {order.status}
-            </span>
           </div>
         ))}
       </div>
+
+      {/* Empty State */}
+      {orders.length === 0 && (
+        <div className="text-center text-gray-500 dark:text-gray-400 py-6 text-sm">
+          No recent orders found
+        </div>
+      )}
     </div>
   );
 }
+

@@ -49,14 +49,21 @@ const orderSchema = new mongoose.Schema(
     // ✅ DELIVERY STATUS
     orderStatus: {
       type: String,
-      enum: ["pending", "shipped", "delivered", "cancelled"],
+      enum: ["pending", "shipped", "delivered", "cancelled", "canceled"], 
       default: "pending",
+    },
+
+    // 🔹 Who canceled the order (null if not canceled)
+    cancelledBy: {
+      type: String,
+      enum: ["user", "admin", null],
+      default: null,
     },
 
     // ✅ PAYMENT STATUS
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "failed"],
+      enum: ["pending", "paid", "failed", "refunded"], 
       default: "pending",
     },
 

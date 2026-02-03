@@ -139,31 +139,31 @@ font-weight: 500;
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
 
-
-/* Applies to all scrollable elements */
-::-webkit-scrollbar {
-  width: 12px; /* width of the scrollbar */
+/* Target only the table wrapper scroll */
+.table-wrapper::-webkit-scrollbar {
+  height: 12px; /* horizontal scrollbar */
+  width: 12px;  /* vertical scrollbar */
 }
 
-::-webkit-scrollbar-track {
-  background: #f0f0f0; /* track color */
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f0f0f0;
   border-radius: 6px;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #296374; /* scrollbar thumb color */
+.table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #296374;
   border-radius: 6px;
-  border: 3px solid #f0f0f0; /* gives padding effect */
+  border: 3px solid #f0f0f0;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: #0c2c55; /* on hover */
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #0c2c55;
 }
 
 /* Firefox */
-* {
-  scrollbar-width: thin; /* "auto" or "thin" */
-  scrollbar-color: #296374 #f0f0f0; /* thumb and track */
+.table-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #296374 #f0f0f0;
 }
 
 

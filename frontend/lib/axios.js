@@ -1,21 +1,21 @@
 
-    import axios from "axios";
+      import axios from "axios";
 
-    // ------------------ Axios Instance ------------------
-    const API = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
-    });
+      // ------------------ Axios Instance ------------------
+      const API = axios.create({
+        baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
+      });
 
 
-    // Automatically attach token to all requests
-    API.interceptors.request.use((config) => {
-      if (typeof window !== "undefined") {
-        const token = localStorage.getItem("token");
-        if (token) config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    });
-    // ================= AUTH =================
+      // Automatically attach token to all requests
+      API.interceptors.request.use((config) => {
+        if (typeof window !== "undefined") {
+          const token = localStorage.getItem("token");
+          if (token) config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      });
+      // ================= AUTH =================
 export const loginUser = async ({ email, password }) => {
   const { data } = await API.post("/auth/login", { email, password });
   localStorage.setItem("token", data.token);
@@ -309,16 +309,29 @@ export const getProductsByParentCategoryFrontend = async (slug) => {
       }
     };
 
-    // Get orders for logged-in customer
+// ------------------- Get orders for logged-in customer -------------------
 export const getMyOrders = async () => {
   try {
-    const { data } = await API.get('/orders/myorders'); // API has baseURL '/api'
+    const { data } = await API.get('/orders/myorders'); // fetch customer orders
     return data;
   } catch (err) {
     console.error('Error fetching user orders:', err.response?.data || err.message);
     throw err.response?.data || { message: 'Failed to fetch orders' };
   }
 };
+
+// ------------------- Cancel order for logged-in customer -------------------
+export const cancelOrder = async (orderId) => {
+  try {
+    const { data } = await API.patch(`/orders/status/${orderId}`);
+    return data;
+  } catch (err) {
+    console.error('Error canceling order:', err.response?.data || err.message);
+    throw err.response?.data || { message: 'Failed to cancel order' };
+  }
+};
+
+
 
 
     // Get all orders (Admin)
@@ -338,12 +351,13 @@ export const updateOrderStatus = async (orderId, status) => {
     console.log("Updating order:", orderId, "to status:", status);
     const { data } = await API.patch(`/orders/admin/status/${orderId}`, { orderStatus: status });
     console.log("Patch response:", data);
-    return data.order; // updated order
+    return data; // just return the updated order directly
   } catch (err) {
     console.error("Error updating order status:", err.response?.data || err.message);
     throw err.response?.data || { message: "Failed to update order status" };
   }
 };
+
 
 
     // Get weekly orders stats (Admin) 🔥

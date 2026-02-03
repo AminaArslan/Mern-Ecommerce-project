@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
-import { getMyOrders, updateOrderStatus } from '@/lib/axios'; // add updateOrderStatus for PATCH
+import { getMyOrders, cancelOrder } from '@/lib/axios'; // <- use cancelOrder for customer
 import { toast } from 'react-hot-toast';
 
 export default function OrdersPage() {
@@ -15,9 +15,10 @@ export default function OrdersPage() {
   const statusColor = {
     pending: 'bg-yellow-500',
     paid: 'bg-blue-500',
-    shipped: 'bg-indigo-500',
-    delivered: 'bg-green-500',
-    canceled: 'bg-red-500',
+    shipped: 'bg-indigo-900',
+    delivered: 'bg-green-800',
+    canceled: 'bg-rose-700',
+    cancelled: 'bg-red-500', // handle both spellings
   };
 
   useEffect(() => {
@@ -41,24 +42,27 @@ export default function OrdersPage() {
     fetchOrders();
   }, [user, router]);
 
- const handleStatusChange = async (orderId, status) => {
-  try {
-    const updatedOrder = await updateOrderStatus(orderId, status);
+  const handleCancelOrder = async (orderId) => {
+    if (!confirm("Are you sure you want to cancel this order?")) return;
 
-    // Update local state
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order._id === orderId ? { ...order, orderStatus: updatedOrder.orderStatus, paymentStatus: updatedOrder.paymentStatus } : order
-      )
-    );
+    try {
+      const updatedOrder = await cancelOrder(orderId); // <- call customer cancel route
 
-    toast.success('Order status updated');
-  } catch (err) {
-    console.error('Error updating order status:', err.message || err);
-    toast.error('Failed to update order status');
-  }
-};
+      // Update local state
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order._id === orderId
+            ? { ...order, orderStatus: updatedOrder.orderStatus, paymentStatus: updatedOrder.paymentStatus }
+            : order
+        )
+      );
 
+      toast.success('Order cancelled successfully');
+    } catch (err) {
+      console.error('Error canceling order:', err);
+      toast.error(err.message || 'Failed to cancel order');
+    }
+  };
 
   if (loading)
     return (
@@ -84,34 +88,30 @@ export default function OrdersPage() {
           className="bg-white dark:bg-dark p-4 rounded-lg shadow space-y-3 border border-gray-200 dark:border-gray-700"
         >
           {/* Header */}
-          <div className="flex justify-between items-center">
-            <span className="font-semibold text-gray-800 dark:text-gray-200">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <span className="font-semibold text-gray-800 dark:text-gray-200 ">
               Order ID: {order._id}
             </span>
 
             {/* Status badge */}
-           <span
-  className={`px-3 py-1 rounded-full text-white text-sm font-medium ${
-    statusColor[order.orderStatus || 'pending']
-  }`}
->
-  {(order.orderStatus || 'pending').toUpperCase()}
-</span>
-
+            <span
+              className={`px-3 py-1 text-center rounded-full text-white text-sm font-medium ${
+                statusColor[order.orderStatus || 'pending']
+              }`}
+            >
+              {(order.orderStatus || 'pending').toUpperCase()}
+            </span>
           </div>
 
-          {/* Optional: Status dropdown (only for specific actions like Cancel) */}
-          {order.status === 'pending' && order.paymentMethod === 'Cash on Delivery' && (
+          {/* Cancel Button (only for pending COD orders) */}
+          {order.orderStatus === 'pending' && order.paymentMethod === 'COD' && (
             <div className="mt-2">
-             <select
-  value={order.orderStatus} 
-  onChange={(e) => handleStatusChange(order._id, e.target.value)}
-  className="border px-2 py-1 rounded text-sm"
->
-  <option value="pending">PENDING</option>
-  <option value="canceled">CANCEL</option>
-</select>
-
+              <button
+                onClick={() => handleCancelOrder(order._id)}
+                className="bg-rose-700 text-white px-3 py-1 rounded-full hover:bg-rose-900 text-sm cursor-pointer "
+              >
+                Cancel Your Order
+              </button>
             </div>
           )}
 
@@ -153,24 +153,6 @@ export default function OrdersPage() {
             <span>Total:</span>
             <span>Rs.{Number(order.totalPrice).toLocaleString('en-IN')}</span>
           </div>
-
-          {/* Payment Status */}
-<p
-  className={`font-medium mt-1 ${
-    order.paymentMethod === 'Cash on Delivery' && order.paymentStatus !== 'paid'
-      ? 'text-yellow-600'
-      : order.paymentMethod === 'Stripe' && order.paymentStatus === 'paid'
-      ? 'text-blue-600'
-      : 'text-gray-500'
-  }`}
->
-  {order.paymentMethod === 'Cash on Delivery' && order.paymentStatus !== 'paid'
-    ? 'Payment pending (COD)'
-    : order.paymentMethod === 'Stripe' && order.paymentStatus === 'paid'
-    ? 'Paid via Stripe'
-    : 'Payment pending via Stripe'}
-</p>
-
         </div>
       ))}
     </div>

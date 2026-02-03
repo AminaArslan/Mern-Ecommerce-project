@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import axios from '@/lib/axios';
 import { useCart } from '@/context/cartContext';
+import toast from 'react-hot-toast';
 
 export default function SingleProductPage() {
   const params = useParams();
@@ -136,20 +137,24 @@ export default function SingleProductPage() {
   </div>
 
   {/* Add to Cart */}
-  <button
-    disabled={stock === 0}
-    onClick={() => addToCart({ ...product, quantity })}
-    className="py-2 px-4 rounded transition"
-    style={{
-      backgroundColor:
-        stock === 0 ? "var(--color-dark)" : "var(--color-accent)",
-      color: "var(--text-light)",
-      opacity: stock === 0 ? 0.5 : 1,
-      cursor: stock === 0 ? "not-allowed" : "pointer",
-    }}
-  >
-    {stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-  </button>
+ <button
+  disabled={stock === 0}
+  onClick={() => {
+    addToCart({ ...product, quantity });
+    toast.success(`${product.name} added to cart `);
+  }}
+  className="py-2 px-4 rounded transition"
+  style={{
+    backgroundColor:
+      stock === 0 ? "var(--color-dark)" : "var(--color-accent)",
+    color: "var(--text-light)",
+    opacity: stock === 0 ? 0.5 : 1,
+    cursor: stock === 0 ? "not-allowed" : "pointer",
+  }}
+>
+  {stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+</button>
+
 </div>
 </div>
   );

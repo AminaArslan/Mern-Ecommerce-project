@@ -21,12 +21,12 @@ export const createCheckoutSession = async (req, res) => {
       line_items: order.orderItems.map(item => {
          let imageUrl = item.product?.image || item.image || "";
 
-        // 👉 If image is stored like "/uploads/abc.jpg", make it full URL
+        //  If image is stored like "/uploads/abc.jpg", make it full URL
         if (imageUrl && !imageUrl.startsWith("http")) {
           imageUrl = `${baseServerUrl}${imageUrl}`;
         }
 
-        // 👉 Stripe only accepts valid https URLs
+        //  Stripe only accepts valid https URLs
         const imagesArray = imageUrl.startsWith("http") ? [imageUrl] : [];
 
         return {
@@ -51,7 +51,7 @@ export const createCheckoutSession = async (req, res) => {
 
     res.json({ url: session.url });
   } catch (error) {
-  console.error("❌ FULL STRIPE ERROR:", error);
+  console.error(" FULL STRIPE ERROR:", error);
   res.status(500).json({ 
     message: "Stripe session creation failed",
     error: error.message 

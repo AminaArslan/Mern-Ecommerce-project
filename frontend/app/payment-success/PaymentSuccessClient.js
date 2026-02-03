@@ -41,7 +41,7 @@ export default function PaymentSuccessClient() {
     fetchOrderAndClearCart();
   }, [orderId, clearCart]);
 
-  if (loading) return <p className="text-center mt-12">Loading...</p>;
+  // if (loading) return <p className="text-center mt-12">Loading...</p>; 
   if (error) return <p className="text-center mt-12 text-red-500">{error}</p>;
   if (!order) return <p className="text-center mt-12">Order not found!</p>;
 

@@ -23,15 +23,11 @@ export default function EditProductModal({ product, categories, parentCategories
   useEffect(() => {
     if (!product || !categories.length) return;
 
-    // Find active subcategory
     const subCat = categories.find(c => c._id === product.category?._id && c.isActive);
-
-    // Determine parent category (active)
     const parentCat = subCat?.parentId
       ? categories.find(c => c._id === subCat.parentId && c.isActive)
       : null;
 
-    // Set form data
     setFormData({
       name: product.name,
       description: product.description,
@@ -41,19 +37,17 @@ export default function EditProductModal({ product, categories, parentCategories
       isActive: product.isActive,
     });
 
-    // Populate subcategories for this parent
     const filteredSubs = parentCat
       ? categories.filter(c => c.parentId === parentCat._id && c.isActive)
       : [];
     setSubCategories(filteredSubs);
 
-    // Set images
     const imgArr = [null, null, null, null];
     (product.images || []).slice(0, 4).forEach((img, idx) => (imgArr[idx] = img));
     setImages(imgArr);
   }, [product, categories]);
 
-  // ---------------- Update subcategories when parent changes ----------------
+  // ---------------- Parent category change ----------------
   useEffect(() => {
     if (!formData.parentCategoryId) {
       setSubCategories([]);
@@ -66,7 +60,6 @@ export default function EditProductModal({ product, categories, parentCategories
     );
     setSubCategories(filteredSubs);
 
-    // Reset subcategory only if it doesn't belong to the new parent
     if (!filteredSubs.some(c => c._id === formData.subCategoryId)) {
       setFormData(prev => ({ ...prev, subCategoryId: '' }));
     }
@@ -80,15 +73,16 @@ export default function EditProductModal({ product, categories, parentCategories
   setImages(prevImages => {
     const newImages = [...prevImages];
 
-    // If replacing an old image, mark it as removed
-    if (newImages[idx] && newImages[idx].url) {
-      setRemovedImages(prev => [...prev, newImages[idx]._id]); // send ID to backend for deletion
+    // Only push old images that have a valid public_id
+    if (newImages[idx] && newImages[idx].public_id) {
+      setRemovedImages(prev => [...prev, newImages[idx].public_id]);
     }
 
     newImages[idx] = file;
     return newImages;
   });
 };
+
 
   // ---------------- Submit ----------------
   const handleSubmit = async e => {
@@ -98,20 +92,23 @@ export default function EditProductModal({ product, categories, parentCategories
       return toast.error('Please select parent and subcategory');
     }
 
-const fd = new FormData();
-fd.append('name', formData.name);
-fd.append('description', formData.description);
-fd.append('price', formData.price);
-fd.append('category', formData.subCategoryId);
-fd.append('isActive', formData.isActive);
+    const fd = new FormData();
+    fd.append('name', formData.name);
+    fd.append('description', formData.description);
+    fd.append('price', formData.price);
+    fd.append('category', formData.subCategoryId);
+    fd.append('isActive', formData.isActive ? 'true' : 'false');
+  fd.append('removedImages', JSON.stringify(removedImages.filter(id => id)));
 
-// Append new files
-images.forEach(img => {
-  if (img instanceof File) fd.append('images', img);
-});
 
-// Tell backend which old images to remove
-fd.append('removedImages', JSON.stringify(removedImages));
+    // Send new images with their slot index
+    images.forEach((img, index) => {
+      if (img instanceof File) {
+        fd.append('images', img);
+        fd.append('imageIndexes', index);
+      }
+    });
+
     try {
       await axios.put(`/products/admin/update/${product._id}`, fd);
       toast.success('Product updated successfully');
@@ -131,41 +128,38 @@ fd.append('removedImages', JSON.stringify(removedImages));
         <h2 className="text-2xl font-bold mb-4 text-dark text-center">Edit Product</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
           <input
             type="text"
             value={formData.name}
             onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder="Product Name"
-            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent"
+            className="w-full border p-2 rounded"
             required
           />
 
-          {/* Description */}
           <textarea
             value={formData.description}
             onChange={e => setFormData({ ...formData, description: e.target.value })}
             placeholder="Description"
-            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent"
+            className="w-full border p-2 rounded"
             required
           />
 
-          {/* Price */}
           <input
             type="number"
             value={formData.price}
             onChange={e => setFormData({ ...formData, price: e.target.value })}
             placeholder="Price"
-            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent"
+            className="w-full border p-2 rounded"
             required
           />
 
-          {/* Parent & Subcategory */}
+          {/* Categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <select
               value={formData.parentCategoryId}
               onChange={e => setFormData({ ...formData, parentCategoryId: e.target.value })}
-              className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+              className="w-full border p-2 rounded"
               required
             >
               <option value="">Select Parent Category</option>
@@ -178,8 +172,8 @@ fd.append('removedImages', JSON.stringify(removedImages));
               value={formData.subCategoryId}
               onChange={e => setFormData({ ...formData, subCategoryId: e.target.value })}
               disabled={!subCategories.length}
-              className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
-              required 
+              className="w-full border p-2 rounded"
+              required
             >
               <option value="">Select Subcategory</option>
               {subCategories.map(sc => (
@@ -191,66 +185,33 @@ fd.append('removedImages', JSON.stringify(removedImages));
           {/* Images */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {images.map((img, idx) => (
-              <label
-                key={idx}
-                className="border border-dark rounded-lg h-32 flex flex-col items-center justify-center cursor-pointer hover:bg-secondary transition relative"
-              >
+              <label key={idx} className="border rounded-lg h-32 flex items-center justify-center cursor-pointer relative">
                 {img ? (
                   img.url ? (
-                    <Image
-                      src={img.url}
-                      alt={`Image ${idx + 1}`}
-                      width={128}
-                      height={128}
-                      className="object-cover w-full h-full rounded"
-                    />
+                    <Image src={img.url} alt="" fill className="object-cover rounded" />
                   ) : (
-                    <Image
-                      src={URL.createObjectURL(img)}
-                      alt={`Image ${idx + 1}`}
-                      width={128}
-                      height={128}
-                      className="object-cover w-full h-full rounded"
-                    />
+                    <Image src={URL.createObjectURL(img)} alt="" fill className="object-cover rounded" />
                   )
                 ) : (
-                  <span className="text-dark text-center">Click to add image</span>
+                  <span>Click to add image</span>
                 )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={e => handleImageChange(e, idx)}
-                />
+                <input type="file" accept="image/*" hidden onChange={e => handleImageChange(e, idx)} />
               </label>
             ))}
           </div>
 
-          {/* Status */}
           <select
             value={formData.isActive}
             onChange={e => setFormData({ ...formData, isActive: e.target.value === 'true' })}
-            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+            className="w-full border p-2 rounded"
           >
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
 
-          {/* Buttons */}
-          <div className="flex justify-end gap-2 mt-4 flex-wrap">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded border hover:bg-gray-100 w-full sm:w-auto cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded bg-accent text-light hover:bg-deep w-full sm:w-auto cursor-pointer"
-            >
-              Update
-            </button>
+          <div className="flex justify-end gap-2 mt-4">
+            <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
+            <button type="submit" className="px-4 py-2 bg-accent text-white rounded">Update</button>
           </div>
         </form>
       </div>

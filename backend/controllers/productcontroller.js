@@ -48,9 +48,10 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 /* ================= GET ALL ACTIVE PRODUCTS (PUBLIC) ================= */
-/* ================= GET ALL ACTIVE PRODUCTS (PUBLIC) ================= */
-export const getProducts = async (req, res) => {
+
+ export const getProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
@@ -158,40 +159,99 @@ export const getTopProducts = async (req, res) => {
 };
 /* ================= UPDATE PRODUCT (ADMIN) ================= */
 export const updateProduct = async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  if (!product)
-    return res.status(404).json({ message: "Product not found" });
+try {
+    console.log('BODY:', req.body);
+    console.log('FILES:', req.files);
 
-  const { name, description, price, quantity, category, isActive } = req.body;
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
-  if (name) {
-    product.name = name;
-    product.slug = slugify(name);
+    const {
+      name,
+      description,
+      price,
+      quantity,
+      category,
+      isActive,
+      removedImages,
+      imageIndexes,
+    } = req.body;
+
+    // ---------------- BASIC INFO ----------------
+    if (name) {
+      product.name = name;
+      product.slug = slugify(name);
+    }
+
+    if (description !== undefined) product.description = description;
+    if (price !== undefined) product.price = price;
+    if (quantity !== undefined) product.quantity = quantity;
+    if (category !== undefined) product.category = category;
+
+    if (isActive !== undefined) {
+      product.isActive = isActive === "true" || isActive === true;
+    }
+
+    // ---------------- DELETE REMOVED IMAGES ----------------
+    let removed = [];
+    if (removedImages) {
+      try {
+        removed = JSON.parse(removedImages);
+      } catch {
+        removed = [];
+      }
+
+      for (const public_id of removed) {
+        await cloudinary.uploader.destroy(public_id);
+      }
+
+      product.images = product.images.filter(
+        img => !removed.includes(img.public_id)
+      );
+    }
+
+    // ---------------- HANDLE NEW UPLOADS ----------------
+    if (req.files && req.files.length > 0) {
+      let indexes = [];
+
+      if (imageIndexes) {
+        indexes = Array.isArray(imageIndexes) ? imageIndexes : [imageIndexes];
+      }
+
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        const index = indexes[i] !== undefined ? parseInt(indexes[i]) : -1;
+
+        const uploaded = await cloudinary.uploader.upload(file.path, {
+          folder: "products",
+        });
+
+        // Replace existing image
+        if (index >= 0 && product.images[index]) {
+          await cloudinary.uploader.destroy(product.images[index].public_id);
+
+          product.images[index] = {
+            public_id: uploaded.public_id,
+            url: uploaded.secure_url,
+          };
+        } else {
+          // Add new image
+          product.images.push({
+            public_id: uploaded.public_id,
+            url: uploaded.secure_url,
+          });
+        }
+      }
+    }
+
+    await product.save();
+
+    res.json({ success: true, product });
+
+  } catch (err) {
+    console.error('UPDATE PRODUCT ERROR:', err); // <-- this is key
+    res.status(500).json({ message: 'Internal Server Error', error: err.message });
   }
-
- if (req.files && req.files.length > 0) {
-  const uploadedImages = await Promise.all(
-    req.files.map(file =>
-      cloudinary.uploader.upload(file.path, { folder: "products" })
-    )
-  );
-
-  const imageObjects = uploadedImages.map(img => ({
-    public_id: img.public_id,
-    url: img.secure_url,
-  }));
-
-  product.images = [...product.images, ...imageObjects];
-}
-
-  product.description = description ?? product.description;
-  product.price = price ?? product.price;
-  product.quantity = quantity ?? product.quantity;
-  product.category = category ?? product.category;
-  product.isActive = isActive ?? product.isActive;
-
-  await product.save();
-  res.json(product);
 };
 
 /* ================= DELETE PRODUCT (ADMIN) ================= */

@@ -10,7 +10,8 @@ import {
   getOrdersWeeklyStats, 
   updateOrderStatus,
   getPendingOrdersAdmin,        // ← Added
-  getPendingOrdersCountAdmin    // ← Added
+  getPendingOrdersCountAdmin,    // ← Added
+  updateOrderStatusCustomer
 } from "../controllers/ordercontroller.js";
 
 const router = express.Router();
@@ -19,6 +20,7 @@ const router = express.Router();
 router.post("/", protect, createOrder);           // Create new order
 router.get("/myorders", protect, getMyOrders);   // Customer orders
 router.get("/:id", protect, getOrderById);       // Single order
+router.patch("/status/:id", protect, updateOrderStatusCustomer); // Update order status
 
 /* ===== ADMIN ===== */
 router.get("/admin/all", protect, isAdmin, getAllOrdersAdmin);           // All orders

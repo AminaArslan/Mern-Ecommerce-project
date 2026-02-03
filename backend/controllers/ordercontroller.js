@@ -158,3 +158,27 @@ export const getPendingOrdersCountAdmin = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// controllers/ordercontroller.js
+export const updateOrderStatusCustomer = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) return res.status(404).json({ message: "Order not found" });
+
+  // Make sure the logged-in user owns the order
+  if (order.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
+  // Only allow cancel for pending COD orders
+  if (order.orderStatus !== "pending" || order.paymentMethod !== "COD") {
+    return res.status(400).json({ message: "Order cannot be cancelled" });
+  }
+
+  // Mark order as canceled and record who canceled
+  order.orderStatus = "canceled";       // matches enum in schema
+  order.cancelledBy = "user";           // record user canceled
+  await order.save();
+
+  res.json(order);
+};
+

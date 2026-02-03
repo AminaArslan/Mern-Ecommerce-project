@@ -40,7 +40,7 @@ export const createCategory = async (req, res) => {
 };
 
 // ---------------- Get All Categories (Admin) ----------------
-// 1️⃣ Existing function
+// Existing function
 export const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 });

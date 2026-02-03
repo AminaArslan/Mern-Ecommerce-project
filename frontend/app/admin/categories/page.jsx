@@ -30,6 +30,14 @@ export default function AdminCategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+const [deleting, setDeleting] = useState(false);
+
+const openDeleteModal = (id) => {
+  setSelectedCategoryId(id);
+  setShowDeleteModal(true);
+};
 
   // ---------------- Fetch categories from backend ----------------
   const fetchCategories = async () => {
@@ -62,15 +70,22 @@ export default function AdminCategoriesPage() {
   console.log('Category map (_id -> name):', categoryMap);
 
   // ---------------- Delete category ----------------
-  const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this category?')) return;
-    try {
-      await API.delete(`/categories/${id}`);
-      fetchCategories();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+const confirmDelete = async () => {
+  if (!selectedCategoryId) return;
+
+  try {
+    setDeleting(true);
+    await API.delete(`/categories/${selectedCategoryId}`);
+    setShowDeleteModal(false);
+    setSelectedCategoryId(null);
+    fetchCategories();
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setDeleting(false);
+  }
+};
+
 
   // ---------------- Build nested categories ----------------
   const nestedCategories = buildCategoryTree(categories);
@@ -124,11 +139,39 @@ export default function AdminCategoriesPage() {
               categories={nestedCategories}
               parentMap={categoryMap} // pass map for parent name display
               onEdit={(cat) => { setEditingCategory(cat); setShowForm(true); }}
-              onDelete={handleDelete}
+              onDelete={openDeleteModal}
             />
           </tbody>
         </table>
       </div>
+      {showDeleteModal && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+    <div className="bg-white w-[90%] max-w-md rounded-xl shadow-2xl p-6 animate-scaleIn">
+      <h2 className="text-xl font-bold text-dark mb-3">Delete Category</h2>
+      <p className="text-dark/80 mb-6">
+        Are you sure you want to delete this category? All subcategories may also be affected.
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setShowDeleteModal(false)}
+          className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={confirmDelete}
+          disabled={deleting}
+          className="px-4 py-2 rounded bg-accent text-white transition disabled:opacity-50 cursor-pointer"
+        >
+          {deleting ? 'Deleting...' : 'Yes, Delete'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

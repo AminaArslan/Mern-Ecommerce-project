@@ -63,7 +63,7 @@ export default function CartSidebar({ isOpen, onClose }) {
               </Link>
             </div>
           ) : (cart.map((item) => {
-            console.log("🛒 Cart Item:", item); // 👈 see structure in console
+            console.log("🛒 Cart Item:", item); // see structure in console
 
             const imageSrc =
               item.image ||
@@ -96,7 +96,7 @@ export default function CartSidebar({ isOpen, onClose }) {
 
                   {/* Price × Quantity */}
                   <p className="text-sm opacity-70">
-                    Rs. {(item.price * item.quantity || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    Rs. {(item.price * item.quantity || 0).toLocaleString("en-IN")}
                   </p>
 
                   {/* Quantity Input */}

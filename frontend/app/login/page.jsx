@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
 import { useCart } from '@/context/cartContext';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const { login, user } = useAuth();
@@ -54,16 +55,21 @@ export default function LoginPage() {
         }
       }
 
-      if (loggedInUser?.role === 'admin') {
-        router.push('/admin/dashboard');
-      } else {
-        router.push('/products');
-      }
+     if (loggedInUser?.role === 'admin') {
+  toast.success('Welcome Admin Redirecting to dashboard...');
+  router.push('/admin/dashboard');
+} else {
+  toast.success('Login successful! Welcome back 🛍️');
+  router.push('/products');
+}
+
     } catch (err) {
-      const msg = err?.response?.data?.message || err.message || 'Invalid email or password';
-      console.error('Login error:', msg, err);
-      setError(msg);
-    } finally {
+  const msg = err?.response?.data?.message || err.message || 'Invalid email or password';
+  console.error('Login error:', msg, err);
+  setError(msg);
+  toast.error(msg);
+}
+ finally {
       setLoading(false);
     }
   };

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
+import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -31,40 +32,51 @@ export default function RegisterPage() {
     setError('');
 
     // ---------------- Frontend Validation ----------------
-    if (!name || !email || !password) {
-      setError('Please fill in all fields');
-      return;
-    }
+   if (!name || !email || !password) {
+  const msg = 'Please fill in all fields';
+  setError(msg);
+  toast.error(msg);
+  return;
+}
 
-    if (!validateEmail(email)) {
-      setError('Invalid email format');
-      return;
-    }
+if (!validateEmail(email)) {
+  const msg = 'Invalid email format';
+  setError(msg);
+  toast.error(msg);
+  return;
+}
 
-    if (!validatePassword(password)) {
-      setError(
-        'Password must be at least 8 characters, include uppercase, lowercase, number, and special character'
-      );
-      return;
-    }
+if (!validatePassword(password)) {
+  const msg =
+    'Password must be at least 8 characters, include uppercase, lowercase, number, and special character';
+  setError(msg);
+  toast.error(msg);
+  return;
+}
+
 
     setLoading(true);
 
     try {
-      await register({ name, email, password });
+  await register({ name, email, password });
 
-      router.push('/products'); // always customer, no role needed
-    } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          err.message ||
-          'Registration failed'
-      );
-      console.error('Registration error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  toast.success('Account created successfully! Welcome 🎉');
+  router.push('/products');
+
+} catch (err) {
+  const msg =
+    err?.response?.data?.message ||
+    err.message ||
+    'Registration failed';
+
+  setError(msg);
+  toast.error(msg);
+  console.error('Registration error:', err);
+}
+finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-primary">

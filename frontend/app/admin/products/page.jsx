@@ -12,6 +12,10 @@ export default function AdminProductsPage() {
   const [parentCategories, setParentCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [selectedProductId, setSelectedProductId] = useState(null);
+const [deleting, setDeleting] = useState(false);
+
   
 
   // ---------------- Fetch categories ----------------
@@ -71,17 +75,29 @@ export default function AdminProductsPage() {
   }, [categories]);
 
   // ---------------- Delete product ----------------
-  const handleDelete = async (id) => {
-    if (!confirm('Delete this product?')) return;
-    try {
-      await axios.delete(`/products/admin/delete/${id}`);
-      fetchProducts();
-      toast.success('Product deleted successfully');
-    } catch (err) {
-      console.error('Error deleting product:', err);
-      toast.error('Failed to delete product');
-    }
-  };
+const openDeleteModal = (id) => {
+  setSelectedProductId(id);
+  setShowDeleteModal(true);
+};
+
+const confirmDelete = async () => {
+  if (!selectedProductId) return;
+
+  try {
+    setDeleting(true);
+    await axios.delete(`/products/admin/delete/${selectedProductId}`);
+    toast.success('Product deleted successfully');
+    setShowDeleteModal(false);
+    setSelectedProductId(null);
+    fetchProducts();
+  } catch (err) {
+    console.error('Error deleting product:', err);
+    toast.error('Failed to delete product');
+  } finally {
+    setDeleting(false);
+  }
+};
+
 
   if (loading)
     return <p className="text-center mt-10 text-lg animate-pulse">Loading products...</p>;
@@ -154,7 +170,8 @@ export default function AdminProductsPage() {
                 {/* Actions */}
                 <td className="px-4 py-2 space-x-2 text-center">
                   <button onClick={() => setEditingProduct(p)} className="bg-accent text-light px-3 py-1 rounded text-sm cursor-pointer">Edit</button>
-                  <button onClick={() => handleDelete(p._id)} className="bg-dark text-light px-3 py-1 rounded text-sm cursor-pointer">Delete</button>
+                 <button onClick={() => openDeleteModal(p._id)} className="bg-dark text-light px-3 py-1 rounded text-sm cursor-pointer">Delete</button>
+
                 </td>
               </tr>
             ))}
@@ -172,6 +189,35 @@ export default function AdminProductsPage() {
           onUpdated={fetchProducts}
         />
       )}
+
+      {showDeleteModal && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+    <div className="bg-white w-[90%] max-w-md rounded-xl shadow-2xl p-6 animate-scaleIn">
+      <h2 className="text-xl font-bold text-dark mb-3">Delete Product</h2>
+      <p className="text-dark/80 mb-6">
+        Are you sure you want to delete this product? This action cannot be undone.
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setShowDeleteModal(false)}
+          className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={confirmDelete}
+          disabled={deleting}
+          className="px-4 py-2 rounded bg-accent text-white transition disabled:opacity-50 cursor-pointer"
+        >
+          {deleting ? 'Deleting...' : 'Yes, Delete'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

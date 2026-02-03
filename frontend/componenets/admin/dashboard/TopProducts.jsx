@@ -31,7 +31,7 @@ export default function TopProducts() {
             className="flex items-center justify-between bg-primary/10 dark:bg-light/10 p-3 rounded-lg hover:shadow-md transition-shadow"
           >
             {/* Product Image */}
-            <div className="w-16 h-16 relative flex-shrink-0">
+            <div className="w-16 h-16 relative shrink-0">
               {product.images?.[0]?.url ? (
                 <Image
                   src={product.images[0].url}
@@ -59,7 +59,7 @@ export default function TopProducts() {
 
             {/* Price */}
             <p className="font-bold text-gray-900 dark:text-light">
-              ${product.price}
+              Rs.{Number(product.price).toLocaleString('en-IN')}
             </p>
           </div>
         ))}

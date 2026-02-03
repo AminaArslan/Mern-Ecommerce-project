@@ -60,7 +60,7 @@ export default function RecentOrdersCard() {
             {/* Right Side */}
             <div className="text-right">
               <p className="text-sm font-bold text-gray-800 dark:text-light">
-                ${order.totalPrice}
+                Rs.{Number(order.totalPrice).toLocaleString('en-IN')}
               </p>
 
             <span

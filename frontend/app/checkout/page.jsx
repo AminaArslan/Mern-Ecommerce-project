@@ -169,7 +169,7 @@ const handleCheckout = async () => {
       </div>
 
       {/* Right: Cart Summary */}
-      <div className="lg:w-1/3 flex-shrink-0">
+      <div className="lg:w-1/3 shrink-0">
         <div className="sticky top-24">
           <CartSummary cart={cart} totalPrice={totalPrice} />
         </div>

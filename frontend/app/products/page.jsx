@@ -115,7 +115,7 @@ export default function ProductsPage() {
 
         {/* Child categories dropdown (optional) */}
         {parent.children.length > 0 && activeParent === parent._id && (
-          <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-[150px] z-10">
+          <div className="absolute left-0 mt-2 bg-white shadow-lg border rounded min-w-37.5 z-10">
             {parent.children.map((child) => (
               <Link key={child._id} href={`/category/${child.slug}`}>
                 <button

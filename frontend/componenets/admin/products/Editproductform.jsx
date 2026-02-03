@@ -18,6 +18,7 @@ export default function EditProductModal({ product, categories, parentCategories
   const [subCategories, setSubCategories] = useState([]);
   const [images, setImages] = useState([null, null, null, null]);
   const [removedImages, setRemovedImages] = useState([]);
+    const [updating, setUpdating] = useState(false);
 
   // ---------------- Initialize form ----------------
   useEffect(() => {
@@ -87,10 +88,13 @@ export default function EditProductModal({ product, categories, parentCategories
   // ---------------- Submit ----------------
   const handleSubmit = async e => {
     e.preventDefault();
+     setUpdating(true);
 
     if (!formData.parentCategoryId || !formData.subCategoryId) {
-      return toast.error('Please select parent and subcategory');
+            return toast.error('Please select parent and subcategory');
+            setUpdating(false);
     }
+
 
     const fd = new FormData();
     fd.append('name', formData.name);
@@ -211,7 +215,23 @@ export default function EditProductModal({ product, categories, parentCategories
 
           <div className="flex justify-end gap-2 mt-4">
             <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-accent text-white rounded">Update</button>
+            
+           <button
+  type="submit"
+  className={`px-5 py-2 rounded bg-accent text-light hover:bg-dark transition flex items-center justify-center gap-2 ${
+    updating ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+  }`}
+  disabled={updating}
+>
+  {updating ? (
+    <>
+      <span className="w-5 h-5 border-2 border-t-white border-white border-solid rounded-full animate-spin"></span>
+      updating...
+    </>
+  ) : (
+    'Update '
+  )}
+</button>
           </div>
         </form>
       </div>

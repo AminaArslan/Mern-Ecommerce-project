@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import LatestProducts from "@/componenets/user/products/latestproduct";
 import "./globals.css";
-import CategoryBoxes from "@/componenets/user/categoryList";
+import CategoryBoxes from "@/app/category/page";
 import HeroPage from "@/componenets/user/hero";
 import ExploreNewCollection from "@/componenets/user/products/newcollection";
 import ProductCompare from "@/componenets/user/products/productcompare";

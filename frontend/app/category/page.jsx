@@ -32,7 +32,7 @@ export default function CategoryBoxes() {
                   alt={cat.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-black/20 group-hover:from-black/50 group-hover:via-black/20 group-hover:to-black/10 transition duration-500" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/40 via-black/10 to-black/20 group-hover:from-black/50 group-hover:via-black/20 group-hover:to-black/10 transition duration-500" />
               </div>
 
               <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">

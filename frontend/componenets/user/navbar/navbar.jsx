@@ -150,9 +150,11 @@ export default function Navbar() {
               <PagesDropdown />
             </div>
 
-            <Link href="/orders" className=" hover:text-accent transition mr-3 inline-block">
-              My Orders
-            </Link>
+          {user && (
+        <Link href="/orders" className="hover:text-accent transition">
+          My Orders
+        </Link>
+      )}
 
 
           </nav>

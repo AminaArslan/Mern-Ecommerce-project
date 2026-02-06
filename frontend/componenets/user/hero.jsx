@@ -15,7 +15,7 @@ import { FiArrowRight } from 'react-icons/fi';
 export default function HeroPage() {
   const slides = [
     {
-      src: '/hero/bg.jpg',
+      src: '/hero/womens.jpg',
       tag: 'NEW ARRIVALS',
       title: 'Timeless Elegance',
       description: 'Discover the new collection that defines modern luxury.',

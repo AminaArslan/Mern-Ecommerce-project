@@ -217,14 +217,14 @@ export default function AdminProductsPage() {
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={() => setEditingProduct(p)}
-                        className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-sm transition-all"
+                        className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-sm transition-all cursor-pointer"
                         title="Edit Product"
                       >
                         <FiEdit size={16} />
                       </button>
                       <button
                         onClick={() => openDeleteModal(p._id)}
-                        className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-all"
+                        className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-all cursor-pointer"
                         title="Delete Product"
                       >
                         <FiTrash2 size={16} />
@@ -278,7 +278,7 @@ export default function AdminProductsPage() {
                 onClick={confirmDelete}
                 disabled={deleting}
                 className="px-6 py-2.5 bg-rose-600 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-rose-700
-                 transition shadow-lg shadow-rose-200 disabled:opacity-50 cursor-pointer rounded-sm"
+                 transition shadow-lg shadow-rose-200 disabled:opacity-50 cursor-pointer rounded-sm "
               >
                 {deleting ? 'Removing...' : 'Delete'}
               </button>

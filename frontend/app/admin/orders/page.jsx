@@ -136,7 +136,7 @@ export default function AdminOrdersPage() {
             <button
               key={status}
               onClick={() => setActiveTab(status)}
-              className={`px-5 py-2 text-[11px] font-bold uppercase tracking-widest whitespace-nowrap rounded-t-sm transition-all border-b-2 ${activeTab === status
+              className={`px-5 py-2 text-[11px] font-bold uppercase tracking-widest whitespace-nowrap rounded-t-sm transition-all border-b-2 cursor-pointer ${activeTab === status
                 ? 'border-dark text-dark bg-gray-50'
                 : 'border-transparent text-gray-400 hover:text-dark hover:bg-gray-50/50'
                 }`}
@@ -237,7 +237,7 @@ export default function AdminOrdersPage() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => setSelectedOrder(order)}
-                        className="p-2 text-gray-400 hover:text-dark hover:bg-gray-100 rounded-sm transition-all"
+                        className="p-2 text-gray-400 hover:text-dark hover:bg-gray-100 rounded-sm transition-all cursor-pointer"
                         title="View Details"
                       >
                         <FiEye size={18} />

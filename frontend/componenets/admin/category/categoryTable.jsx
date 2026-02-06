@@ -70,14 +70,14 @@ export default function CategoryTable({ categories, onEdit, onDelete }) {
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => onEdit(child)}
-                      className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-sm transition-all"
+                      className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-sm transition-all cursor-pointer"
                       title="Edit Subcategory"
                     >
                       <FiEdit size={15} />
                     </button>
                     <button
                       onClick={() => onDelete(child._id)}
-                      className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-all"
+                      className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-all cursor-pointer"
                       title="Delete Subcategory"
                     >
                       <FiTrash2 size={15} />

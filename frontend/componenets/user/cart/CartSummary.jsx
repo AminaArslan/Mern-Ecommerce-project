@@ -21,7 +21,7 @@ export default function CartSummary({ cart = [], totalPrice = 0 }) {
             return (
               <div key={item._id} className="flex justify-between items-start group cursor-pointer hover:bg-gray-50/50 p-2 -m-2 transition-colors rounded-sm">
                 <div className="space-y-1">
-                  <h3 className="text-[11px] font-bold text-dark uppercase tracking-widest truncate max-w-[150px] sm:max-w-[180px] group-hover:text-gray-500 transition-colors">
+                  <h3 className="text-[11px] font-bold text-dark uppercase tracking-widest truncate max-w-37.5 sm:max-w-45 group-hover:text-gray-500 transition-colors">
                     {itemName}
                   </h3>
                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Quantity: {itemQty}</p>

@@ -77,7 +77,7 @@ export default function Navbar() {
   return (
     <>
       {/* 
-        💎 Glassmorphism Header 
+        Glassmorphism Header 
         - Changes background from transparent/white to blurred glass on scroll 
       */}
       <header
@@ -97,7 +97,7 @@ export default function Navbar() {
                 <div className="absolute inset-0 rounded-full bg-amber-400/40 blur-xl opacity-0 group-hover:opacity-100 transition duration-700 cursor-pointer scale-150"></div>
                 <BrandLogo
                   size={48}
-                  className="relative transition-all duration-500 transform group-hover:rotate-[360deg] group-hover:scale-110"
+                  className="relative transition-all duration-500 transform group-hover:rotate-360 group-hover:scale-110"
                 />
               </div>
               <div className="flex flex-col cursor-pointer">
@@ -117,31 +117,31 @@ export default function Navbar() {
             {/* Home with Animated Underline */}
             <Link href="/" className="relative group py-2 cursor-pointer">
               <span className="group-hover:text-accent transition duration-300 cursor-pointer">Home</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-accent transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
             {/* Collection Link */}
             <Link href="/category" className="relative group py-2 cursor-pointer">
               <span className="group-hover:text-accent transition duration-300 cursor-pointer">Collection</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-accent transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
             {/* Shop Link */}
             <Link href="/products" className="relative group py-2 cursor-pointer">
               <span className="group-hover:text-accent transition duration-300 cursor-pointer">Shop</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-accent transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
             {/* Pages Dropdown */}
             <div className="relative group py-2 cursor-pointer">
               <PagesDropdown />
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-accent transition-all duration-300 group-hover:w-full cursor-pointer"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full cursor-pointer"></span>
             </div>
 
             {user && (
               <Link href="/orders" className="relative group py-2 cursor-pointer">
                 <span className="group-hover:text-accent transition duration-300 cursor-pointer">My Orders</span>
-                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-accent transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
               </Link>
             )}
           </nav>

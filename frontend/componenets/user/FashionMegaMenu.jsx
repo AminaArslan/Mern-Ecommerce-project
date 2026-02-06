@@ -32,7 +32,7 @@ export default function CollectionsSection() {
   const [active, setActive] = useState(0);
 
   return (
-    <section className="w-full bg-[var(--color-secondary)] lg:min-h-screen flex items-center py-12 lg:py-24 px-3 sm:px-4 md:px-6">
+    <section className="w-full bg-(--color-secondary) lg:min-h-screen flex items-center py-12 lg:py-24 px-3 sm:px-4 md:px-6">
       <div className="container mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 xl:gap-20 items-center h-full">
 
         {/* LEFT CONTENT: Interactive List */}
@@ -86,7 +86,7 @@ export default function CollectionsSection() {
         </div>
 
         {/* RIGHT IMAGE: Dynamic Display */}
-        <div className="relative h-64 sm:h-[400px] lg:h-[750px] w-full order-1 lg:order-2 rounded-lg overflow-hidden shrink-0">
+        <div className="relative h-64 sm:h-100 lg:h-187.5 w-full order-1 lg:order-2 rounded-lg overflow-hidden shrink-0">
           {/* Desktop/Tablet Image (Fade Effect) */}
           <div className="hidden lg:block w-full h-full">
             {collections.map((item, i) => (
@@ -99,7 +99,7 @@ export default function CollectionsSection() {
                   src={item.img}
                   alt={item.title}
                   fill
-                  className="object-cover grayscale-[20%]"
+                  className="object-cover grayscale-20"
                   priority={i === 0}
                 />
                 <div className="absolute inset-0 ring-1 ring-black/5 pointer-events-none" />
@@ -113,7 +113,7 @@ export default function CollectionsSection() {
               src={collections[active].img}
               alt={collections[active].title}
               fill
-              className="object-cover grayscale-[20%] object-top"
+              className="object-cover grayscale-20 object-top"
             />
           </div>
         </div>

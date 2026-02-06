@@ -242,16 +242,7 @@ export default function SingleProductPage() {
         </div>
       )}
 
-      {/* Hide scrollbar for thumbnail strip */}
-      <style jsx global>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+
     </main>
   );
 }

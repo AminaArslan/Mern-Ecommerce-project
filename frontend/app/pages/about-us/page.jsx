@@ -73,7 +73,7 @@ export default function AboutUsPage() {
                 </div>
 
                 {/* WHY CHOOSE US */}
-                <div className="bg-gradient-to-br from-dark to-gray-800 text-white p-8 md:p-16 rounded-sm shadow-xl mb-16">
+                <div className="bg-linear-to-br from-dark to-gray-800 text-white p-8 md:p-16 rounded-sm shadow-xl mb-16">
                     <div className="max-w-4xl mx-auto text-center space-y-6">
                         <h2 className="text-3xl md:text-5xl font-serif mb-8">Why Choose Studio Amina?</h2>
                         <div className="grid md:grid-cols-2 gap-8 text-left">

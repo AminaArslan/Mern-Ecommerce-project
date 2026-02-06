@@ -360,19 +360,7 @@ export default function ShopAllPage() {
         </div>
       )}
 
-      {/* CUSTOM STYLE FOR HIDDEN SCROLLBAR & MASK */}
-      <style jsx global>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .mask-fade {
-          mask-image: linear-gradient(to right, black 85%, transparent 100%);
-        }
-      `}</style>
+      {/* SIDEBAR FILTERS (Desktop) */}
     </main>
   );
 }

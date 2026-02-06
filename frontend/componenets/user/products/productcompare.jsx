@@ -52,7 +52,7 @@ export default function ProductCompare() {
         {/* INTERACTIVE COMPARISON SLIDER */}
         <div
           ref={containerRef}
-          className="relative w-full aspect-[4/3] rounded-sm overflow-hidden cursor-ew-resize select-none group shadow-xl"
+          className="relative w-full aspect-4/3 rounded-sm overflow-hidden cursor-ew-resize select-none group shadow-xl"
           onMouseDown={(e) => { setIsResizing(true); handleMove(e.clientX); }}
           onTouchStart={(e) => { setIsResizing(true); handleMove(e.touches[0].clientX); }}
         >

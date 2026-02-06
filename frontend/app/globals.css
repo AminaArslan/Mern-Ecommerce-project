@@ -47,174 +47,20 @@
   /* Elegant headings */
   h1,
   h2,
-  h3,
-  .section-title {
+  h3 {
     font-family: 'Libre Caslon Text', serif;
-    /* letter-spacing: 1px; */
   }
-
-
-  /* Tagline / fashion quotes */
-  .tagline {
-    font-family: 'Libre Caslon Text', serif;
-    font-style: italic;
-  }
-
 
   /* Buttons stay modern */
-  button,
-  .btn {
+  button {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
   }
 
   /* =========================
-    🔹 Utility Classes
-    ========================= */
-  .bg-primary {
-    background-color: var(--color-primary);
-  }
-
-  .bg-secondary {
-    background-color: var(--color-secondary);
-  }
-
-  .bg-accent {
-    background-color: var(--color-accent);
-  }
-
-  .bg-dark {
-    background-color: var(--color-dark);
-  }
-
-  .bg-deep {
-    background-color: var(--color-deep);
-  }
-
-  .text-accent {
-    color: var(--color-accent);
-  }
-
-  .text-light {
-    color: var(--text-light);
-  }
-
-  .text-dark {
-    color: var(--text-dark);
-  }
-
-  /* =========================
-    🔘 Buttons
-    ========================= */
-  .btn-primary {
-    background: var(--color-accent);
-    color: var(--text-light);
-    border-radius: 6px;
-    padding: .6rem 1rem;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s ease-in;
-  }
-
-  .btn-primary:hover {
-    background: var(--color-dark);
-  }
-
-  /* =========================
-    📂 Dropdown
-    ========================= */
-  .dropdown {
-    background-color: var(--color-secondary);
-    color: var(--text-dark);
-    border-radius: 8px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-    overflow: hidden;
-  }
-
-  .dropdown .header {
-    font-weight: bold;
-    padding: 0.6rem 1rem;
-    background: var(--color-dark);
-    color: var(--text-light);
-  }
-
-  .dropdown .body {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  /* =========================
-    🔔 Badge
-    ========================= */
-  .badge {
-    background-color: var(--color-accent);
-    color: var(--text-light);
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-  }
-
-  /* =========================
-   👤 Avatar
-   ========================= */
-  .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--color-accent);
-    color: var(--text-light);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    transition: box-shadow 0.2s ease-in-out;
-  }
-
-  .avatar:hover {
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
-  }
-
-  /* Target only the table wrapper scroll */
-  .table-wrapper::-webkit-scrollbar {
-    height: 12px;
-    /* horizontal scrollbar */
-    width: 12px;
-    /* vertical scrollbar */
-  }
-
-  .table-wrapper::-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 6px;
-  }
-
-  .table-wrapper::-webkit-scrollbar-thumb {
-    background-color: #296374;
-    border-radius: 6px;
-    border: 3px solid #f0f0f0;
-  }
-
-  .table-wrapper::-webkit-scrollbar-thumb:hover {
-    background-color: #0c2c55;
-  }
-
-  /* Firefox */
-  .table-wrapper {
-    scrollbar-width: thin;
-    scrollbar-color: #296374 #f0f0f0;
-  }
-
-  /* =========================
      🎨 Global Custom Scrollbar
      ========================= */
-  
+
   /* Webkit browsers (Chrome, Safari, Edge) */
   ::-webkit-scrollbar {
     width: 10px;
@@ -243,55 +89,6 @@
     scrollbar-width: thin;
     scrollbar-color: #111827 #f0f0f0;
   }
-
-
-
-  /* =========================
-   🎯 Hero Content Pagination
-   ========================= */
-
-  .hero-pagination {
-    display: flex;
-    gap: 6px;
-  }
-
-  .hero-pagination .swiper-pagination-bullet {
-    width: 7px;
-    height: 7px;
-    background: var(--color-secondary);
-    opacity: 0.5;
-    transition: 0.3s ease;
-  }
-
-  .hero-pagination .swiper-pagination-bullet-active {
-    background: var(--color-accent);
-    opacity: 1;
-    transform: scale(1.2);
-  }
-
-  /* =========================
-   ⬅➡ Hero Navigation Buttons
-   ========================= */
-
-  .nav-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: var(--text-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.2s ease;
-  }
-
-  .nav-btn:hover {
-    background: var(--color-dark);
-  }
-
-
 
   /* animition........................................................... */
 
@@ -330,39 +127,84 @@
     }
   }
 
-
-  @keyframes border-dash {
+  /* =========================
+     🎥 Hero Section Animations
+     ========================= */
+  @keyframes ken-burns {
     0% {
-      background-position: 0 0, 0 100%, 0 0, 100% 0;
+      transform: scale(1);
     }
 
     100% {
-      background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
+      transform: scale(1.1);
     }
   }
 
-  .dashed-animate {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
-      linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
-      linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y,
-      linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y;
-    background-size: 6px 2px, 6px 2px, 2px 6px, 2px 6px;
-    background-position: 0 0, 0 100%, 0 0, 100% 0;
-    animation: border-dash 2s linear infinite;
-    transition: background 0.3s ease;
-    color: var(--color-dark);
-    /* button text */
-    font-weight: 600;
-    /* border-radius: 9999px; pill shape */
-    padding: 0.75rem 1.5rem;
-    display: inline-block;
-    cursor: pointer;
+  .animate-ken-burns {
+    animation: ken-burns 20s ease-out infinite alternate;
   }
 
-  /* Hover effect — pause animation + theme hover background */
-  .dashed-animate:hover {
-    animation-play-state: paused;
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
 
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-up {
+    animation: fade-up 1.2s ease-out forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-down {
+    animation: slide-down 1s ease-out forwards;
+    animation-delay: 0.3s;
+  }
+
+  /* Custom Swiper Pagination */
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    opacity: 1;
+    transition: all 0.3s;
+  }
+
+  .swiper-pagination-bullet-active {
+    width: 24px;
+    background: #fff;
+    border-radius: 99px;
+  }
+
+  /* =========================
+     🛠️ Category Utilities
+     ========================= */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .mask-fade {
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
   }

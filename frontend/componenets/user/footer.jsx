@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer className="relative bg-[#111827] pt-12 pb-8 overflow-hidden border-t border-white/10">
       {/* 📰 EDITORIAL BACKGROUND ACCENT */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-amber-400/40 to-transparent" />
 
       <div className="container mx-auto px-3 md:px-6 max-w-7xl">
 
@@ -84,7 +84,7 @@ export default function Footer() {
                 <Icon key={i} className="text-gray-500 hover:text-white transition-all cursor-pointer transform hover:scale-110" size={16} />
               ))}
             </div>
-            <p className="text-[10px] font-bold text-amber-500 uppercase tracking-[0.1em] italic">Crafted by Amina.</p>
+            <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest italic">Crafted by Amina.</p>
           </div>
 
         </div>

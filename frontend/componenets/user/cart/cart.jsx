@@ -1,7 +1,5 @@
 'use client';
-
 import { useCart } from '@/context/cartContext';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { FiX, FiTrash, FiPlus, FiMinus, FiArrowRight, FiShoppingBag } from 'react-icons/fi';
@@ -26,14 +24,14 @@ export default function CartSidebar({ isOpen, onClose }) {
     <>
       {/* OVERLAY - Deep Matte with Backdrop Blur */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[100] transition-opacity duration-700 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] z-100 transition-opacity duration-700 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
           }`}
         onClick={onClose}
       />
 
       {/* DRAWER - High Fashion Aesthetic */}
       <aside
-        className={`fixed top-0 right-0 h-full w-full sm:w-[450px] bg-white shadow-2xl z-[101] transform transition-transform duration-700 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-0 right-0 h-full w-full sm:w-112.5 bg-white shadow-2xl z-101 transform transition-transform duration-700 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
           } flex flex-col`}
       >
         {/* HEADER - Editorial Style */}
@@ -59,7 +57,7 @@ export default function CartSidebar({ isOpen, onClose }) {
               <div className="space-y-4">
                 <FiShoppingBag size={40} className="mx-auto text-gray-100" />
                 <h3 className="text-2xl font-serif text-dark italic font-light">Your curation is empty.</h3>
-                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest max-w-[200px] mx-auto leading-relaxed">Discover our latest artifacts and select your favorites.</p>
+                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest max-w-50 mx-auto leading-relaxed">Discover our latest artifacts and select your favorites.</p>
               </div>
               <Link
                 href="/products"
@@ -80,7 +78,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                     className="group relative flex gap-6 animate-in slide-in-from-right-4 duration-500"
                   >
                     {/* Thumbnail */}
-                    <div className="relative w-24 h-32 bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100 shadow-sm">
+                    <div className="relative w-24 h-32 bg-gray-50 shrink-0 overflow-hidden border border-gray-100 shadow-sm">
                       <img
                         src={imageSrc}
                         alt={item.name}

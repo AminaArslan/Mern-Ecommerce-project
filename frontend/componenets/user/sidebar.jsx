@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import {
   FiChevronRight, FiChevronDown, FiPlus, FiMinus, FiHome, FiGrid, FiShoppingBag,
-  FiInfo, FiPhone, FiHelpCircle, FiX, FiUser, FiLogIn, FiLogOut, FiArrowUpRight
+  FiInfo,  FiX, FiUser, FiLogIn, FiLogOut, FiArrowUpRight
 } from 'react-icons/fi';
 import { useAuth } from '@/context/authContext';
 import BrandLogo from './BrandLogo';
@@ -14,23 +14,23 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {/* 🌑 GLASSMORPHISM OVERLAY */}
+      {/*  GLASSMORPHISM OVERLAY */}
       {open && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-500"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-60 lg:hidden animate-in fade-in duration-500"
         />
       )}
 
-      {/* 🪐 LUXURY SIDEBAR */}
+      {/*  LUXURY SIDEBAR */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-80 bg-dark text-white flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.5)] z-[70]
+        className={`fixed top-0 left-0 h-screen w-80 bg-dark text-white flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.5)] z-70
           transform transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1)
           ${open ? 'translate-x-0' : '-translate-x-full'}
           lg:hidden border-r border-white/5 animate-in slide-in-from-left duration-700`}
       >
         {/* HEADER: PROMINENT BRANDING */}
-        <div className="flex items-center justify-between gap-3 px-8 py-10 border-b border-white/5 bg-white/[0.02]">
+        <div className="flex items-center justify-between gap-3 px-8 py-10 border-b border-white/5 bg-white/2">
           <Link href="/" onClick={onClose} className="flex items-center gap-4 group cursor-pointer">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-xl opacity-0 group-hover:opacity-100 transition duration-500 cursor-pointer scale-150"></div>
@@ -87,7 +87,7 @@ export default function Sidebar({ open, onClose }) {
         </nav>
 
         {/* USER ARCHIVE SECTION */}
-        <div className="px-6 py-8 border-t border-white/5 bg-white/[0.01]">
+        <div className="px-6 py-8 border-t border-white/5 bg-white/1">
           {user ? (
             <div className="space-y-4">
               <div className="flex items-center gap-4 px-5 opacity-90">
@@ -96,7 +96,7 @@ export default function Sidebar({ open, onClose }) {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold leading-none mb-1">Authenticated as</span>
-                  <span className="text-xs font-bold text-white truncate max-w-[160px]">{user.email || 'Archive User'}</span>
+                  <span className="text-xs font-bold text-white truncate max-w-40">{user.email || 'Archive User'}</span>
                 </div>
               </div>
               <button

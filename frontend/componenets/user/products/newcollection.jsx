@@ -74,7 +74,7 @@ export default function ExploreNewCollection() {
             <Link
               key={sub._id}
               href={`/category/${sub.slug}`}
-              className="group relative shrink-0 w-[280px] md:w-[320px] aspect-[4/5] overflow-hidden rounded-lg bg-gray-100 select-none"
+              className="group relative shrink-0 w-70 md:w-[320px] aspect-4/5 overflow-hidden rounded-lg bg-gray-100 select-none"
             >
               {/* Image */}
               <img
@@ -85,7 +85,7 @@ export default function ExploreNewCollection() {
               />
 
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-300" />
 
               {/* Content */}
               <div className="absolute inset-0 flex flex-col justify-end p-8">
@@ -97,7 +97,7 @@ export default function ExploreNewCollection() {
                   {sub.name}
                 </h3>
 
-                <div className="w-12 h-[1px] bg-white mt-4 opacity-50 group-hover:w-full transition-all duration-700 ease-out" />
+                <div className="w-12 h-px bg-white mt-4 opacity-50 group-hover:w-full transition-all duration-700 ease-out" />
 
                 <div className="flex items-center gap-2 mt-4 text-white text-sm font-medium tracking-wider opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
                   View Collection <FiArrowRight />

@@ -159,7 +159,7 @@ export default function CategoryPage() {
                 </button>
 
                 {openSort && (
-                  <div className="absolute right-0 md:right-0 left-0 md:left-auto top-full mt-2 w-48 bg-white border border-gray-100 shadow-2xl rounded-sm z-[100] py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute right-0 md:right-0 left-0 md:left-auto top-full mt-2 w-48 bg-white border border-gray-100 shadow-2xl rounded-sm z-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                     {[
                       { label: 'Newest Arrivals', value: 'newest' },
                       { label: 'Price: Low to High', value: 'price_low' },
@@ -193,7 +193,7 @@ export default function CategoryPage() {
           <div className="mb-20 animate-in fade-in slide-in-from-top-4 duration-1000">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-[11px] font-bold text-dark uppercase tracking-[0.4em]">Refine the Archive</h2>
-              <div className="h-[1px] flex-1 bg-dark/5 ml-8 hidden md:block"></div>
+              <div className="h-px flex-1 bg-dark/5 ml-8 hidden md:block"></div>
             </div>
 
             <div className="flex items-start justify-center flex-wrap md:flex-nowrap gap-8 md:gap-14 overflow-x-auto pb-8 scrollbar-hide -mx-4 px-4 mask-fade">
@@ -335,7 +335,7 @@ export default function CategoryPage() {
 
       {/* MOBILE FILTER OVERLAY */}
       {showFilters && (
-        <div className="fixed inset-0 bg-white z-[200] p-10 animate-in slide-in-from-bottom duration-500">
+        <div className="fixed inset-0 bg-white z-200 p-10 animate-in slide-in-from-bottom duration-500">
           <div className="flex justify-between items-center mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.5em]">Filters</span>
             <button onClick={() => setShowFilters(false)} className="text-dark cursor-pointer"><FiX size={24} /></button>

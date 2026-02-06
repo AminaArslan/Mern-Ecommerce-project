@@ -69,7 +69,7 @@ export default function HeroPage() {
                 className="object-cover opacity-90"
               />
               {/* Dark Overlay for Text Readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              {/* <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" /> */}
             </div>
 
             {/* ✨ CONTENT OVERLAY */}
@@ -108,7 +108,7 @@ export default function HeroPage() {
         ))}
 
         {/* CUSTOM PAGINATION STYLING */}
-        <div className="swiper-pagination !bottom-10" />
+        <div className="swiper-pagination bottom-10!" />
       </Swiper>
 
       {/* CSS for Ken Burns Animation if not in globals */}

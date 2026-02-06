@@ -3,8 +3,7 @@
 import { useAuth } from '@/context/authContext';
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
-import { FiSun, FiMoon, FiMenu } from 'react-icons/fi';
-import { IoIosNotificationsOutline } from "react-icons/io";
+import { FiMenu, FiBell } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 export default function AdminNavbar({ onSidebarToggle }) {
@@ -12,18 +11,6 @@ export default function AdminNavbar({ onSidebarToggle }) {
   const [avatarDropdown, setAvatarDropdown] = useState(false);
   const [bellDropdown, setBellDropdown] = useState(false);
   const [pendingOrders, setPendingOrders] = useState(0);
-  const [darkMode, setDarkMode] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
-
-  // Check saved theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      setDarkMode(true);
-    }
-  }, []);
 
   // Fetch pending orders
   useEffect(() => {
@@ -40,53 +27,30 @@ export default function AdminNavbar({ onSidebarToggle }) {
     return () => clearInterval(interval);
   }, []);
 
-  const toggleTheme = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    if (newMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
   const handleLogout = async () => {
     try {
-      setLoggingOut(true);
       await logout();
-      toast.success('Logged out successfully 👋');
+      toast.success('Logged out successfully');
     } catch (err) {
       toast.error('Logout failed');
-    } finally {
-      setLoggingOut(false);
-      setShowLogoutModal(false);
     }
   };
 
   if (!user || user.role !== 'admin') return null;
 
   return (
-    <header className="bg-secondary dark:bg-dark text-light shadow-md sticky top-0 lg:z-50">
-      <div className="max-w-7xl mx-auto flex justify-between lg:justify-end items-center p-4 relative">
-        {/* Left side: Sidebar Toggle */}
+    <header className="bg-white border-b border-gray-100 lg:sticky lg:top-0 lg:z-40 h-20">
+      <div className="h-full px-6 flex justify-between lg:justify-end items-center relative">
+        {/* Left side: Sidebar Toggle (Mobile) */}
         <button
           onClick={onSidebarToggle}
-          className=" lg:hidden flex items-center justify-center w-12 h-12 rounded-full bg-accent hover:bg-dark text-light shadow-md transition hover:scale-105 cursor-pointer"
+          className="lg:hidden flex items-center justify-center p-2 text-dark hover:bg-gray-50 transition rounded-md cursor-pointer"
         >
           <FiMenu className="text-xl" />
         </button>
 
         {/* Right side: Icons */}
-        <div className="flex items-center space-x-4">
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="px-3 py-2 rounded-lg bg-accent text-light hover:bg-dark transition-shadow shadow-sm hover:shadow-md cursor-pointer"
-          >
-            {darkMode ? <FiSun /> : <FiMoon />}
-          </button>
+        <div className="flex items-center space-x-6">
 
           {/* Notifications */}
           <div className="relative">
@@ -95,92 +59,72 @@ export default function AdminNavbar({ onSidebarToggle }) {
                 setBellDropdown(!bellDropdown);
                 setAvatarDropdown(false);
               }}
-              className="text-2xl relative flex items-center justify-center p-2 rounded-full cursor-pointer transition bg-secondary hover:bg-accent text-light"
+              className="relative p-2 text-gray-400 hover:text-dark transition-colors cursor-pointer"
             >
-              <IoIosNotificationsOutline />
+              <FiBell size={20} />
               {pendingOrders > 0 && (
-                <span className="badge -top-1 -right-1 animate-pulse">{pendingOrders}</span>
+                <span className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full animate-pulse border border-white"></span>
               )}
             </button>
 
             {bellDropdown && (
-              <div className="absolute right-0 mt-3 w-56 bg-light dark:bg-deep text-dark dark:text-light rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
-                <div className="px-4 py-2 font-semibold border-b border-gray-200 dark:border-gray-700">
-                  Pending Orders
+              <div className="absolute right-0 mt-4 w-72 bg-white rounded-sm shadow-2xl border border-gray-100 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="px-5 py-4 border-b border-gray-50 bg-gray-50/50">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Notifications</p>
                 </div>
-                <div className="px-4 py-3 text-sm">
-                  {pendingOrders > 0
-                    ? `You have ${pendingOrders} pending order(s)`
-                    : 'No pending orders at the moment.'}
+                <div className="p-2">
+                  {pendingOrders > 0 ? (
+                    <div className="px-4 py-3 hover:bg-gray-50 transition cursor-pointer rounded-sm">
+                      <p className="text-sm font-medium text-dark">New Orders Pending</p>
+                      <p className="text-xs text-amber-600 mt-1">{pendingOrders} orders need processing</p>
+                    </div>
+                  ) : (
+                    <div className="px-4 py-8 text-center text-gray-400 text-sm">
+                      All caught up!
+                    </div>
+                  )}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Avatar */}
-          <div className="relative">
+          {/* User Profile */}
+          <div className="relative pl-6 border-l border-gray-100">
             <div
-              className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-light font-bold text-lg cursor-pointer shadow-md hover:shadow-lg transition"
+              className="flex items-center gap-3 cursor-pointer group"
               onClick={() => {
                 setAvatarDropdown(!avatarDropdown);
                 setBellDropdown(false);
               }}
             >
-              {user.name.charAt(0).toUpperCase()}
+              <div className="text-right hidden sm:block">
+                <p className="text-xs font-bold text-dark group-hover:text-amber-600 transition-colors uppercase tracking-wide">{user.name}</p>
+                <p className="text-[10px] text-gray-400">Administrator</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-dark font-serif font-bold text-lg group-hover:bg-amber-50 group-hover:border-amber-200 transition-all">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
             </div>
 
             {avatarDropdown && (
-              <div className="absolute right-0 mt-3 w-56 bg-light dark:bg-deep text-dark dark:text-light rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                  <p className="font-semibold">{user.name}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 truncate">{user.email}</p>
+              <div className="absolute right-0 mt-4 w-56 bg-white rounded-sm shadow-2xl border border-gray-100 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="p-4 border-b border-gray-50 bg-gray-50/50">
+                  <p className="text-sm font-bold text-dark">{user.name}</p>
+                  <p className="text-xs text-gray-500 truncate mt-1">{user.email}</p>
                 </div>
-                <button
-                  onClick={() => {
-                    setAvatarDropdown(false);
-                    setShowLogoutModal(true);
-                  }}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
-                >
-                  Logout
-                </button>
+                <div className="p-1">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-3 text-xs font-bold text-rose-500 uppercase tracking-widest hover:bg-rose-50 transition rounded-sm cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
-
-
-      {/* Logout Modal */}
-      {showLogoutModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-[100]">
-          <div className="bg-white dark:bg-deep rounded-xl shadow-2xl w-[90%] max-w-md p-6 animate-scaleIn">
-            <h2 className="text-xl font-bold text-dark dark:text-light mb-3">
-              Confirm Logout
-            </h2>
-            <p className=" text-dark mb-6">
-              Are you sure you want to logout from the admin panel?
-            </p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowLogoutModal(false)}
-                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={handleLogout}
-                disabled={loggingOut}
-                className="px-4 py-2 rounded bg-accent text-white hover:bg-dark transition disabled:opacity-50 cursor-pointer"
-              >
-                {loggingOut ? 'Logging out...' : 'Yes, Logout'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

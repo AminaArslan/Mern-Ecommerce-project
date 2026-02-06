@@ -1,158 +1,157 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
-  FiPlus, FiMinus, FiHome, FiGrid, FiShoppingBag,
-  FiInfo, FiPhone, FiHelpCircle, FiX, FiUser, FiLogIn, FiLogOut
+  FiChevronRight, FiChevronDown, FiPlus, FiMinus, FiHome, FiGrid, FiShoppingBag,
+  FiInfo, FiPhone, FiHelpCircle, FiX, FiUser, FiLogIn, FiLogOut, FiArrowUpRight
 } from 'react-icons/fi';
 import { useAuth } from '@/context/authContext';
-import API from '@/lib/axios';
-import toast from 'react-hot-toast';
+import BrandLogo from './BrandLogo';
 
 export default function Sidebar({ open, onClose }) {
   const { user, logout } = useAuth();
-  const [openCollection, setOpenCollection] = useState(false);
-  const [openShop, setOpenShop] = useState(false);
-  
-  const [categories, setCategories] = useState([]);
-  const [parentCategories, setParentCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
-  const [activeParent, setActiveParent] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch categories
-  const fetchCategories = async () => {
-    try {
-      const { data } = await API.get('/categories');
-      setCategories(data);
-      const parents = data.filter(c => !c.parentId && c.isActive);
-      setParentCategories(parents);
-      setActiveParent(parents[0] || null);
-    } catch (err) {
-      console.error('Failed to fetch categories', err);
-      toast.error('Failed to load categories');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  // Update subcategories when active parent changes
-  useEffect(() => {
-    if (!activeParent) {
-      setSubCategories([]);
-      return;
-    }
-    const subs = categories.filter(cat => cat.parentId === activeParent._id && cat.isActive);
-    setSubCategories(subs);
-  }, [activeParent, categories]);
-
-  if (loading) return <p className="text-center mt-5">Loading categories...</p>;
+  const [openInformation, setOpenInformation] = useState(false);
 
   return (
     <>
-      {/* Overlay for mobile */}
-      {open && <div onClick={onClose} className="fixed inset-0 bg-black/40 z-40 lg:hidden" />}
+      {/* 🌑 GLASSMORPHISM OVERLAY */}
+      {open && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-500"
+        />
+      )}
 
-      {/* Sidebar */}
+      {/* 🪐 LUXURY SIDEBAR */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-72 bg-primary text-dark flex flex-col shadow-xl z-50
-          transform transition-transform duration-300 ease-in-out
+        className={`fixed top-0 left-0 h-screen w-80 bg-dark text-white flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.5)] z-[70]
+          transform transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1)
           ${open ? 'translate-x-0' : '-translate-x-full'}
-          lg:hidden`}
+          lg:hidden border-r border-white/5 animate-in slide-in-from-left duration-700`}
       >
-        {/* Header / Logo */}
-        <div className="flex items-center justify-between gap-3 px-6 py-5 border-b border-deep">
-          <div className="flex items-center gap-3">
-            <Link href="/">
-              <img src="/logo2.jpg" alt="Logo" className="w-10 h-10 rounded-full ring-2 ring-accent" />
-            </Link>
-            <h2 className="text-lg font-bold tracking-wide">MyStore</h2>
-          </div>
-          <button onClick={onClose} className="text-2xl cursor-pointer"><FiX /></button>
+        {/* HEADER: PROMINENT BRANDING */}
+        <div className="flex items-center justify-between gap-3 px-8 py-10 border-b border-white/5 bg-white/[0.02]">
+          <Link href="/" onClick={onClose} className="flex items-center gap-4 group cursor-pointer">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-xl opacity-0 group-hover:opacity-100 transition duration-500 cursor-pointer scale-150"></div>
+              <BrandLogo
+                size={44}
+                className="relative transition-all duration-500 transform group-hover:scale-110"
+              />
+            </div>
+            <div className="flex flex-col cursor-pointer">
+              <h2 className="text-xl font-serif font-bold tracking-tighter text-white leading-none">
+                STUDIO <span className="italic font-light opacity-60">AMINA</span>
+              </h2>
+              <p className="text-[9px] uppercase tracking-[0.4em] text-amber-500/80 font-bold mt-1">
+                Boutique
+              </p>
+            </div>
+          </Link>
+          <button onClick={onClose} className="text-2xl cursor-pointer hover:rotate-90 transition-transform duration-500 text-gray-500 hover:text-white">
+            <FiX />
+          </button>
         </div>
 
-        {/* Menu */}
-        <nav className="flex-1 px-4 py-6 space-y-2 text-sm font-medium overflow-y-auto">
-          <Link href="/" onClick={onClose} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
-            <FiHome /> Home
-          </Link>
+        {/* MAIN NAVIGATION: SYNCHRONIZED WITH NAVBAR */}
+        <nav className="flex-1 px-6 py-10 space-y-3 overflow-y-auto custom-scrollbar">
 
-          {/* Collection */}
-          <button
-            onClick={() => setOpenCollection(!openCollection)}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-secondary transition cursor-pointer"
-          >
-            <span className="flex items-center gap-3"><FiGrid /> Collection</span>
-            {openCollection ? <FiMinus /> : <FiPlus />}
-          </button>
+          <SidebarLink href="/" icon={FiHome} label="Home" onClick={onClose} />
+          <SidebarLink href="/category" icon={FiGrid} label="Collection" onClick={onClose} />
+          <SidebarLink href="/products" icon={FiShoppingBag} label="Shop" onClick={onClose} />
 
-          {openCollection && (
-            <div className="ml-6 space-y-1">
-              {['Men', 'Women', 'Kids'].map(item => (
-                <Link
-                  key={item}
-                  href={`/category/${item.toLowerCase()}`}
-                  onClick={onClose}
-                  className="block px-4 py-2 rounded-md text-sm opacity-80 hover:bg-accent hover:text-light transition cursor-pointer"
-                >
-                  {item}
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {/* Shop */}
-          < Link href="/category" onClick={onClose} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
-            <FiShoppingBag /> Shop by categories
-          </Link>
-
-          {/* My Orders (only show if user logged in) */}
-          {user && (
-            <Link
-              href="/orders"
-              onClick={onClose}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition"
+          {/* INFORMATION ACCORDION (PAGES) */}
+          <div className="space-y-2">
+            <button
+              onClick={() => setOpenInformation(!openInformation)}
+              className="w-full flex items-center justify-between px-5 py-4 rounded-sm hover:bg-white/5 transition-all cursor-pointer group"
             >
-              <FiShoppingBag /> My Orders
-            </Link>
+              <span className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-400 group-hover:text-white transition-colors">
+                <FiInfo className="text-amber-500/60" /> Information
+              </span>
+              {openInformation ? <FiMinus size={14} /> : <FiPlus size={14} />}
+            </button>
+
+            <div className={`overflow-hidden transition-all duration-700 ease-in-out ${openInformation ? "max-h-96 opacity-100 mb-4" : "max-h-0 opacity-0"}`}>
+              <div className="ml-12 flex flex-col border-l border-white/5 space-y-1">
+                <SidebarSubLink href="/pages/about-us" label="About Us" onClick={onClose} />
+                <SidebarSubLink href="/pages/contact-us" label="Contact Us" onClick={onClose} />
+                <SidebarSubLink href="/pages/faq" label="FAQ" onClick={onClose} />
+              </div>
+            </div>
+          </div>
+
+          {user && (
+            <SidebarLink href="/orders" icon={FiShoppingBag} label="My Orders" onClick={onClose} />
           )}
         </nav>
 
-        {/* Footer */}
-        <div className="border-t border-deep sm:px-4 py-4 text-sm space-y-2">
-          <div className="flex flex-col gap-2">
-            <Link href="/pages/about-us" onClick={onClose} className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-secondary transition"><FiInfo /> About Us</Link>
-            <Link href="/pages/contact-us" onClick={onClose} className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-secondary transition"><FiPhone /> Contact Us</Link>
-            <Link href="/pages/faq" onClick={onClose} className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-secondary transition"><FiHelpCircle /> FAQ</Link>
-          </div>
-
-          {/* Mobile User Section */}
-          <div className="md:hidden border-t border-deep pt-3 mt-3">
-            {user ? (
-              <>
-                <div className="flex items-center gap-3 px-4 py-2 opacity-90">
-                  <FiUser />
-                  <span className="text-sm truncate">{user.email || user._id}</span>
+        {/* USER ARCHIVE SECTION */}
+        <div className="px-6 py-8 border-t border-white/5 bg-white/[0.01]">
+          {user ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 px-5 opacity-90">
+                <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                  <FiUser className="text-amber-500" size={14} />
                 </div>
-                <button
-                  onClick={() => { logout(); onClose(); }}
-                  className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-secondary transition text-left cursor-pointer"
-                >
-                  <FiLogOut /> Logout
-                </button>
-              </>
-            ) : (
-              <Link href="/login" onClick={onClose} className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-secondary transition cursor-pointer">
-                <FiLogIn /> Login
-              </Link>
-            )}
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold leading-none mb-1">Authenticated as</span>
+                  <span className="text-xs font-bold text-white truncate max-w-[160px]">{user.email || 'Archive User'}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => { logout(); onClose(); }}
+                className="w-full flex items-center justify-center gap-3 px-5 py-4 rounded-sm bg-white/5 hover:bg-rose-500/10 hover:text-rose-400 transition-all text-left cursor-pointer group"
+              >
+                <FiLogOut className="group-hover:rotate-12 transition-transform" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em]">Exit the Archive</span>
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              onClick={onClose}
+              className="flex items-center justify-center gap-3 px-8 py-5 rounded-sm bg-white text-dark hover:bg-amber-400 transition-all duration-500 cursor-pointer shadow-2xl"
+            >
+              <FiLogIn size={18} />
+              <span className="text-xs font-bold uppercase tracking-[0.3em]">Access Boutique</span>
+            </Link>
+          )}
+
+          <div className="mt-8 text-center">
+            <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.3em] italic">© 2026 Studio Amina.</p>
           </div>
         </div>
       </aside>
     </>
+  );
+}
+
+function SidebarLink({ href, icon: Icon, label, onClick }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center justify-between px-5 py-5 rounded-sm hover:bg-white/5 transition-all cursor-pointer group border-b border-transparent hover:border-amber-400/20"
+    >
+      <span className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-300 group-hover:text-white group-hover:tracking-[0.3em] transition-all duration-500">
+        <Icon className="text-amber-400/40 group-hover:text-amber-400 transition-colors" size={18} />
+        {label}
+      </span>
+      <FiChevronRight size={14} className="text-gray-700 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+    </Link>
+  );
+}
+
+function SidebarSubLink({ href, label, onClick }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center justify-between px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 hover:text-amber-400 transition-all cursor-pointer group"
+    >
+      <span>{label}</span>
+      <FiArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+    </Link>
   );
 }

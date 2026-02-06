@@ -4,11 +4,13 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getOrderById } from '@/lib/axios';
 import { useCart } from '@/context/cartContext';
+import { FiCheck, FiArrowRight } from 'react-icons/fi';
+import Link from 'next/link';
 
 export default function PaymentSuccessClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { clearCart, cart } = useCart();
+  const { clearCart } = useCart();
 
   const orderId = searchParams.get('orderId');
   const [order, setOrder] = useState(null);
@@ -41,52 +43,89 @@ export default function PaymentSuccessClient() {
     fetchOrderAndClearCart();
   }, [orderId, clearCart]);
 
-  // if (loading) return <p className="text-center mt-12">Loading...</p>; 
-  if (error) return <p className="text-center mt-12 text-red-500">{error}</p>;
-  if (!order) return <p className="text-center mt-12">Order not found!</p>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-[#f0f0f0]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 animate-pulse">Verifying Transaction...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-[#f0f0f0]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-rose-500">{error}</p>
+      </div>
+    );
+  }
+
+  if (!order) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-[#f0f0f0]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Order not found.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-green-600 mb-4">Payment Successful!</h1>
-      <p className="mb-2">
-        Thank you, <span className="font-medium">{order.shippingAddress.firstName}</span>.
-      </p>
-      <p className="mb-2">
-        Order ID: <span className="font-medium">{order._id}</span>
-      </p>
-      <p className="mb-6">
-        Total Paid:{' '}
-        <span className="font-medium">
-          Rs.{order.totalPrice.toLocaleString('en-IN')}
-        </span>
-      </p>
+    <div className="min-h-screen flex justify-center items-center bg-[#f0f0f0] px-4 py-10 md:px-6 md:py-20">
+      <div className="w-full max-w-2xl bg-white p-8 md:p-14 border border-gray-100 shadow-2xl rounded-sm space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">Order Items:</h2>
-        <ul className="space-y-3">
-          {order.orderItems.map((item) => (
-            <li key={item.product} className="flex items-center gap-4 border p-3 rounded">
-                {/* <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 object-cover rounded"
-                /> */}
-              <div>
-                <p className="font-medium">{item.name}</p>
-                <p>Quantity: {item.quantity}</p>
-                <p>Price: Rs.{item.price.toLocaleString('en-IN')}</p>
+        {/* SUCCESS HEADER */}
+        <div className="text-center space-y-6">
+          <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FiCheck className="text-green-600 text-3xl" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-serif text-dark leading-none tracking-tight">
+            Order <span className="italic font-light text-green-600">Confirmed.</span>
+          </h1>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 leading-relaxed">
+            Thank you, {order.shippingAddress.firstName}. Your curation is secured.
+          </p>
+        </div>
+
+        {/* ORDER DETAILS */}
+        <div className="space-y-8 border-t border-b border-gray-50 py-8">
+          <div className="flex justify-between items-end">
+            <div>
+              <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest mb-1">Order ID</p>
+              <p className="text-xs font-mono font-bold text-dark">{order._id}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest mb-1">Total Amount</p>
+              <p className="text-xl font-serif font-bold text-dark">Rs. {order.totalPrice.toLocaleString('en-IN')}</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <p className="text-[10px] font-bold text-dark uppercase tracking-[0.2em] mb-4">Curation Summary</p>
+            {order.orderItems.map((item) => (
+              <div key={item.product} className="flex justify-between items-center text-sm border-b border-dashed border-gray-100 pb-2 last:border-0">
+                <span className="font-medium text-gray-600">{item.name} <span className="text-xs text-gray-300">x{item.quantity}</span></span>
+                <span className="font-bold text-dark">Rs. {item.price.toLocaleString('en-IN')}</span>
               </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+            ))}
+          </div>
+        </div>
 
-      <button
-        onClick={() => router.push('/orders')}
-        className="bg-accent text-light py-2 px-4 rounded hover:bg-dark cursor-pointer"
-      >
-        View My Orders
-      </button>
+        {/* ACTIONS */}
+        <div className="space-y-4">
+          <button
+            onClick={() => router.push('/orders')}
+            className="w-full group flex items-center justify-between bg-dark text-white px-8 py-5 hover:bg-gray-800 transition-all duration-300 shadow-xl shadow-dark/10 cursor-pointer"
+          >
+            <span className="text-[10px] font-bold uppercase tracking-[0.4em]">View Order Status</span>
+            <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
+          </button>
+
+          <Link href="/products" className="block text-center">
+            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] hover:text-dark transition-colors cursor-pointer border-b border-transparent hover:border-dark pb-0.5">
+              Return to Collection
+            </span>
+          </Link>
+        </div>
+
+      </div>
     </div>
   );
 }

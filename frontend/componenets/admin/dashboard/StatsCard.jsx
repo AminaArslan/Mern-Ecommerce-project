@@ -7,48 +7,55 @@ import { FaShoppingCart, FaUsers } from 'react-icons/fa';
 export default function StatsCards({ stats }) {
   const statsData = [
     {
-      label: 'Products',
+      label: 'Total Products',
       value: stats.products,
-      bg: 'bg-secondary',
-      icon: <MdInventory size={36} />,
+      bgIcon: 'bg-indigo-50 text-indigo-600',
+      icon: <MdInventory size={24} />,
+      border: 'border-l-4 border-indigo-500',
     },
     {
-      label: 'Categories',
+      label: 'Active Categories',
       value: stats.categories,
-      bg: 'bg-accent',
-      icon: <BiCategory size={36} />,
+      bgIcon: 'bg-emerald-50 text-emerald-600',
+      icon: <BiCategory size={24} />,
+      border: 'border-l-4 border-emerald-500',
     },
     {
-      label: 'Orders',
+      label: 'Total Orders',
       value: stats.orders,
-      bg: 'bg-deep',
-      icon: <FaShoppingCart size={36} />,
+      bgIcon: 'bg-amber-50 text-amber-600',
+      icon: <FaShoppingCart size={24} />,
+      border: 'border-l-4 border-amber-500',
     },
     {
-      label: 'Users',
+      label: 'Customers',
       value: stats.customers,
-      bg: 'bg-dark',
-      icon: <FaUsers size={36} />,
+      bgIcon: 'bg-rose-50 text-rose-600',
+      icon: <FaUsers size={24} />,
+      border: 'border-l-4 border-rose-500',
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
       {statsData.map((item) => (
         <div
           key={item.label}
-          className={`${item.bg} text-light p-6 rounded-xl shadow-lg flex flex-col items-center justify-center cursor-default transform transition-all hover:scale-105 hover:shadow-2xl`}
+          className={`bg-white p-6 rounded-sm shadow-xl border border-gray-100/50 hover:shadow-2xl transition-all duration-300 group ${item.border}`}
         >
-          {/* Icon with circular background */}
-          <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-            {item.icon}
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                {item.label}
+              </p>
+              <h3 className="text-3xl font-serif text-dark group-hover:scale-105 transition-transform origin-left">
+                {item.value}
+              </h3>
+            </div>
+            <div className={`p-3 rounded-full ${item.bgIcon} shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+              {item.icon}
+            </div>
           </div>
-
-          {/* Value */}
-          <span className="text-3xl font-bold">{item.value}</span>
-
-          {/* Label */}
-          <span className="text-lg mt-1">{item.label}</span>
         </div>
       ))}
     </div>

@@ -69,33 +69,58 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <p className="text-dark text-center mt-10 text-lg animate-pulse">
-        Loading dashboard...
-      </p>
+      <div className="w-full h-96 flex items-center justify-center">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 animate-pulse">
+          Loading Overview...
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 p-2 sm:p-4 overflow-x-hidden">
-      <h1 className="text-3xl font-bold text-dark">Admin Dashboard</h1>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-6 border-b border-gray-100">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-serif text-dark mb-2">Overview</h1>
+          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+            Welcome back, {user?.name}
+          </p>
+        </div>
+        <div className="text-right hidden sm:block">
+          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Current Session</p>
+          <p className="text-sm font-mono text-gray-600">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+        </div>
+      </div>
 
       {/* Stats Cards */}
       <StatsCards stats={stats} />
 
       {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <OrdersLineChart data={weeklyOrders} />
-        <CategoriesPieChart
-          data={categoriesData}
-          onCategoryClick={handleCategoryClick} // pass click callback
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white p-6 rounded-sm shadow-xl border border-gray-100">
+          <OrdersLineChart data={weeklyOrders} />
+        </div>
+        <div className="bg-white p-6 rounded-sm shadow-xl border border-gray-100">
+          <CategoriesPieChart
+            data={categoriesData}
+            onCategoryClick={handleCategoryClick}
+          />
+        </div>
       </div>
 
-      {/* Top Products (optionally filtered by selected category) */}
-      <TopProducts category={selectedCategory} />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Top Products */}
+        <div className="xl:col-span-1">
+          <TopProducts category={selectedCategory} />
+        </div>
 
-      {/* Recent Orders */}
-      <RecentOrders />
+        {/* Recent Orders */}
+        <div className="xl:col-span-2">
+          <RecentOrders />
+        </div>
+      </div>
     </div>
   );
 }

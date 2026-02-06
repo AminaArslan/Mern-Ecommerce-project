@@ -159,19 +159,51 @@ export const deleteCategory = async (req, res) => {
   }
 };
 
-// ---------------- Get Categories for Users ----------------
+// ---------------- Get Categories for Users (Only those with products + Preview Image) ----------------
 export const getCategoriesForUsers = async (req, res) => {
   try {
+    // 1. Get all active categories with product count verification
     const categories = await Category.find({ isActive: true }).sort({ name: 1 });
 
-    // Structure: parent categories with subcategories
+    // 2. Identify all categories (including parents) that directly have active products
+    // We also want to get ONE product image for the preview
+    const catIdsWithDirectProducts = await Product.distinct("category", { isActive: true });
+    const directCatIds = catIdsWithDirectProducts.map(id => id.toString());
+
+    // 3. Structure and Filter
     const parents = categories.filter(c => !c.parentId);
-    const structured = parents.map(parent => ({
-      ...parent.toObject(),
-      subCategories: categories.filter(c => c.parentId?.toString() === parent._id.toString())
+    const structured = await Promise.all(parents.map(async (parent) => {
+      // Filter subcategories: only those that have products
+      const unfilteredChildren = categories.filter(c =>
+        c.parentId?.toString() === parent._id.toString() &&
+        directCatIds.includes(c._id.toString())
+      );
+
+      // Add a preview image from the first product for each child
+      const children = await Promise.all(unfilteredChildren.map(async (child) => {
+        const product = await Product.findOne({ category: child._id, isActive: true })
+          .select("images")
+          .sort({ createdAt: -1 });
+
+        return {
+          ...child.toObject(),
+          previewImage: product?.images?.[0]?.url || child.image || ""
+        };
+      }));
+
+      return {
+        ...parent.toObject(),
+        subCategories: children
+      };
     }));
 
-    res.json(structured);
+    // Filter parents: Keep only if parent has products OR has children with products
+    const finalStructured = structured.filter(parent =>
+      directCatIds.includes(parent._id.toString()) ||
+      parent.subCategories.length > 0
+    );
+
+    res.json(finalStructured);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });

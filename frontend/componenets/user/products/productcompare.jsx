@@ -1,139 +1,125 @@
 "use client";
-import { useState, useRef } from "react";
-import { FaSun, FaSnowflake } from "react-icons/fa";
+import { useState, useRef, useEffect } from "react";
+import { FiChevronLeft, FiChevronRight, FiArrowRight } from "react-icons/fi";
+import Link from 'next/link';
 
 export default function ProductCompare() {
   const [dividerPos, setDividerPos] = useState(50);
   const containerRef = useRef(null);
+  const [isResizing, setIsResizing] = useState(false);
 
-  // Mouse drag
-  const startDrag = (e) => {
-    e.preventDefault();
+  // Handle interaction (Mouse & Touch)
+  const handleMove = (clientX) => {
     const container = containerRef.current;
     if (!container) return;
+    const rect = container.getBoundingClientRect();
+    let pos = ((clientX - rect.left) / rect.width) * 100;
+    pos = Math.max(0, Math.min(100, pos));
+    setDividerPos(pos);
+  };
 
-    const onMouseMove = (moveEvent) => {
-      const rect = container.getBoundingClientRect();
-      let pos = ((moveEvent.clientX - rect.left) / rect.width) * 100;
-      pos = Math.max(0, Math.min(100, pos));
-      setDividerPos(pos);
-    };
+  const onMouseMove = (e) => {
+    if (!isResizing) return;
+    handleMove(e.clientX);
+  };
 
-    const onMouseUp = () => {
+  const onTouchMove = (e) => {
+    if (!isResizing) return;
+    handleMove(e.touches[0].clientX);
+  };
+
+  const stopInteraction = () => setIsResizing(false);
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("touchmove", onTouchMove);
+      window.addEventListener("mouseup", stopInteraction);
+      window.addEventListener("touchend", stopInteraction);
+    }
+    return () => {
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  };
-
-  // Touch drag
-  const startTouch = (e) => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const onTouchMove = (touchEvent) => {
-      const rect = container.getBoundingClientRect();
-      let pos =
-        ((touchEvent.touches[0].clientX - rect.left) / rect.width) * 100;
-      pos = Math.max(0, Math.min(100, pos));
-      setDividerPos(pos);
-    };
-
-    const onTouchEnd = () => {
       window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("mouseup", stopInteraction);
+      window.removeEventListener("touchend", stopInteraction);
     };
-
-    window.addEventListener("touchmove", onTouchMove);
-    window.addEventListener("touchend", onTouchEnd);
-  };
+  }, [isResizing]);
 
   return (
-    <section className=" flex pb-12 lg:pb-26">
-      <div className="container mx-auto px-4 w-full grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Image comparison */}
+    <section className="w-full py-20 lg:py-32 bg-white border-t border-gray-100">
+      <div className="container mx-auto px-3 md:px-6 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        {/* INTERACTIVE COMPARISON SLIDER */}
         <div
           ref={containerRef}
-          className="relative w-full  h-60 sm:h-96 overflow-hidden shadow-lg "
+          className="relative w-full aspect-[4/3] rounded-sm overflow-hidden cursor-ew-resize select-none group shadow-xl"
+          onMouseDown={(e) => { setIsResizing(true); handleMove(e.clientX); }}
+          onTouchStart={(e) => { setIsResizing(true); handleMove(e.touches[0].clientX); }}
         >
-          {/* Left image */}
+          {/* Left Image (Base) */}
           <img
             src="/compare/4tiles_web_print.webp"
-            alt="Summer"
-            className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300"
-            style={{
-              filter: `brightness(${100 - dividerPos * 0.2}%)`,
-              transform: `scale(${1 + dividerPos * 0.002})`,
-            }}
+            alt="Style Variant 1"
+            className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* Summer Label */}
-          <span
-            className="absolute top-4 left-4 bg-white/70 px-2 py-1 rounded font-semibold text-sm transition-opacity duration-300 z-20"
-            style={{ opacity: dividerPos > 5 ? 1 : 0 }}
-          >
-            West
-          </span>
+          <div className="absolute top-6 left-6 z-20">
+            <span className="text-white text-xs font-bold tracking-[0.2em] uppercase bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+              Style 01
+            </span>
+          </div>
 
-          {/* Right image */}
-          <img
-            src="/compare/carousel_desktop_WEST.webp"
-            alt="Winter"
-            className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300"
-            style={{
-              clipPath: `inset(0 ${100 - dividerPos}% 0 0)`,
-              filter: `blur(${(100 - dividerPos) * 0.05}px)`,
-              transform: `scale(${1 + (100 - dividerPos) * 0.002})`,
-            }}
-          />
-          {/* Winter Label */}
-          <span
-            className="absolute top-4 right-4 bg-white/70 px-2 py-1 rounded font-semibold text-sm transition-opacity duration-300 z-20"
-            style={{ opacity: dividerPos < 95 ? 1 : 0 }}
-          >
-            East
-          </span>
-
-          {/* Divider line */}
+          {/* Right Image (Overlay) */}
           <div
-            className="absolute top-0 h-full w-1 bg-white z-10 pointer-events-none"
+            className="absolute inset-0 w-full h-full overflow-hidden"
+            style={{ clipPath: `inset(0 0 0 ${dividerPos}%)` }}
+          >
+            <img
+              src="/compare/carousel_desktop_WEST.webp"
+              alt="Style Variant 2"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute top-6 right-6 z-20">
+              <span className="text-white text-xs font-bold tracking-[0.2em] uppercase bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+                Style 02
+              </span>
+            </div>
+          </div>
+
+          {/* Draggable Divider */}
+          <div
+            className="absolute top-0 bottom-0 w-1 bg-white cursor-col-resize z-30 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
             style={{ left: `${dividerPos}%` }}
-          ></div>
-
-          {/* Handle circle */}
-          <div
-            className="absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border border-gray-300 shadow z-20
-                       cursor-ew-resize flex items-center justify-center transition-transform duration-150
-                       hover:scale-110 hover:bg-white/90 active:scale-125"
-            style={{ left: `${dividerPos}%`, transform: `translate(-50%, -50%)` }}
-            onMouseDown={startDrag}
-            onTouchStart={startTouch}
           >
-            {dividerPos < 50 ? (
-              <FaSun className="text-yellow-500 w-5 h-5" />
-            ) : (
-              <FaSnowflake className="text-blue-400 w-5 h-5" />
-            )}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-2xl scale-100 transition-transform duration-200 hover:scale-110 active:scale-95">
+              <FiChevronLeft className="text-dark w-4 h-4" />
+              <FiChevronRight className="text-dark w-4 h-4" />
+            </div>
           </div>
         </div>
 
-        {/* Product info */}
-<div className="flex flex-col  gap-4 lg:gap-8">
-    <p className="font-medium text-base text-gray-600 relative group inline-block cursor-pointer uppercase">compare</p>
-    <h1 className="font-medium lg:text-4xl md:text-3xl sm:text-2xl text-xl text-dark">
-      Signature All-Season Series
-    </h1>
-    <p className="text-gray-700 text-base">
-      Inspired by timeless elegance and effortless comfort, this collection is crafted for modern living. Each piece is thoughtfully designed to transition from busy city mornings to serene weekend escapes. Ethically made with attention to detail, it celebrates both style and sustainability.
-    </p>
-  
+        {/* TEXT CONTENT */}
+        <div className="flex flex-col space-y-8">
+          <div>
+            <span className="text-xs font-bold tracking-[0.3em] text-gray-400 uppercase mb-4 block">
+              Versatility
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif text-dark leading-tight">
+              One Design, <br /> Two Expressions.
+            </h2>
+          </div>
 
+          <p className="text-gray-600 text-lg leading-relaxed font-light max-w-lg">
+            Discover how a single silhouette transforms with texture and tone.
+            From the structured elegance of our West collection to the fluid drapes of East,
+            find the balance that speaks to your personal style.
+          </p>
 
-<span className="text-gray-800 font-medium underline underline-offset-4 cursor-pointer">
-  DISCOVER MORE
-</span>
-</div>
+          <Link href="/category" className="group inline-flex items-center gap-3 text-dark font-medium tracking-wide border-b border-dark pb-1 w-fit hover:text-gray-600 hover:border-gray-600 transition-all">
+            Explore The Series
+            <FiArrowRight className="transform group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
       </div>
     </section>
   );

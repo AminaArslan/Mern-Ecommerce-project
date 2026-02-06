@@ -15,11 +15,11 @@ export const createCheckoutSession = async (req, res) => {
   }
 
   try {
-     const baseServerUrl = process.env.SERVER_URL;
+    const baseServerUrl = process.env.SERVER_URL;
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: order.orderItems.map(item => {
-         let imageUrl = item.product?.image || item.image || "";
+        let imageUrl = item.product?.image || item.image || "";
 
         //  If image is stored like "/uploads/abc.jpg", make it full URL
         if (imageUrl && !imageUrl.startsWith("http")) {
@@ -31,10 +31,10 @@ export const createCheckoutSession = async (req, res) => {
 
         return {
           price_data: {
-            currency: "usd",
+            currency: "pkr",
             product_data: {
               name: item.name,
-                 images: imagesArray, // ✅ Safe images
+              images: imagesArray, // ✅ Safe images
             },
             unit_amount: Math.round(item.price * 100), // Stripe needs cents
           },
@@ -51,12 +51,12 @@ export const createCheckoutSession = async (req, res) => {
 
     res.json({ url: session.url });
   } catch (error) {
-  console.error(" FULL STRIPE ERROR:", error);
-  res.status(500).json({ 
-    message: "Stripe session creation failed",
-    error: error.message 
-  });
-}
+    console.error(" FULL STRIPE ERROR:", error);
+    res.status(500).json({
+      message: "Stripe session creation failed",
+      error: error.message
+    });
+  }
 
 };
 

@@ -17,14 +17,15 @@ const roboto = Roboto({
 
 
 const caslon = Libre_Caslon_Text({
-subsets: ["latin"],
-weight: ["400", "700"],
-variable: "--font-caslon",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-caslon",
 });
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const showNavbar = !pathname.startsWith("/admin");
+  const showFooter = !pathname.startsWith("/admin") && pathname !== "/login" && pathname !== "/register";
 
   return (
     <html lang="en">
@@ -41,7 +42,7 @@ export default function RootLayout({ children }) {
               </main>
 
               {/* Footer */}
-              {/* <Footer /> */}
+              {showFooter && <Footer />}
 
               {/* Toast notifications */}
               <Toaster position="top-right" reverseOrder={false} />

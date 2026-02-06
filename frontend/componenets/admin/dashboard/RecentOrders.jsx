@@ -1,8 +1,7 @@
-
 'use client';
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
-import { FiShoppingBag } from 'react-icons/fi';
+import { FiShoppingBag, FiClock } from 'react-icons/fi';
 import { FaCircle } from 'react-icons/fa';
 
 export default function RecentOrdersCard() {
@@ -21,17 +20,16 @@ export default function RecentOrdersCard() {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-dark rounded-2xl shadow-xl p-6 w-full">
-      
+    <div className="bg-white rounded-sm shadow-xl border border-gray-100 p-6 w-full h-full">
+
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="text-lg font-bold text-gray-800 dark:text-light flex items-center gap-2">
-          <FiShoppingBag className="text-accent" />
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-50">
+        <h2 className="font-serif text-xl font-bold text-dark">
           Recent Orders
         </h2>
-        <span className="text-xs text-gray-500 dark:text-gray-400">
-          Last 5 orders
-        </span>
+        <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-3 py-1.5 rounded-full">
+          <FiClock /> <span>Latest 5</span>
+        </div>
       </div>
 
       {/* Orders List */}
@@ -39,47 +37,44 @@ export default function RecentOrdersCard() {
         {orders.map((order) => (
           <div
             key={order._id}
-            className="flex items-center justify-between bg-gray-50 dark:bg-white/5 p-4 rounded-xl hover:shadow-md hover:scale-[1.02] transition-all duration-300"
+            className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 -mx-4 rounded-sm hover:bg-gray-50 transition-all duration-200 border-b border-gray-50 last:border-0"
           >
-            {/* Left Side */}
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center font-bold text-sm">
-                #{order._id.slice(-4)}
-              </div>
+            <div className="flex items-center justify-between sm:justify-start gap-4 mb-3 sm:mb-0 w-full sm:w-auto">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-[10px] sm:text-xs shadow-sm border border-amber-100 group-hover:scale-110 transition-transform shrink-0">
+                  #{order._id.slice(-4)}
+                </div>
 
-              <div>
-                <p className="text-sm font-semibold text-gray-800 dark:text-light">
-                  {order.orderItems?.[0]?.name || 'Product'}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {order.orderItems?.[0]?.quantity || 1} item(s)
-                </p>
+                <div>
+                  <p className="text-sm font-bold text-dark group-hover:text-amber-600 transition-colors line-clamp-1">
+                    {order.orderItems?.[0]?.name || 'Product'}
+                  </p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                    {order.orderItems?.length || 1} Item(s) • {new Date(order.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Right Side */}
-            <div className="text-right">
-              <p className="text-sm font-bold text-gray-800 dark:text-light">
+            <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 pl-0 sm:pl-0 w-full sm:w-auto mt-2 sm:mt-0">
+              <span
+                className={`flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border ${order.orderStatus === 'delivered'
+                  ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                  : order.orderStatus === 'pending'
+                    ? 'bg-amber-50 text-amber-600 border-amber-100'
+                    : order.orderStatus === 'shipped'
+                      ? 'bg-blue-50 text-blue-600 border-blue-100'
+                      : 'bg-rose-50 text-rose-600 border-rose-100'
+                  }`}
+              >
+                <FaCircle className="text-[6px]" />
+                {order.orderStatus}
+              </span>
+
+              <p className="font-serif font-bold text-dark text-sm min-w-[80px] text-right">
                 Rs.{Number(order.totalPrice).toLocaleString('en-IN')}
               </p>
-
-            <span
-  className={`mt-1 inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
-    order.orderStatus === 'delivered'
-      ? 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400'
-      : order.orderStatus === 'pending'
-      ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-400'
-      : order.orderStatus === 'shipped'
-      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400'
-      : order.orderStatus === 'cancelled' || order.orderStatus === 'canceled'
-      ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'
-      : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-  }`}
->
-  <FaCircle className="text-[8px]" />
-  {order.orderStatus}
-</span>
-
             </div>
           </div>
         ))}
@@ -87,11 +82,10 @@ export default function RecentOrdersCard() {
 
       {/* Empty State */}
       {orders.length === 0 && (
-        <div className="text-center text-gray-500 dark:text-gray-400 py-6 text-sm">
+        <div className="text-center text-gray-400 py-10 text-xs uppercase tracking-widest">
           No recent orders found
         </div>
       )}
     </div>
   );
 }
-

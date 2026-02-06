@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import LatestProducts from "@/componenets/user/products/latestproduct";
 import "./globals.css";
-import CategoryBoxes from "@/app/category/page";
 import HeroPage from "@/componenets/user/hero";
 import ExploreNewCollection from "@/componenets/user/products/newcollection";
 import ProductCompare from "@/componenets/user/products/productcompare";
@@ -35,20 +34,19 @@ export default function HomePage() {
 
       {/* Featured Products Section */}
       <LatestProducts />
-      <ExploreNewCollection /> 
+      <ExploreNewCollection />
       <ProductCompare />
       <CollectionsSection />
-      <CategoryBoxes />
       <Footer />
 
       {/* Scroll to Top Button */}
       {showButton && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg ring-btn cursor-pointer"
-          style={{ backgroundColor: "var(--color-accent)" }}
+          className="fixed bottom-4 right-4 md:bottom-8 md:right-8 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center text-[#111827] shadow-2xl ring-btn cursor-pointer z-50 transition-all duration-500 hover:scale-110 active:scale-95 border border-white/10"
+          style={{ backgroundColor: "#fbbf24" }}
         >
-          ↑
+          <span className="text-xl md:text-2xl font-bold">↑</span>
         </button>
       )}
     </div>

@@ -1,68 +1,107 @@
   @import "tailwindcss";
 
-  /* 🎨 Custom Theme Colors */
+  /* 🎨 Custom Theme Colors - Fashion Minimalist (Clothing Store) */
   :root {
     /* 🌞 Light Mode */
-    --color-primary: #EDEDCE;   /* Page background */
-    --color-secondary: #629FAD; /* Cards / dropdown */
-    --color-accent: #296374;   /* Buttons / highlights */
-    --color-dark: #0C2C55;     /* Navbar / footer */
-    --color-deep: #083059;     /* Borders / hover */
+    --color-primary: #FFFFFF;
+    /* Pure White - Luxury Base */
+    --color-secondary: #F9FAFB;
+    /* Gray 50 - Subtle Sections */
+    --color-accent: #111827;
+    /* Jet Black - Sophisticated */
+    --color-dark: #000000;
+    /* Pure Black Text */
+    --color-deep: #E5E7EB;
+    /* Light Gray Borders */
 
-    --text-light: #ffffff;
-    --text-dark: #0C2C55;
+    --text-light: #FFFFFF;
+    --text-dark: #1F2937;
+    /* Gray 800 */
   }
 
   .dark {
     /* 🌙 Dark Mode */
-    --color-primary: #081e38;
-    --color-secondary: #0f2a4d;
-    --color-accent: #629FAD;
-    --color-dark: #0C2C55;
-    --color-deep: #296374;
+    --color-primary: #000000;
+    /* Pure Black */
+    --color-secondary: #111827;
+    /* Gray 900 */
+    --color-accent: #FFFFFF;
+    /* White Accent */
+    --color-dark: #FFFFFF;
+    /* White Text */
+    --color-deep: #374151;
+    /* Gray 700 Borders */
 
-    --text-light: #EDEDCE;
-    --text-dark: #EDEDCE;
+    --text-light: #000000;
+    --text-dark: #D1D5DB;
+    /* Gray 300 */
   }
 
   body {
     background-color: var(--color-primary);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', 'Roboto', sans-serif;
     color: var(--text-dark);
     margin: 0;
   }
- 
+
   /* Elegant headings */
-h1, h2, h3, .section-title {
-font-family: 'Libre Caslon Text', serif;
-/* letter-spacing: 1px; */
-}
+  h1,
+  h2,
+  h3,
+  .section-title {
+    font-family: 'Libre Caslon Text', serif;
+    /* letter-spacing: 1px; */
+  }
 
 
-/* Tagline / fashion quotes */
-.tagline {
-font-family: 'Libre Caslon Text', serif;
-font-style: italic;
-}
+  /* Tagline / fashion quotes */
+  .tagline {
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+  }
 
 
-/* Buttons stay modern */
-button, .btn {
-font-family: 'Roboto', sans-serif;
-font-weight: 500;
-}
+  /* Buttons stay modern */
+  button,
+  .btn {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+  }
+
   /* =========================
     🔹 Utility Classes
     ========================= */
-  .bg-primary   { background-color: var(--color-primary); }
-  .bg-secondary { background-color: var(--color-secondary); }
-  .bg-accent    { background-color: var(--color-accent); }
-  .bg-dark      { background-color: var(--color-dark); }
-  .bg-deep      { background-color: var(--color-deep); }
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
 
-  .text-accent  { color: var(--color-accent); }
-  .text-light   { color: var(--text-light); }
-  .text-dark    { color: var(--text-dark); }
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+
+  .bg-accent {
+    background-color: var(--color-accent);
+  }
+
+  .bg-dark {
+    background-color: var(--color-dark);
+  }
+
+  .bg-deep {
+    background-color: var(--color-deep);
+  }
+
+  .text-accent {
+    color: var(--color-accent);
+  }
+
+  .text-light {
+    color: var(--text-light);
+  }
+
+  .text-dark {
+    color: var(--text-dark);
+  }
 
   /* =========================
     🔘 Buttons
@@ -76,6 +115,7 @@ font-weight: 500;
     cursor: pointer;
     transition: 0.2s ease-in;
   }
+
   .btn-primary:hover {
     background: var(--color-dark);
   }
@@ -87,15 +127,17 @@ font-weight: 500;
     background-color: var(--color-secondary);
     color: var(--text-dark);
     border-radius: 8px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
     overflow: hidden;
   }
+
   .dropdown .header {
     font-weight: bold;
     padding: 0.6rem 1rem;
     background: var(--color-dark);
     color: var(--text-light);
   }
+
   .dropdown .body {
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
@@ -118,168 +160,209 @@ font-weight: 500;
     position: absolute;
   }
 
-/* =========================
+  /* =========================
    👤 Avatar
    ========================= */
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--color-accent);
-  color: var(--text-light);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  transition: box-shadow 0.2s ease-in-out;
-}
-.avatar:hover {
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
-}
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 0.2s ease-in-out;
+  }
 
-/* Target only the table wrapper scroll */
-.table-wrapper::-webkit-scrollbar {
-  height: 12px; /* horizontal scrollbar */
-  width: 12px;  /* vertical scrollbar */
-}
+  .avatar:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  }
 
-.table-wrapper::-webkit-scrollbar-track {
-  background: #f0f0f0;
-  border-radius: 6px;
-}
+  /* Target only the table wrapper scroll */
+  .table-wrapper::-webkit-scrollbar {
+    height: 12px;
+    /* horizontal scrollbar */
+    width: 12px;
+    /* vertical scrollbar */
+  }
 
-.table-wrapper::-webkit-scrollbar-thumb {
-  background-color: #296374;
-  border-radius: 6px;
-  border: 3px solid #f0f0f0;
-}
+  .table-wrapper::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 6px;
+  }
 
-.table-wrapper::-webkit-scrollbar-thumb:hover {
-  background-color: #0c2c55;
-}
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background-color: #296374;
+    border-radius: 6px;
+    border: 3px solid #f0f0f0;
+  }
 
-/* Firefox */
-.table-wrapper {
-  scrollbar-width: thin;
-  scrollbar-color: #296374 #f0f0f0;
-}
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: #0c2c55;
+  }
+
+  /* Firefox */
+  .table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #296374 #f0f0f0;
+  }
+
+  /* =========================
+     🎨 Global Custom Scrollbar
+     ========================= */
+  
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #111827 0%, #000000 100%);
+    border-radius: 10px;
+    border: 2px solid #f0f0f0;
+    transition: all 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+    border-color: #fef3c7;
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #111827 #f0f0f0;
+  }
 
 
 
-/* =========================
+  /* =========================
    🎯 Hero Content Pagination
    ========================= */
 
-.hero-pagination {
-  display: flex;
-  gap: 6px;
-}
+  .hero-pagination {
+    display: flex;
+    gap: 6px;
+  }
 
-.hero-pagination .swiper-pagination-bullet {
-  width: 7px;
-  height: 7px;
-  background: var(--color-secondary);
-  opacity: 0.5;
-  transition: 0.3s ease;
-}
+  .hero-pagination .swiper-pagination-bullet {
+    width: 7px;
+    height: 7px;
+    background: var(--color-secondary);
+    opacity: 0.5;
+    transition: 0.3s ease;
+  }
 
-.hero-pagination .swiper-pagination-bullet-active {
-  background: var(--color-accent);
-  opacity: 1;
-  transform: scale(1.2);
-}
+  .hero-pagination .swiper-pagination-bullet-active {
+    background: var(--color-accent);
+    opacity: 1;
+    transform: scale(1.2);
+  }
 
-/* =========================
+  /* =========================
    ⬅➡ Hero Navigation Buttons
    ========================= */
 
-.nav-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  color: var(--text-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
+  .nav-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
 
-.nav-btn:hover {
-  background: var(--color-dark);
-}
+  .nav-btn:hover {
+    background: var(--color-dark);
+  }
 
 
 
-/* animition........................................................... */
+  /* animition........................................................... */
 
-/* Ringing Animation Effect */
-.ring-btn::before,
-.ring-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 8px solid var(--color-accent); /* theme color */
-  animation: ring-wave 2s infinite;
-  transform: scale(1);
-  opacity: 0;
-}
-
-.ring-btn::after {
-  animation-delay: 1s;
-}
-
-@keyframes ring-wave {
-  0% {
+  /* Ringing Animation Effect */
+  .ring-btn::before,
+  .ring-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 8px solid var(--color-accent);
+    /* theme color */
+    animation: ring-wave 2s infinite;
     transform: scale(1);
-    opacity: 0.8;
-  }
-  70% {
-    transform: scale(1.5);
     opacity: 0;
   }
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
+
+  .ring-btn::after {
+    animation-delay: 1s;
   }
-}
+
+  @keyframes ring-wave {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+
+    70% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
 
 
-@keyframes border-dash {
-  0% {
+  @keyframes border-dash {
+    0% {
+      background-position: 0 0, 0 100%, 0 0, 100% 0;
+    }
+
+    100% {
+      background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
+    }
+  }
+
+  .dashed-animate {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
+      linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
+      linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y,
+      linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y;
+    background-size: 6px 2px, 6px 2px, 2px 6px, 2px 6px;
     background-position: 0 0, 0 100%, 0 0, 100% 0;
+    animation: border-dash 2s linear infinite;
+    transition: background 0.3s ease;
+    color: var(--color-dark);
+    /* button text */
+    font-weight: 600;
+    /* border-radius: 9999px; pill shape */
+    padding: 0.75rem 1.5rem;
+    display: inline-block;
+    cursor: pointer;
   }
-  100% {
-    background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
+
+  /* Hover effect — pause animation + theme hover background */
+  .dashed-animate:hover {
+    animation-play-state: paused;
+
   }
-}
-
-.dashed-animate {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
-              linear-gradient(90deg, var(--color-accent) 50%, transparent 0) repeat-x,
-              linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y,
-              linear-gradient(0deg, var(--color-accent) 50%, transparent 0) repeat-y;
-  background-size: 6px 2px, 6px 2px, 2px 6px, 2px 6px;
-  background-position: 0 0, 0 100%, 0 0, 100% 0;
-  animation: border-dash 2s linear infinite;
-  transition: background 0.3s ease;
-  color: var(--color-dark); /* button text */
-  font-weight: 600;
-  /* border-radius: 9999px; pill shape */
-  padding: 0.75rem 1.5rem;
-  display: inline-block;
-  cursor: pointer;
-}
-
-/* Hover effect — pause animation + theme hover background */
-.dashed-animate:hover {
-  animation-play-state: paused;
-  
-}

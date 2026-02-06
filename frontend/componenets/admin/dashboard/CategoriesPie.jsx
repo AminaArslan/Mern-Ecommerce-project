@@ -52,7 +52,7 @@ export default function CategoriesPieChart() {
             nameKey="category"
             cx="50%"
             cy="50%"
-            outerRadius={100}
+            outerRadius="80%"
             label
             onClick={handleClick}
           >
@@ -71,7 +71,7 @@ export default function CategoriesPieChart() {
       </ResponsiveContainer>
 
       {/* Legend */}
-      <div className="flex justify-center mt-4 gap-6">
+      <div className="flex justify-center mt-4 gap-4 sm:gap-6 flex-wrap">
         {['Women', 'Men', 'Kids'].map((cat) => (
           <div
             key={cat}

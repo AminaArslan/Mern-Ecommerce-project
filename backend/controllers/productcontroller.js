@@ -9,7 +9,7 @@ export const createProduct = async (req, res) => {
     const { name, description, price, quantity, category, isActive } = req.body;
 
     // Validation
-    if (!name || !price || !quantity || !category ) {
+    if (!name || !price || !quantity || !category) {
       return res.status(400).json({ message: "Required fields missing" });
     }
 
@@ -51,13 +51,13 @@ export const createProduct = async (req, res) => {
 
 /* ================= GET ALL ACTIVE PRODUCTS (PUBLIC) ================= */
 
- export const getProducts = async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
 
-    const { search, category } = req.query;
+    const { search, category, sort, order, minPrice, maxPrice } = req.query;
 
     // 🔎 Build dynamic query
     const query = { isActive: true };
@@ -67,15 +67,59 @@ export const createProduct = async (req, res) => {
       query.name = { $regex: search, $options: "i" };
     }
 
-    // ✅ Filter by CATEGORY (child or parent handled separately)
+    // ✅ Filter by CATEGORY
     if (category) {
-      query.category = category;
+      // Check if category is a valid ObjectId (direct ID match)
+      let catObj = null;
+
+      if (category.match(/^[0-9a-fA-F]{24}$/)) {
+        catObj = await Category.findById(category);
+      } else {
+        // Find category by slug or Word Boundary name
+        catObj = await Category.findOne({
+          $or: [
+            { slug: category },
+            { name: { $regex: `\\b${category}\\b`, $options: "i" } }
+          ]
+        });
+      }
+
+      if (catObj) {
+        // 🌟 NEW LOGIC: Get all subcategories of this parent
+        const subCategories = await Category.find({ parentId: catObj._id });
+        const categoryIds = subCategories.map(sc => sc._id);
+        categoryIds.push(catObj._id); // Include the parent itself
+
+        // Filter by ANY of these IDs
+        query.category = { $in: categoryIds };
+      } else {
+        // If category not found, return NO products
+        return res.status(200).json({
+          products: [],
+          totalPages: 0,
+          currentPage: page,
+          total: 0
+        });
+      }
+    }
+
+    // ✅ Filter by PRICE
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // ✅ Dynamic Sorting
+    let sortOptions = { createdAt: -1 }; // Default
+    if (sort) {
+      sortOptions = { [sort]: order === 'asc' ? 1 : -1 };
     }
 
     const [products, total] = await Promise.all([
       Product.find(query)
         .populate("category", "name slug")
-        .sort({ createdAt: -1 })
+        .sort(sortOptions)
         .skip(skip)
         .limit(limit),
 
@@ -159,7 +203,7 @@ export const getTopProducts = async (req, res) => {
 };
 /* ================= UPDATE PRODUCT (ADMIN) ================= */
 export const updateProduct = async (req, res) => {
-try {
+  try {
     console.log('BODY:', req.body);
     console.log('FILES:', req.files);
 
@@ -355,7 +399,20 @@ export const getProductsByParentCategory = async (req, res) => {
 export const getProductsByParentCategoryFrontend = async (req, res) => {
   const { slug } = req.params;
 
-  const parentCategory = await Category.findOne({ slug, isActive: true });
+  // 🔎 Find category by slug (case-insensitive) OR ID
+  let parentCategory = null;
+  if (slug.match(/^[0-9a-fA-F]{24}$/)) {
+    parentCategory = await Category.findById(slug);
+  } else {
+    parentCategory = await Category.findOne({
+      $or: [
+        { slug: slug },
+        { name: { $regex: `\\b${slug}\\b`, $options: "i" } }
+      ],
+      isActive: true
+    });
+  }
+
   if (!parentCategory) return res.status(404).json({ message: "Category not found" });
 
   const subCategories = await Category.find({ parentId: parentCategory._id, isActive: true });
@@ -363,7 +420,7 @@ export const getProductsByParentCategoryFrontend = async (req, res) => {
   categoryIds.push(parentCategory._id);
 
   const products = await Product.find({ category: { $in: categoryIds }, isActive: true })
-    .populate("category", "name slug")
+    .populate("category", "name slug image")
     .sort({ createdAt: -1 });
 
   res.status(200).json(products);

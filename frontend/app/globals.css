@@ -44,17 +44,118 @@
     margin: 0;
   }
 
+
   /* Elegant headings */
   h1,
   h2,
-  h3 {
+  h3,
+  .section-title {
     font-family: 'Libre Caslon Text', serif;
+    /* letter-spacing: 1px; */
+  }
+
+  /* Tagline / fashion quotes */
+  .tagline {
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
   }
 
   /* Buttons stay modern */
-  button {
+  button,
+  .btn {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
+  }
+
+  /* =========================
+    🔹 Utility Classes
+    ========================= */
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+
+  .bg-accent {
+    background-color: var(--color-accent);
+  }
+
+  .bg-dark {
+    background-color: var(--color-dark);
+  }
+
+  .bg-deep {
+    background-color: var(--color-deep);
+  }
+
+  .text-accent {
+    color: var(--color-accent);
+  }
+
+  .text-light {
+    color: var(--text-light);
+  }
+
+  .text-dark {
+    color: var(--text-dark);
+  }
+
+  /* =========================
+    🔘 Buttons
+    ========================= */
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--text-light);
+    border-radius: 6px;
+    padding: .6rem 1rem;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease-in;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-dark);
+  }
+
+  /* =========================
+    🔔 Badge
+    ========================= */
+  .badge {
+    background-color: var(--color-accent);
+    color: var(--text-light);
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+  }
+
+  /* =========================
+   👤 Avatar
+   ========================= */
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  .avatar:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
   }
 
   /* =========================
@@ -127,71 +228,6 @@
     }
   }
 
-  /* =========================
-     🎥 Hero Section Animations
-     ========================= */
-  @keyframes ken-burns {
-    0% {
-      transform: scale(1);
-    }
-
-    100% {
-      transform: scale(1.1);
-    }
-  }
-
-  .animate-ken-burns {
-    animation: ken-burns 20s ease-out infinite alternate;
-  }
-
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-up {
-    animation: fade-up 1.2s ease-out forwards;
-    animation-delay: 0.5s;
-  }
-
-  @keyframes slide-down {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-slide-down {
-    animation: slide-down 1s ease-out forwards;
-    animation-delay: 0.3s;
-  }
-
-  /* Custom Swiper Pagination */
-  .swiper-pagination-bullet {
-    width: 10px;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.4);
-    opacity: 1;
-    transition: all 0.3s;
-  }
-
-  .swiper-pagination-bullet-active {
-    width: 24px;
-    background: #fff;
-    border-radius: 99px;
-  }
 
   /* =========================
      🛠️ Category Utilities

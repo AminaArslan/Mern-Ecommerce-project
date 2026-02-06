@@ -1,4 +1,7 @@
+
 'use client';
+
+import { useState, useRef, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -70,7 +73,7 @@ export default function HeroPage() {
               {/* <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" /> */}
             </div>
 
-            {/* CONTENT OVERLAY */}
+            {/* ✨ CONTENT OVERLAY */}
             <div className="absolute inset-0 flex items-center justify-center text-center px-4">
               <div className="max-w-4xl opacity-0 animate-fade-up flex flex-col items-center gap-6">
 
@@ -108,6 +111,45 @@ export default function HeroPage() {
         {/* CUSTOM PAGINATION STYLING */}
         <div className="swiper-pagination bottom-10!" />
       </Swiper>
+
+      {/* CSS for Ken Burns Animation if not in globals */}
+      <style jsx global>{`
+        @keyframes ken-burns {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.1); }
+        }
+        .animate-ken-burns {
+          animation: ken-burns 20s ease-out infinite alternate;
+        }
+        @keyframes fade-up {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+          animation: fade-up 1.2s ease-out forwards;
+          animation-delay: 0.5s;
+        }
+        @keyframes slide-down {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-down {
+          animation: slide-down 1s ease-out forwards;
+          animation-delay: 0.3s;
+        }
+        .swiper-pagination-bullet {
+          width: 10px;
+          height: 10px;
+          background: rgba(255, 255, 255, 0.4);
+          opacity: 1;
+          transition: all 0.3s;
+        }
+        .swiper-pagination-bullet-active {
+          width: 24px;
+          background: #fff;
+          border-radius: 99px;
+        }
+      `}</style>
     </section>
   );
 }

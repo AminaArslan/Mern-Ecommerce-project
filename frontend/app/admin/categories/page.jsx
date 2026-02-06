@@ -107,7 +107,8 @@ export default function AdminCategoriesPage() {
         {!showForm && (
           <button
             onClick={() => { setEditingCategory(null); setShowForm(true); }}
-            className="px-6 py-3 bg-dark text-white text-[10px] font-bold uppercase tracking-widest hover:bg-black transition shadow-lg shadow-dark/20 rounded-sm flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 bg-dark text-white text-[10px] font-bold uppercase tracking-widest
+             hover:bg-black transition shadow-lg shadow-dark/20 rounded-sm flex items-center gap-2 cursor-pointer"
           >
             <FiPlus size={16} />
             Add Category
@@ -131,7 +132,7 @@ export default function AdminCategoriesPage() {
           <table className="w-full text-left border-collapse whitespace-nowrap">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest min-w-[200px]">Category Name</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest min-w-50">Category Name</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Parent Group</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
@@ -154,13 +155,16 @@ export default function AdminCategoriesPage() {
           <div className="bg-white w-full max-w-sm rounded-sm shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
             <h2 className="text-xl font-serif font-bold text-dark mb-2">Delete Category</h2>
             <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-              Are you sure you want to remove this category? <br /><span className="text-rose-500 font-bold">Warning:</span> All subcategories may also be affected.
+              Are you sure you want to remove this category? <br />
+              <span className="text-rose-500 font-bold">Warning:</span>
+              All subcategories may also be affected.
             </p>
 
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:bg-gray-50 transition rounded-sm cursor-pointer"
+                className="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-500
+                 hover:bg-gray-50 transition rounded-sm cursor-pointer"
               >
                 Cancel
               </button>
@@ -168,7 +172,8 @@ export default function AdminCategoriesPage() {
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
-                className="px-6 py-2.5 bg-rose-600 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-rose-700 transition shadow-lg shadow-rose-200 disabled:opacity-50 cursor-pointer rounded-sm"
+                className="px-6 py-2.5 bg-rose-600 text-white text-[10px] font-bold uppercase tracking-widest
+                 hover:bg-rose-700 transition shadow-lg shadow-rose-200 disabled:opacity-50 cursor-pointer rounded-sm"
               >
                 {deleting ? 'Devouring...' : 'Delete'}
               </button>

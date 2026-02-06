@@ -154,7 +154,7 @@ export default function ContactUsPage() {
 
                             <div className="space-y-6">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-amber-400/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-amber-400/10 rounded-full flex items-center justify-center shrink-0">
                                         <FiMail className="text-amber-600" size={20} />
                                     </div>
                                     <div>
@@ -166,7 +166,7 @@ export default function ContactUsPage() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-amber-400/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-amber-400/10 rounded-full flex items-center justify-center shrink-0">
                                         <FiPhone className="text-amber-600" size={20} />
                                     </div>
                                     <div>
@@ -178,7 +178,7 @@ export default function ContactUsPage() {
                                 </div>
 
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-amber-400/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-amber-400/10 rounded-full flex items-center justify-center shrink-0">
                                         <FiMapPin className="text-amber-600" size={20} />
                                     </div>
                                     <div>
@@ -194,7 +194,7 @@ export default function ContactUsPage() {
                         </div>
 
                         {/* Business Hours */}
-                        <div className="bg-gradient-to-br from-dark to-gray-800 text-white p-6 md:p-10 rounded-sm shadow-xl">
+                        <div className="bg-linear-to-br from-dark to-gray-800 text-white p-6 md:p-10 rounded-sm shadow-xl">
                             <h2 className="text-xl md:text-2xl font-serif mb-6">Business Hours</h2>
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between items-center pb-3 border-b border-white/10">

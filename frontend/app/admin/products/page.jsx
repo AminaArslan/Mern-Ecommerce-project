@@ -143,8 +143,8 @@ export default function AdminProductsPage() {
           <table className="w-full text-left border-collapse whitespace-nowrap">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest min-w-[60px]">Image</th>
-                <th className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest min-w-[150px]">Product Name</th>
+                <th className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest min-w-15">Image</th>
+                <th className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest min-w-37.5">Product Name</th>
                 <th className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Price</th>
                 <th className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Stock</th>
                 <th className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Category</th>
@@ -160,7 +160,8 @@ export default function AdminProductsPage() {
                   {/* Product Image */}
                   <td className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4">
                     {p.images?.length > 0 ? (
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 overflow-hidden rounded-sm border border-gray-100 relative shadow-sm group-hover:scale-105 transition-transform">
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 overflow-hidden rounded-sm border border-gray-100
+                       relative shadow-sm group-hover:scale-105 transition-transform">
                         <Image
                           src={p.images[0].url}
                           alt={p.name}
@@ -169,7 +170,8 @@ export default function AdminProductsPage() {
                         />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 rounded-sm flex items-center justify-center text-[9px] text-gray-400 uppercase">No Img</div>
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 rounded-sm flex items-center 
+                      justify-center text-[9px] text-gray-400 uppercase">No Img</div>
                     )}
                   </td>
 
@@ -199,9 +201,10 @@ export default function AdminProductsPage() {
                   {/* Status */}
                   <td className="px-4 py-3 lg:px-4 lg:py-3 xl:px-6 xl:py-4">
                     <span
-                      className={`flex items-center gap-1.5 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider w-fit border ${p.isActive
-                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                        : 'bg-gray-100 text-gray-500 border-gray-200'
+                      className={`flex items-center gap-1.5 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase 
+                        tracking-wider w-fit border ${p.isActive
+                          ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                          : 'bg-gray-100 text-gray-500 border-gray-200'
                         }`}
                     >
                       <FaCircle className="text-[5px]" />
@@ -265,7 +268,8 @@ export default function AdminProductsPage() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:bg-gray-50 transition rounded-sm cursor-pointer"
+                className="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:bg-gray-50 transition 
+                rounded-sm cursor-pointer"
               >
                 Cancel
               </button>
@@ -273,7 +277,8 @@ export default function AdminProductsPage() {
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
-                className="px-6 py-2.5 bg-rose-600 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-rose-700 transition shadow-lg shadow-rose-200 disabled:opacity-50 cursor-pointer rounded-sm"
+                className="px-6 py-2.5 bg-rose-600 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-rose-700
+                 transition shadow-lg shadow-rose-200 disabled:opacity-50 cursor-pointer rounded-sm"
               >
                 {deleting ? 'Removing...' : 'Delete'}
               </button>

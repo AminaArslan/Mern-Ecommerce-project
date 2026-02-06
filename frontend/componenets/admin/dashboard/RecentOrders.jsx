@@ -72,7 +72,7 @@ export default function RecentOrdersCard() {
                 {order.orderStatus}
               </span>
 
-              <p className="font-serif font-bold text-dark text-sm min-w-[80px] text-right">
+              <p className="font-serif font-bold text-dark text-sm min-w-20 text-right">
                 Rs.{Number(order.totalPrice).toLocaleString('en-IN')}
               </p>
             </div>

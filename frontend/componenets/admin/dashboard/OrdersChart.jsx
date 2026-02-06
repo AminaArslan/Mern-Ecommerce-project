@@ -7,9 +7,6 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
-  Legend,
-  defs,
-  linearGradient,
 } from 'recharts';
 
 export default function OrdersLineChart({ data }) {

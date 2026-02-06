@@ -94,9 +94,9 @@ export default function ProductsPage() {
             Global Archive
           </span>
           <h1 className="text-6xl md:text-8xl font-serif text-dark leading-none tracking-tighter">
-            Explore <span className="italic font-light text-gray-300 underline decoration-1 underline-offset-[12px]">Store.</span>
+            Explore <span className="italic font-light text-gray-300 underline decoration-1 underline-offset-12">Store.</span>
           </h1>
-          <p className="text-xs text-gray-400 font-medium tracking-[0.1em] uppercase pt-4">
+          <p className="text-xs text-gray-400 font-medium tracking-widest uppercase pt-4">
             {total} Handcrafted Pieces
           </p>
         </div>
@@ -154,7 +154,7 @@ export default function ProductsPage() {
                   Price <FiChevronDown className={openFilter === 'price' ? 'rotate-180 transition' : 'transition'} />
                 </button>
                 {openFilter === 'price' && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0 mt-6 w-[280px] sm:w-64 bg-white border border-gray-100 shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0 mt-6 w-70 sm:w-64 bg-white border border-gray-100 shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="flex items-center gap-3">
                       <input
                         type="number"
@@ -227,7 +227,7 @@ export default function ProductsPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="space-y-6 animate-pulse">
-                  <div className="aspect-[3/4] bg-gray-50 rounded-sm" />
+                  <div className="aspect-3/4 bg-gray-50 rounded-sm" />
                   <div className="space-y-2">
                     <div className="h-3 bg-gray-50 w-3/4" />
                     <div className="h-3 bg-gray-50 w-1/4" />

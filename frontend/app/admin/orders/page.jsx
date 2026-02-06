@@ -137,8 +137,8 @@ export default function AdminOrdersPage() {
               key={status}
               onClick={() => setActiveTab(status)}
               className={`px-5 py-2 text-[11px] font-bold uppercase tracking-widest whitespace-nowrap rounded-t-sm transition-all border-b-2 ${activeTab === status
-                  ? 'border-dark text-dark bg-gray-50'
-                  : 'border-transparent text-gray-400 hover:text-dark hover:bg-gray-50/50'
+                ? 'border-dark text-dark bg-gray-50'
+                : 'border-transparent text-gray-400 hover:text-dark hover:bg-gray-50/50'
                 }`}
             >
               {status}
@@ -203,7 +203,7 @@ export default function AdminOrdersPage() {
                           Rs.{Number(order.totalPrice).toLocaleString()}
                         </span>
                         <span className={`text-[9px] font-bold uppercase ${order.paymentStatus === 'paid' ? 'text-emerald-500' :
-                            order.paymentStatus === 'refunded' ? 'text-rose-500' : 'text-amber-500'
+                          order.paymentStatus === 'refunded' ? 'text-rose-500' : 'text-amber-500'
                           }`}>
                           {order.paymentStatus}
                         </span>

@@ -130,7 +130,7 @@ export default function AdminLayout({ children }) {
 
       {/* Logout Modal */}
       {showLogoutModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-[100] px-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-100 px-4">
           <div className="bg-white rounded-sm shadow-2xl w-full max-w-sm p-8 animate-in fade-in zoom-in duration-200 border border-gray-100">
             <h2 className="text-xl font-serif font-bold text-dark mb-2">
               Confirm Logout

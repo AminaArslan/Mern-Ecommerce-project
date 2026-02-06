@@ -369,8 +369,6 @@ export default function CategoryPage() {
           </div>
         </div>
       )}
-
-      {/* SIDEBAR FILTERS (Desktop) */}
     </main>
   );
 }

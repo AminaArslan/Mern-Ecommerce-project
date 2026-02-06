@@ -140,7 +140,7 @@ export default function FAQPage() {
                                                     {faq.q}
                                                 </h3>
                                                 <FiChevronDown
-                                                    className={`text-gray-400 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-amber-600' : ''
+                                                    className={`text-gray-400 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-amber-600' : ''
                                                         }`}
                                                     size={20}
                                                 />
@@ -165,7 +165,7 @@ export default function FAQPage() {
                 </div>
 
                 {/* STILL HAVE QUESTIONS */}
-                <div className="mt-20 bg-gradient-to-br from-dark to-gray-800 text-white p-8 md:p-12 rounded-sm shadow-xl text-center">
+                <div className="mt-20 bg-linear-to-br from-dark to-gray-800 text-white p-8 md:p-12 rounded-sm shadow-xl text-center">
                     <h2 className="text-2xl md:text-3xl font-serif mb-4">Still have questions?</h2>
                     <p className="text-gray-300 mb-6">
                         Can't find the answer you're looking for? Our customer support team is here to help.

@@ -121,7 +121,11 @@ export default function CheckoutPage() {
         <div className="text-center space-y-6 max-w-sm px-3 md:px-6">
           <h1 className="text-4xl font-serif text-dark italic font-light leading-tight text-gray-300">Your curation is currently empty.</h1>
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.25em]">Return to the collection to select items for checkout.</p>
-          <button onClick={() => router.push('/products')} className="px-10 py-5 bg-dark text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition-all cursor-pointer">Explore Artifacts</button>
+          <button onClick={() => router.push('/products')}
+            className="px-10 py-5 bg-dark text-white text-[10px] font-bold uppercase tracking-[0.3em]
+           hover:bg-gray-800 transition-all cursor-pointer">
+            Explore Artifacts
+          </button>
         </div>
       </main>
     );
@@ -137,7 +141,7 @@ export default function CheckoutPage() {
             Final Step
           </span>
           <h1 className="text-5xl md:text-7xl font-serif text-dark leading-none tracking-tighter">
-            Finalize <span className="italic font-light text-gray-300 underline decoration-1 underline-offset-[12px]">Curation.</span>
+            Finalize <span className="italic font-light text-gray-300 underline decoration-1 underline-offset-12">Curation.</span>
           </h1>
         </div>
 
@@ -173,7 +177,9 @@ export default function CheckoutPage() {
                       name={field.name}
                       value={shipping[field.name]}
                       onChange={handleInputChange}
-                      className="w-full bg-white border-2 border-gray-100 focus:border-dark px-6 py-5 text-xs font-bold text-dark outline-none transition-all duration-300 placeholder:text-gray-300 tracking-widest rounded-sm focus:shadow-lg cursor-pointer focus:cursor-text"
+                      className="w-full bg-white border-2 border-gray-100 focus:border-dark px-6 py-5 text-xs font-bold text-dark 
+                      outline-none transition-all duration-300
+                       placeholder:text-gray-300 tracking-widest rounded-sm focus:shadow-lg cursor-pointer focus:cursor-text"
                       placeholder={`Provide ${field.placeholder.toLowerCase()}...`}
                     />
                   </div>
@@ -196,7 +202,8 @@ export default function CheckoutPage() {
                   <button
                     key={method.id}
                     onClick={() => setPaymentMethod(method.id)}
-                    className={`flex items-center justify-between p-6 border transition-all duration-500 cursor-pointer ${paymentMethod === method.id ? 'border-dark bg-dark text-white' : 'border-gray-100 text-gray-400 hover:border-gray-300'}`}
+                    className={`flex items-center justify-between p-6 border transition-all duration-500 cursor-pointer
+                       ${paymentMethod === method.id ? 'border-dark bg-dark text-white' : 'border-gray-100 text-gray-400 hover:border-gray-300'}`}
                   >
                     <span className="text-[10px] font-bold uppercase tracking-widest">{method.label}</span>
                     <method.icon size={14} className={paymentMethod === method.id ? 'text-white' : 'text-gray-200'} />
@@ -206,7 +213,8 @@ export default function CheckoutPage() {
             </div>
 
             {error && (
-              <div className="p-6 bg-rose-50 border border-rose-100 flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
+              <div className="p-6 bg-rose-50 border border-rose-100 flex items-center 
+              gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
                 <div className="w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-[10px] text-white">!</div>
                 <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{error}</span>
               </div>
@@ -214,13 +222,14 @@ export default function CheckoutPage() {
           </div>
 
           {/* RIGHT: SUMMARY SIDE */}
-          <div className="w-full lg:w-[400px] sticky top-32 space-y-8">
+          <div className="w-full lg:w-100 sticky top-32 space-y-8">
             <CartSummary cart={cart} totalPrice={totalPrice} />
 
             <button
               onClick={handleCheckout}
               disabled={loading}
-              className="group w-full flex items-center justify-between bg-dark text-white px-10 py-7 hover:bg-gray-800 disabled:opacity-50 transition-all active:scale-[0.98] duration-500 shadow-2xl shadow-dark/20 cursor-pointer"
+              className="group w-full flex items-center justify-between bg-dark text-white px-10 py-7
+               hover:bg-gray-800 disabled:opacity-50 transition-all active:scale-[0.98] duration-500 shadow-2xl shadow-dark/20 cursor-pointer"
             >
               <span className="text-[11px] font-bold uppercase tracking-[0.5em]">
                 {loading ? 'PROCESSING ARCHIVE...' : 'FINALIZE PURCHASE'}

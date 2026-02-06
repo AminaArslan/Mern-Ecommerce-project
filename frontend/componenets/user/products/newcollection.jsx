@@ -39,7 +39,7 @@ export default function ExploreNewCollection() {
   };
 
   return (
-    <section className="w-full py-20 lg:py-28 bg-white overflow-hidden">
+    <section className="w-full py-10 lg:pb-15 bg-white overflow-hidden">
       <div className="container mx-auto px-3 md:px-6 max-w-7xl">
 
         {/* Header - Editorial Style */}

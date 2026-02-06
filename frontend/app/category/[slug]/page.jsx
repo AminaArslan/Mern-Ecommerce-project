@@ -112,7 +112,7 @@ export default function CategoryPage() {
     <div className="h-screen flex items-center justify-center bg-white">
       <div className="space-y-4 text-center">
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.6em] animate-pulse">Archiving Boutique Pieces</p>
-        <div className="w-12 h-[1px] bg-dark mx-auto"></div>
+        <div className="w-12 h-px bg-dark mx-auto"></div>
       </div>
     </div>
   );
@@ -145,7 +145,7 @@ export default function CategoryPage() {
 
           <div className="flex flex-col md:flex-row items-center gap-6 self-center md:self-end">
             <div className="flex items-center gap-6">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+              <span className=" hidden sm:block text-[11px] font-bold text-gray-400 uppercase tracking-widest">
                 {products.length} Pieces Found
               </span>
 

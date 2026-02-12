@@ -46,8 +46,8 @@ const createParentsAndUpdateSubcategories = async () => {
 
     for (const u of updates) {
       const res = await Category.updateMany(
-        { parentName: u.parentName, parentId: null },
-        { parentId: u.parentId }
+        { name: { $ne: u.parentName }, parentId: null }, // all subcategories whose parentId is null and not a parent itself
+        { $set: { parentId: u.parentId } }
       );
       console.log(`Updated ${res.modifiedCount} subcategories for ${u.parentName}`);
     }

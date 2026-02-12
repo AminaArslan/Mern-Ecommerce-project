@@ -144,7 +144,7 @@ export default function OrdersPage() {
                       </div>
                     </div>
 
-                    {order.orderStatus === 'pending' && (
+                    {order.orderStatus === 'pending' && order.paymentMethod.toLowerCase() === 'cod' && (
                       <button
                         onClick={() => handleCancelOrder(order._id)}
                         className="text-[9px] font-bold uppercase tracking-[0.2em] text-rose-500 border-b border-rose-500/20 pb-1 hover:text-rose-700 hover:border-current transition-all cursor-pointer"
@@ -152,6 +152,7 @@ export default function OrdersPage() {
                         Cancel curation
                       </button>
                     )}
+
                   </div>
 
                   {/* Right: Items */}

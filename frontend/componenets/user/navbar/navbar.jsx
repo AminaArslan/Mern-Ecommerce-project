@@ -6,7 +6,6 @@ import { useCart } from '@/context/cartContext';
 import API from '@/lib/axios';
 import {
   FiMenu,
-  FiX,
   FiUser,
   FiShoppingCart,
   FiChevronDown,
@@ -15,6 +14,7 @@ import PagesDropdown from './pages';
 import Sidebar from '../sidebar';
 import CartSidebar from '../cart/cart';
 import BrandLogo from '../BrandLogo';
+import { usePathname } from 'next/navigation';
 
 
 export default function Navbar() {
@@ -26,7 +26,8 @@ export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false); // State for glassmorphism
-
+  const pathname = usePathname();
+  const isHome = pathname === '/';
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -110,27 +111,27 @@ export default function Navbar() {
                 />
               </div>
               <div className="flex flex-col cursor-pointer">
-                <h1 className={`text-lg md:text-xl font-serif font-bold tracking-tighter transition duration-300 cursor-pointer leading-none
-                  ${scrolled ? 'text-black' : 'text-white'}
-                `}>
+                <h1 className={`text-lg md:text-xl font-serif font-bold tracking-tighter transition duration-300 cursor-pointer
+  ${isHome ? (scrolled ? 'text-black' : 'text-white') : 'text-black'}
+`}>
                   STUDIO
                 </h1>
+
                 <p className={`text-[10px] uppercase tracking-[0.4em] font-bold transition-all duration-300
-                  ${scrolled ? 'text-gray-500 group-hover:text-black' : 'text-gray-300 group-hover:text-white'}
-                `}>
+  ${isHome ? (scrolled ? 'text-gray-500 group-hover:text-black' : 'text-gray-300 group-hover:text-white') : 'text-black'}
+`}>
                   Boutique
                 </p>
+
               </div>
             </Link>
           </div>
 
           {/* ================= CENTER : NAV LINKS (LG ONLY) ================= */}
 
-          <nav
-            aria-label="Main site navigation"
-            className={`hidden lg:flex items-center gap-10 text-sm font-bold tracking-widest transition-colors duration-300 ${scrolled ? "text-black" : "text-white"
-              }`}
-          >
+          <nav className={`hidden lg:flex items-center gap-10 text-sm font-bold tracking-widest transition-colors duration-300
+  ${isHome ? (scrolled ? "text-black" : "text-white") : "text-black"}
+`}>
             {navLinks.map(
               (link) =>
                 (!link.auth || user) && (
@@ -160,12 +161,12 @@ export default function Navbar() {
               <button
                 onClick={() => setUserDropdownOpen(p => !p)}
                 className={`flex items-center gap-2 transition duration-300 group cursor-pointer
-                  ${scrolled ? 'text-black hover:text-gray-600' : 'text-white hover:text-gray-300'}
-                `}
+        ${isHome ? (scrolled ? 'text-black hover:text-gray-600' : 'text-white hover:text-gray-300') : 'text-black hover:text-gray-600'}
+      `}
               >
                 <div className={`p-2 rounded-full transition duration-300 cursor-pointer
-                  ${scrolled ? 'bg-gray-100 group-hover:bg-gray-200' : 'bg-white/10 group-hover:bg-white/20'}
-                `}>
+        ${isHome ? (scrolled ? 'bg-gray-100 group-hover:bg-gray-200' : 'bg-white/10 group-hover:bg-white/20') : 'bg-white/10 group-hover:bg-white/20'}
+      `}>
                   <FiUser size={18} className="cursor-pointer" />
                 </div>
                 <FiChevronDown
@@ -210,12 +211,12 @@ export default function Navbar() {
             <button
               onClick={() => setCartOpen(true)}
               className={`relative group transition duration-300 transform hover:scale-110 cursor-pointer
-                ${scrolled ? 'text-black hover:text-gray-600' : 'text-white hover:text-gray-300'}
-              `}
+      ${isHome ? (scrolled ? 'text-black hover:text-gray-600' : 'text-white hover:text-gray-300') : 'text-black hover:text-gray-600'}
+    `}
             >
               <div className={`p-2 rounded-full transition duration-300
-                ${scrolled ? 'bg-gray-100 group-hover:bg-gray-200' : 'bg-white/10 group-hover:bg-white/20'}
-              `}>
+      ${isHome ? (scrolled ? 'bg-gray-100 group-hover:bg-gray-200' : 'bg-white/10 group-hover:bg-white/20') : 'bg-white/10 group-hover:bg-white/20'}
+    `}>
                 <FiShoppingCart size={18} />
               </div>
               {cart?.length > 0 && (
@@ -228,13 +229,14 @@ export default function Navbar() {
             {/* MOBILE/TABLET SIDEBAR TOGGLE (lg-nichy) */}
             <button
               className={`lg:hidden text-2xl cursor-pointer transition duration-500 hover:rotate-180
-                ${scrolled ? 'text-black' : 'text-white'}
-              `}
+      ${isHome ? (scrolled ? 'text-black' : 'text-white') : 'text-black'}
+    `}
               onClick={() => setMenuOpen(!menuOpen)}
             >
               <FiMenu />
             </button>
           </div>
+
 
         </div>
       </header>

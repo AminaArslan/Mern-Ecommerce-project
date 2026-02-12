@@ -27,6 +27,15 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false); // State for glassmorphism
 
+
+  const navLinks = [
+    { label: "Home", href: "/" },
+    { label: "Collection", href: "/category" },
+    { label: "Shop", href: "/products" },
+    // Conditional link based on user
+    { label: "My Orders", href: "/orders", auth: true },
+  ];
+
   /* ---------------- SCROLL EFFECT ---------------- */
   useEffect(() => {
     const handleScroll = () => {
@@ -81,10 +90,10 @@ export default function Navbar() {
         - Changes background from transparent/white to blurred glass on scroll 
       */}
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-transparent
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b
           ${scrolled
-            ? 'bg-white/80 backdrop-blur-md shadow-sm border-gray-100 py-3'
-            : 'bg-transparent py-6'
+            ? 'bg-white/95 backdrop-blur-md shadow-md border-gray-200 py-3'
+            : 'bg-transparent border-transparent py-6'
           }
         `}
       >
@@ -101,10 +110,14 @@ export default function Navbar() {
                 />
               </div>
               <div className="flex flex-col cursor-pointer">
-                <h1 className="text-lg md:text-xl font-serif font-bold tracking-tighter text-dark group-hover:text-amber-500 transition duration-300 cursor-pointer leading-none">
+                <h1 className={`text-lg md:text-xl font-serif font-bold tracking-tighter transition duration-300 cursor-pointer leading-none
+                  ${scrolled ? 'text-black' : 'text-white'}
+                `}>
                   STUDIO
                 </h1>
-                <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-bold group-hover:text-gray-600 transition-all duration-300">
+                <p className={`text-[10px] uppercase tracking-[0.4em] font-bold transition-all duration-300
+                  ${scrolled ? 'text-gray-500 group-hover:text-black' : 'text-gray-300 group-hover:text-white'}
+                `}>
                   Boutique
                 </p>
               </div>
@@ -112,38 +125,31 @@ export default function Navbar() {
           </div>
 
           {/* ================= CENTER : NAV LINKS (LG ONLY) ================= */}
-          <nav className="hidden lg:flex items-center gap-10 text-sm font-medium tracking-wide text-dark">
 
-            {/* Home with Animated Underline */}
-            <Link href="/" className="relative group py-2 cursor-pointer">
-              <span className="group-hover:text-accent transition duration-300 cursor-pointer">Home</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-
-            {/* Collection Link */}
-            <Link href="/category" className="relative group py-2 cursor-pointer">
-              <span className="group-hover:text-accent transition duration-300 cursor-pointer">Collection</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-
-            {/* Shop Link */}
-            <Link href="/products" className="relative group py-2 cursor-pointer">
-              <span className="group-hover:text-accent transition duration-300 cursor-pointer">Shop</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-            </Link>
+          <nav
+            aria-label="Main site navigation"
+            className={`hidden lg:flex items-center gap-10 text-sm font-bold tracking-widest transition-colors duration-300 ${scrolled ? "text-black" : "text-white"
+              }`}
+          >
+            {navLinks.map(
+              (link) =>
+                (!link.auth || user) && (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="relative group py-2 cursor-pointer"
+                  >
+                    <span>{link.label}</span>
+                    <span className="absolute bottom-0 left-0 h-0.5 bg-current transition-all duration-300 group-hover:w-full w-0"></span>
+                  </Link>
+                )
+            )}
 
             {/* Pages Dropdown */}
-            <div className="relative group py-2 cursor-pointer">
+            <div className="relative group py-2">
               <PagesDropdown />
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full cursor-pointer"></span>
+              <span className="absolute bottom-0 left-0 h-0.5 bg-current transition-all duration-300 group-hover:w-full w-0"></span>
             </div>
-
-            {user && (
-              <Link href="/orders" className="relative group py-2 cursor-pointer">
-                <span className="group-hover:text-accent transition duration-300 cursor-pointer">My Orders</span>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            )}
           </nav>
 
           {/* ================= RIGHT : ICONS ================= */}
@@ -153,9 +159,13 @@ export default function Navbar() {
             <div className="hidden md:relative md:block" ref={userDropdownRef}>
               <button
                 onClick={() => setUserDropdownOpen(p => !p)}
-                className="flex items-center gap-2 text-dark hover:text-accent transition duration-300 group cursor-pointer"
+                className={`flex items-center gap-2 transition duration-300 group cursor-pointer
+                  ${scrolled ? 'text-black hover:text-gray-600' : 'text-white hover:text-gray-300'}
+                `}
               >
-                <div className="p-2 rounded-full bg-gray-100 group-hover:bg-accent/10 transition duration-300 cursor-pointer">
+                <div className={`p-2 rounded-full transition duration-300 cursor-pointer
+                  ${scrolled ? 'bg-gray-100 group-hover:bg-gray-200' : 'bg-white/10 group-hover:bg-white/20'}
+                `}>
                   <FiUser size={18} className="cursor-pointer" />
                 </div>
                 <FiChevronDown
@@ -169,7 +179,7 @@ export default function Navbar() {
                     <div className="flex flex-col">
                       <div className="px-5 py-4 bg-gray-50 border-b border-gray-100">
                         <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Signed in as</p>
-                        <p className="text-sm font-semibold text-dark truncate">{user.email || user._id}</p>
+                        <p className="text-sm font-semibold text-black truncate">{user.email || user._id}</p>
                       </div>
                       <button
                         onClick={() => {
@@ -186,7 +196,7 @@ export default function Navbar() {
                       <Link
                         href="/login"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-accent rounded-lg hover:bg-black transition duration-300 shadow-md hover:shadow-lg"
+                        className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 transition duration-300 shadow-md hover:shadow-lg"
                       >
                         Login / Register
                       </Link>
@@ -199,13 +209,17 @@ export default function Navbar() {
             {/* CART */}
             <button
               onClick={() => setCartOpen(true)}
-              className="relative group text-dark hover:text-accent transition duration-300 transform hover:scale-110 cursor-pointer"
+              className={`relative group transition duration-300 transform hover:scale-110 cursor-pointer
+                ${scrolled ? 'text-black hover:text-gray-600' : 'text-white hover:text-gray-300'}
+              `}
             >
-              <div className="p-2 rounded-full bg-gray-100 group-hover:bg-accent/10 transition duration-300">
+              <div className={`p-2 rounded-full transition duration-300
+                ${scrolled ? 'bg-gray-100 group-hover:bg-gray-200' : 'bg-white/10 group-hover:bg-white/20'}
+              `}>
                 <FiShoppingCart size={18} />
               </div>
               {cart?.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-md ring-2 ring-white animate-bounce-short">
+                <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-md ring-2 ring-white animate-bounce-short">
                   {cart.length}
                 </span>
               )}
@@ -213,7 +227,9 @@ export default function Navbar() {
 
             {/* MOBILE/TABLET SIDEBAR TOGGLE (lg-nichy) */}
             <button
-              className="lg:hidden text-2xl cursor-pointer text-dark hover:rotate-180 transition duration-500"
+              className={`lg:hidden text-2xl cursor-pointer transition duration-500 hover:rotate-180
+                ${scrolled ? 'text-black' : 'text-white'}
+              `}
               onClick={() => setMenuOpen(!menuOpen)}
             >
               <FiMenu />

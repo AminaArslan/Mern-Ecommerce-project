@@ -85,7 +85,7 @@ export default function ProductsPage() {
   const isFiltered = selectedCategory !== 'All' || minPrice !== '' || maxPrice !== '' || sort !== 'newest' || search !== '';
 
   return (
-    <main className="w-full bg-[#f0f0f0] pt-32 pb-20 min-h-screen">
+    <div className="w-full bg-[#f0f0f0] pt-32 pb-20 min-h-screen">
       <div className="container mx-auto px-3 md:px-6 max-w-7xl">
 
         {/* HEADER - CENTERED EDITORIAL */}
@@ -287,6 +287,6 @@ export default function ProductsPage() {
         )}
 
       </div>
-    </main>
+    </div>
   );
 }

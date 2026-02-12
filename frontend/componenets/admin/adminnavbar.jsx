@@ -74,7 +74,7 @@ export default function AdminNavbar({ onSidebarToggle }) {
                 </div>
                 <div className="p-2">
                   {pendingOrders > 0 ? (
-                    <div className="px-4 py-3 hover:bg-gray-50 transition cursor-pointer rounded-sm">
+                    <div className="px-4 py-3 hover:bg-gray-50 transition rounded-sm">
                       <p className="text-sm font-medium text-dark">New Orders Pending</p>
                       <p className="text-xs text-amber-600 mt-1">{pendingOrders} orders need processing</p>
                     </div>

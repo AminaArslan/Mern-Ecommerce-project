@@ -39,7 +39,7 @@ export default function ContactUsPage() {
     };
 
     return (
-        <main className="w-full bg-[#f0f0f0] pt-32 pb-20 min-h-screen">
+        <div className="w-full bg-[#f0f0f0] pt-32 pb-20 min-h-screen">
             <div className="container mx-auto px-3 md:px-6 max-w-6xl">
 
                 {/* HERO SECTION */}
@@ -216,6 +216,6 @@ export default function ContactUsPage() {
                 </div>
 
             </div>
-        </main>
+        </div>
     );
 }

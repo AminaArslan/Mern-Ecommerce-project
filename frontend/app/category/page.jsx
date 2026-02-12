@@ -95,7 +95,7 @@ export default function ShopAllPage() {
   const isFiltered = selectedCategory !== 'All' || minPrice !== '' || maxPrice !== '' || sort !== 'newest';
 
   return (
-    <main className="w-full bg-[#f0f0f0] pt-24 pb-20 min-h-screen">
+    <div className="w-full bg-[#f0f0f0] pt-24 pb-20 min-h-screen">
       <div className="container mx-auto px-2 md:px-6 max-w-7xl">
 
         {/* HEADER */}
@@ -360,6 +360,6 @@ export default function ShopAllPage() {
         </div>
       )}
 
-    </main>
+    </div>
   );
 }

@@ -22,15 +22,22 @@ export default function Footer() {
               Join the <span className="italic font-light text-gray-200 underline decoration-1 underline-offset-8">Archive.</span>
             </h2>
             <div className="relative group max-w-sm">
+              <label htmlFor="newsletter" className="sr-only">
+                Email address
+              </label>
               <input
+                id="newsletter"
                 type="email"
+                aria-label="Email address"
                 placeholder="PROCEED WITH YOUR EMAIL..."
                 className="w-full bg-transparent border-b border-white/20 focus:border-amber-400 py-3 text-[11px] font-bold text-white outline-none transition-all duration-700 placeholder:text-gray-600 uppercase tracking-[0.3em]"
               />
+
               <button className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-400 transition-all cursor-pointer group-hover:translate-x-1 duration-500">
                 <FiArrowRight size={18} />
               </button>
             </div>
+
             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed">
               Curated minimal fashion insights.
             </p>
@@ -84,7 +91,9 @@ export default function Footer() {
                 <Icon key={i} className="text-gray-500 hover:text-white transition-all cursor-pointer transform hover:scale-110" size={16} />
               ))}
             </div>
-            <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest italic">Crafted by Amina.</p>
+            <p className="mt-8 text-center text-xs font-bold text-white/80 uppercase tracking-widest">
+              © 2026 Studio Amina Fashion Group.
+            </p>
           </div>
 
         </div>

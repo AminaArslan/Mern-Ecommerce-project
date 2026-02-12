@@ -35,7 +35,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }) {
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => onEdit(parent)}
-                    className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-white rounded-sm transition-all"
+                    className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-white rounded-sm transition-all cursor-pointer"
                     title="Edit Parent Category"
                   >
                     <FiEdit size={14} />

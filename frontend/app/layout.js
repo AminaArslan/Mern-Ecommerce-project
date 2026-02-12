@@ -1,51 +1,42 @@
-"use client";
 import "./globals.css";
-import Navbar from "@/componenets/user/navbar/navbar";
-import Footer from "@/componenets/user/footer";
+import { Libre_Caslon_Text, Roboto } from "next/font/google";
 import { AuthProvider } from "@/context/authContext";
 import { CartProvider } from "@/context/cartContext";
 import { Toaster } from "react-hot-toast";
-import { usePathname } from "next/navigation";
-import { Libre_Caslon_Text, Roboto } from "next/font/google";
+import LayoutClientWrapper from "@/componenets/user/layout-client-wrapper";
 
-/* 🔤 Roboto Font */
+/* Roboto */
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
 });
 
-
+/* Caslon */
 const caslon = Libre_Caslon_Text({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-caslon",
 });
 
-export default function RootLayout({ children }) {
-  const pathname = usePathname();
-  const showNavbar = !pathname.startsWith("/admin");
-  const showFooter = !pathname.startsWith("/admin") && pathname !== "/login" && pathname !== "/register";
+export const metadata = {
+  title: {
+    default: "Online clothing Store | Buy clothes",
+    template: "%s | clothing Store",
+  },
+  description:
+    "Buy genuine clothes online with fast delivery and secure payments.",
+};
 
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={roboto.className}>
+      <body className={`${roboto.className} ${caslon.variable}`}>
         <AuthProvider>
           <CartProvider>
-            <div className="min-h-screen flex flex-col">
-              {/* Navbar */}
-              {showNavbar && <Navbar />}
-
-              {/* Main content */}
-              <main className="flex-1 bg-white">
-                {children}
-              </main>
-
-              {/* Footer */}
-              {showFooter && <Footer />}
-
-              {/* Toast notifications */}
-              <Toaster position="top-right" reverseOrder={false} />
-            </div>
+            <LayoutClientWrapper>
+              {children}
+            </LayoutClientWrapper>
+            <Toaster position="top-right" />
           </CartProvider>
         </AuthProvider>
       </body>

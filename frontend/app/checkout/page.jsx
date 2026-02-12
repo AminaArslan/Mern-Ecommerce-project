@@ -117,7 +117,7 @@ export default function CheckoutPage() {
 
   if (cart.length === 0) {
     return (
-      <main className="w-full bg-[#f0f0f0] min-h-screen pt-32 flex items-center justify-center">
+      <div className="w-full bg-[#f0f0f0] min-h-screen pt-32 flex items-center justify-center">
         <div className="text-center space-y-6 max-w-sm px-3 md:px-6">
           <h1 className="text-4xl font-serif text-dark italic font-light leading-tight text-gray-300">Your curation is currently empty.</h1>
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.25em]">Return to the collection to select items for checkout.</p>
@@ -127,12 +127,12 @@ export default function CheckoutPage() {
             Explore Artifacts
           </button>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="w-full bg-[#f0f0f0] pt-10 pb-10 md:pt-32 md:pb-32 min-h-screen">
+    <div className="w-full bg-[#f0f0f0] pt-10 pb-10 md:pt-32 md:pb-32 min-h-screen">
       <div className="container mx-auto px-6 max-w-6xl">
 
         {/* EDITORIAL HEADER */}
@@ -244,6 +244,6 @@ export default function CheckoutPage() {
 
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -21,6 +21,8 @@ export default function HeroPage() {
       title: 'Timeless Elegance',
       description: 'Discover the new collection that defines modern luxury.',
       button: 'SHOP COLLECTION',
+      href: '/category',
+
     },
     {
       src: '/hero/kid.jpg',
@@ -28,6 +30,8 @@ export default function HeroPage() {
       title: 'Playful Spirits',
       description: 'Comfortable & stylish outfits for every little adventure.',
       button: 'EXPLORE KIDS',
+      href: '/category',
+
     },
     {
       src: '/hero/men.jpg',
@@ -35,6 +39,8 @@ export default function HeroPage() {
       title: 'Modern Gentleman',
       description: 'Refined cuts and premium fabrics for the daily grind.',
       button: 'SHOP MEN',
+      href: '/category',
+
     },
   ];
 
@@ -43,6 +49,9 @@ export default function HeroPage() {
       <Swiper
         modules={[Autoplay, EffectFade, Navigation, Pagination]}
         effect={'fade'}
+        fadeEffect={{
+          crossFade: true
+        }}
         speed={1500}
         autoplay={{
           delay: 5000,
@@ -58,49 +67,54 @@ export default function HeroPage() {
         className="w-full h-full group"
       >
         {slides.map((slide, i) => (
-          <SwiperSlide key={i} className="relative w-full h-full">
+          <SwiperSlide key={i} className="relative w-full h-full overflow-hidden">
 
             {/* 🎥 KEN BURNS EFFECT IMAGE */}
-            <div className="absolute inset-0 w-full h-full animate-ken-burns">
+            <div className="absolute inset-0 w-full h-full slide-image-container">
               <Image
                 src={slide.src}
                 alt={slide.title}
                 fill
                 priority={i === 0}
-                className="object-cover opacity-90"
+                className="object-cover opacity-80 transition-opacity duration-1000"
               />
               {/* Dark Overlay for Text Readability */}
-              {/* <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" /> */}
+              {/* <div className="absolute inset-0 bg-black/40" /> */}
             </div>
 
             {/* ✨ CONTENT OVERLAY */}
             <div className="absolute inset-0 flex items-center justify-center text-center px-4">
-              <div className="max-w-4xl opacity-0 animate-fade-up flex flex-col items-center gap-6">
+              <div className="max-w-4xl flex flex-col items-center gap-6 slide-content">
 
                 {/* Tagline */}
-                <p className="text-white/90 text-sm md:text-base tracking-[0.3em] uppercase font-medium animate-slide-down">
+                <p className="text-white/90 text-sm md:text-base tracking-[0.4em] uppercase font-medium slide-tag">
                   {slide.tag}
                 </p>
 
                 {/* Main Title */}
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white tracking-wide leading-tight drop-shadow-lg">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white tracking-tight leading-none drop-shadow-2xl slide-title">
                   {slide.title}
                 </h1>
 
                 {/* Description */}
-                <p className="text-gray-200 text-lg md:text-xl font-light max-w-2xl tracking-wide">
+                <p className="text-gray-100 text-base md:text-xl font-light max-w-xl tracking-wide slide-description">
                   {slide.description}
                 </p>
 
                 {/* Action Button */}
-                <Link
-                  href="/category"
-                  className="mt-4 group relative px-8 py-3 overflow-hidden rounded-full border border-white text-white transition-all duration-300 hover:bg-white hover:text-black hover:border-white"
-                >
-                  <span className="relative z-10 font-medium tracking-widest text-sm flex items-center gap-2">
-                    {slide.button} <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Link>
+                {/* Action Button wrapped in div to break adjacency */}
+                <div className="slide-button">
+                  {/* eslint-disable-next-line @next/next/no-duplicate-links */}
+                  <Link
+                    href={slide.href}
+                    className="mt-6 group relative px-8 py-3 bg-white text-black rounded-sm transition-all duration-300 hover:bg-white/90 hover:scale-105 inline-block"
+                  >
+                    <span className="font-bold tracking-[0.1em] text-xs md:text-sm flex items-center gap-2">
+                      {slide.button}
+                      <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Link>
+                </div>
 
               </div>
             </div>
@@ -112,42 +126,59 @@ export default function HeroPage() {
         <div className="swiper-pagination bottom-10!" />
       </Swiper>
 
-      {/* CSS for Ken Burns Animation if not in globals */}
+      {/* CSS for Professional Animations triggered by Swiper Active state */}
       <style jsx global>{`
+        /* 🎥 Ken Burns effect only on active slide */
+        .swiper-slide-active .slide-image-container {
+          animation: ken-burns 10s ease-out forwards;
+        }
+        
         @keyframes ken-burns {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.1); }
+          0% { transform: scale(1.1) translate(0, 0); }
+          100% { transform: scale(1); translate(0, 0); }
         }
-        .animate-ken-burns {
-          animation: ken-burns 20s ease-out infinite alternate;
+
+        /* ✨ Content Animations scoped to active slide */
+        .slide-content > * {
+          opacity: 0;
         }
-        @keyframes fade-up {
-          from { opacity: 0; transform: translateY(30px); }
+
+        .swiper-slide-active .slide-tag {
+          animation: fade-in-down 0.8s ease-out 0.4s forwards;
+        }
+        .swiper-slide-active .slide-title {
+          animation: fade-in-up 0.8s ease-out 0.6s forwards;
+        }
+        .swiper-slide-active .slide-description {
+          animation: fade-in-up 0.8s ease-out 0.8s forwards;
+        }
+        .swiper-slide-active .slide-button {
+          animation: fade-in-up 0.8s ease-out 1s forwards;
+        }
+
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(40px) scale(0.95); filter: blur(10px); }
+          to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        @keyframes fade-in-down {
+          from { opacity: 0; transform: translateY(-30px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-up {
-          animation: fade-up 1.2s ease-out forwards;
-          animation-delay: 0.5s;
-        }
-        @keyframes slide-down {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slide-down {
-          animation: slide-down 1s ease-out forwards;
-          animation-delay: 0.3s;
-        }
+
+        /* 🏁 Pagination Styling */
         .swiper-pagination-bullet {
-          width: 10px;
-          height: 10px;
-          background: rgba(255, 255, 255, 0.4);
+          width: 8px;
+          height: 8px;
+          background: rgba(255, 255, 255, 0.3);
           opacity: 1;
-          transition: all 0.3s;
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          margin: 0 6px !important;
         }
         .swiper-pagination-bullet-active {
-          width: 24px;
+          width: 40px;
           background: #fff;
-          border-radius: 99px;
+          border-radius: 4px;
         }
       `}</style>
     </section>

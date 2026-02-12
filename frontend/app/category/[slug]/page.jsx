@@ -127,7 +127,7 @@ export default function CategoryPage() {
   );
 
   return (
-    <main className="w-full bg-[#f8f8f8] pt-24 pb-32 min-h-screen">
+    <div className="w-full bg-[#f8f8f8] pt-24 pb-32 min-h-screen">
       <Head>
         <title>{parentName || slug.replace('-', ' ')} | Studio Amina</title>
       </Head>
@@ -369,6 +369,6 @@ export default function CategoryPage() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

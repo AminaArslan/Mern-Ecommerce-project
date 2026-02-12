@@ -54,7 +54,7 @@ export default function SingleProductPage() {
   };
 
   return (
-    <main className="w-full bg-white pt-24 lg:pt-32 pb-20">
+    <div className="w-full bg-white pt-24 lg:pt-32 pb-20">
       <div className="container mx-auto px-4 lg:px-6 max-w-7xl">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
 
@@ -241,6 +241,6 @@ export default function SingleProductPage() {
           )}
         </div>
       )}
-    </main>
+    </div>
   );
 }

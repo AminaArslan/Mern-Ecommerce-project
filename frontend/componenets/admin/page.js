@@ -123,10 +123,11 @@ export default function AdminLayout({ children }) {
       {/* Main content with Admin Navbar */}
       <div className="flex-1 lg:ml-72 flex flex-col min-h-screen transition-all duration-300 min-w-0">
         <AdminNavbar onSidebarToggle={() => setOpen(!open)} />
-        <main className="flex-1 p-4 md:p-10 max-w-7xl mx-auto w-full">
+        <div className="flex-1 p-4 md:p-10 max-w-7xl mx-auto w-full">
           {children}
-        </main>
+        </div>
       </div>
+
 
       {/* Logout Modal */}
       {showLogoutModal && (
